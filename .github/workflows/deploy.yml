@@ -23,9 +23,9 @@ jobs:
             cd /home/ubuntu/hubber
             git checkout main
             git pull origin main
-            cd src/frontend
+            cd /home/ubuntu/hubber/src/frontend/src
             npm build
             sudo rm -rf /var/www/html
             sudo mkdir /var/www/html
-            sudo scp -r /home/ubuntu/hubber/src/frontend/build/* /var/www/html/
+            sudo scp -r /home/ubuntu/hubber/src/frontend/src/build/* /var/www/html/
             sudo systemctl restart nginx

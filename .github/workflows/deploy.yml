@@ -1,0 +1,31 @@
+name: Deploy to AWS EC2
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+
+      - name: Deploy frontend to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            ls  /home/ubuntu/hubber
+            cd /home/ubuntu/hubber
+            git checkout main
+            git pull origin main
+            cd src/frontend
+            npm build
+            sudo rm -rf /var/www/html
+            sudo mkdir /var/www/html
+            sudo scp -r /home/ubuntu/hubber/src/frontend/build/* /var/www/html/
+            sudo systemctl restart nginx

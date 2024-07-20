@@ -15,11 +15,12 @@ import MenuItem from '@mui/material/MenuItem';
 import { Routes, Route, Outlet, Link, useNavigate } from "react-router-dom";
 
 import Home from './pages/home/index';
+import Chat from './pages/chat';
 
 const pages = [
-  {display: 'Buscar Productos', url: 'productos'},
-  {display: 'Soporte por chat', url:'chat'},
-  {display: 'Nuestro Directorio', url: 'directorio'}
+  {display: 'Buscar Productos', url: '/productos'},
+  {display: 'Soporte por chat', url:'/chat'},
+  {display: 'Nuestro Directorio', url: '/directorio'}
 ];
 //const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -33,9 +34,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />} >
           <Route index element={<Home />}/>
-          <Route path='productos' element={<Home />} />
-          <Route path='chat' element={<Home />} />
-          <Route path='directorio' element={<Home />} />
+          <Route path='/productos' element={<Home />} />
+          <Route path='/chat' element={<Chat />} />
+          <Route path='/directorio' element={<Home />} />
         </Route>
       </Routes>
 
@@ -79,7 +80,7 @@ function Layout () {
                 variant="h6"
                 noWrap
                 component="a"
-                click={navigate('/')}
+                onClick={() => {navigate('/');}}
                 sx={{
                   mr: 2,
                   display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex' },
@@ -142,7 +143,7 @@ function Layout () {
                 variant="h5"
                 noWrap
                 component="a"
-                click={navigate('/')}
+                onClick={() => {navigate('/');}}
                 sx={{
                   mr: 2,
                   display: { xs: 'inline-flex', md: 'none', lg: 'none' },

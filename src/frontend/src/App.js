@@ -1,68 +1,157 @@
 import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import { ExpandMoreSharp } from '@mui/icons-material';
 
+const pages = [
+  {display: 'Buscar Productos', url: 'productos'},
+  {display: 'Soporte por chat', url:'chat'},
+  {display: 'Nuestro Directorio', url: 'directorio'}
+];
+//const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
 function App() {
+
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
   return (
     <>
-      <section className="_58ce83d8">
-        <div className="_5859e61e">
-          <div className="_157dc3d3">
-            <nav id="4mq3mo3zbi" className="_e45b5504 um-nav-wrapper um-classic">
-              <div className="um-nav-children">
-                <div className="_32caed59" style={{gap:1, fontSize:"16px"}}><a>
-                    <div className="_8c82ce03" style={{scale:1}}>
-                      <img src="./images/ejidz469qf05wyna.svg" className="_b9923f60" alt="11.svg"></img>                        
-                    </div>
-                    <span className="_11650ac9">Hubber</span>
-                  </a>
-                </div>
-              </div>
-              <ul className="um-nav-links">
-                <li><a href="https://v2nfosz0pa4o0t8w.umso.co/">Buscar Productos</a></li>
-                <li><a href="https://v2nfosz0pa4o0t8w.umso.co/">Soporte por chat</a></li>
-                <li><a href="https://v2nfosz0pa4o0t8w.umso.co/">Nuestro Directorio</a></li>
-              </ul>
-              <div className="um-nav-buttons">
-                <button id="btn_bcdo0smgka" className="_e72e75b2 btn">
-                  Registrarse Ahora
-                </button>
-                <button id="btn_itpotpbfl9" className="_89517563 btn">
-                  Más informacion
-                </button>
-              </div>
-            </nav>
-            <button id="4mq3mo3zbi-drawerTrigger" className="um-nav-drawerTrigger um-hidden" title="Open Mobile Menu"></button>
-            <div id="4mq3mo3zbi-drawer" className="_e45b5504 um-nav-drawer um-hidden">
-              <header>
-                <button className="um-nav-drawerClose">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </button>
-              </header>
-              <div className="um-drawer-links">
-                <li><a href="https://v2nfosz0pa4o0t8w.umso.co/">Buscar Productos</a></li>
-                <li><a href="https://v2nfosz0pa4o0t8w.umso.co/">Soporte por chat</a></li>
-                <li><a href="https://v2nfosz0pa4o0t8w.umso.co/">Nuestro Directorio</a></li>
-              </div>
-              <div className="um-drawer-buttons">
-                <button id="d_btn_m45y8f1jws" className="_e72e75b2 btn">
-                  Registrarse Ahora
-                </button>
-                <button id="d_btn_pf4v0hjo78" className="_89517563 btn">
-                  Más informacion
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AppBar position="static" style={{backgroundColor: "#fff"}}>
+       <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <Stack direction="row" spacing={0}>
+            <Stack direction="row">
+              <img src="./images/ejidz469qf05wyna.svg" className="_b9923f60" alt="11.svg"></img>
+
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                href="#app-bar-with-responsive-menu"
+                sx={{
+                  mr: 2,
+                  display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex' },
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'black',
+                  textDecoration: 'none',
+                  paddingTop: '2rem'
+                }}
+              >
+                HUBBER
+              </Typography>
+
+              <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none', lg: 'none' } }}>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleOpenNavMenu}
+                  color="black"
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorElNav}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                  open={Boolean(anchorElNav)}
+                  onClose={handleCloseNavMenu}
+                  sx={{
+                    display: { xs: 'block', md: 'none', lg: 'none' },
+                  }}
+                >
+                  {pages.map((page) => (
+                    <MenuItem key={page.display} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">{page.display}</Typography>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
+
+              <Typography
+                variant="h5"
+                noWrap
+                component="a"
+                href="#app-bar-with-responsive-menu"
+                sx={{
+                  mr: 2,
+                  display: { xs: 'inline-flex', md: 'none', lg: 'none' },
+                  flexGrow: 1,
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'black',
+                  textDecoration: 'none',
+                  verticalAlign: 'middle',
+                  paddingTop: '2rem'
+                }}
+              >
+                HUBBER
+              </Typography>
+            </Stack>
+            <Stack direction='row' justifyContent="end">
+              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex' } }}>
+                  {pages.map((page) => (
+                    <Button
+                      key={page.display}
+                      onClick={handleCloseNavMenu}
+                      sx={{ my: 2, color: 'black', display: 'block' }}
+                    >
+                      {page.display}
+                    </Button>
+                  ))}
+              </Box>
+            </Stack>            
+          </Stack>          
+
+        </Toolbar>
+          
+       </Container>
+      </AppBar>
+      
+      
       <section className="_af0513fc">
         <div className="wr">
           <div className="_4b9aaa61">

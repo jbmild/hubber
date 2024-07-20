@@ -5,7 +5,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import { ExpandMoreSharp } from '@mui/icons-material';
 
-function Inicio () {
+function Home () {
 
     return (
         <>
@@ -31,62 +31,7 @@ function Inicio () {
                 </div>
                 </div>
             </section>
-            <section className="_03763288">
-                <header className="_94212cd5">
-                <h2 className="_e44ebc81">Socios de confianza</h2>
-                <p className="_c98db934">Marcas y agencias líderes que confían en Hubber para expandir su alcance global.</p>
-                </header>
-                <div className="_ac090958">
-                <div className="_4d32de78 umso-marquee" style={{width: " 6633px", speed: 0.4}}>
-                    <div style={{animationDuration: "87.0472s"}} className="_ef9f47ee">
-                    <div className="_d673d676">
-                        <img src="./images/6ovw3a4z6o5mtfzb.svg" className="_307f224b" alt="palletfish.svg"></img>
-                        <img src="./images/crl58tr3aum5qqxt.svg" className="_307f224b" alt="m.c.p..svg"></img>
-                        <img src="./images/f2akjzux5n6kt1hq.svg" className="_307f224b" alt="epism.svg"></img>
-                        <img src="./images/0dt47g3t2ffy7r28.svg" className="_307f224b" alt="lecoid.svg"></img>
-                        <img src="./images/m94w5tqxbjg8vdoy.svg" className="_307f224b" alt="unwined.svg"></img>
-                        <img src="./images/4rgex0ascb7yrgsa.svg" className="_307f224b" alt="pallace.svg"></img>
-                        <img src="./images/ucqelacyxyc68bvz.svg" className="_307f224b" alt="chiabele.svg"></img>
-                        <img src="./images/0dt47g3t2ffy7r28.svg" className="_307f224b" alt="lecoid.svg"></img>
-                        <img src="./images/133ugvf43x0psc82.svg" className="_307f224b" alt="lancelite.svg"></img>
-                        <img src="./images/2yrc335q2nikn4cc.svg" className="_307f224b" alt="hivebill.svg"></img>
-                        <img src="./images/2a8vrw51vy1lz6ab.svg" className="_307f224b" alt="frescon.svg"></img>
-                        <img src="./images/cftx5x40cssur9er.svg" className="_307f224b" alt="carassava.svg"></img>
-                    </div>
-                    <div className="_bce3d2ba" aria-hidden="true">
-                        <div className="_d673d676">
-                        <img src="./images/6ovw3a4z6o5mtfzb.svg" className="_307f224b" alt="palletfish.svg"></img>
-                        <img src="./images/crl58tr3aum5qqxt.svg" className="_307f224b" alt="m.c.p..svg"></img>
-                        <img src="./images/f2akjzux5n6kt1hq.svg" className="_307f224b" alt="epism.svg"></img>
-                        <img src="./images/0dt47g3t2ffy7r28.svg" className="_307f224b" alt="lecoid.svg"></img>
-                        <img src="./images/m94w5tqxbjg8vdoy.svg" className="_307f224b" alt="unwined.svg"></img>
-                        <img src="./images/4rgex0ascb7yrgsa.svg" className="_307f224b" alt="pallace.svg"></img>
-                        <img src="./images/ucqelacyxyc68bvz.svg" className="_307f224b" alt="chiabele.svg"></img>
-                        <img src="./images/0dt47g3t2ffy7r28.svg" className="_307f224b" alt="lecoid.svg"></img>
-                        <img src="./images/133ugvf43x0psc82.svg" className="_307f224b" alt="lancelite.svg"></img>
-                        <img src="./images/2yrc335q2nikn4cc.svg" className="_307f224b" alt="hivebill.svg"></img>
-                        <img src="./images/2a8vrw51vy1lz6ab.svg" className="_307f224b" alt="frescon.svg"></img>
-                        <img src="./images/cftx5x40cssur9er.svg" className="_307f224b" alt="carassava.svg"></img>
-                        </div>
-                        <div className="_d673d676">
-                        <img src="./images/6ovw3a4z6o5mtfzb.svg" className="_307f224b" alt="palletfish.svg"></img>
-                        <img src="./images/crl58tr3aum5qqxt.svg" className="_307f224b" alt="m.c.p..svg"></img>
-                        <img src="./images/f2akjzux5n6kt1hq.svg" className="_307f224b" alt="epism.svg"></img>
-                        <img src="./images/0dt47g3t2ffy7r28.svg" className="_307f224b" alt="lecoid.svg"></img>
-                        <img src="./images/m94w5tqxbjg8vdoy.svg" className="_307f224b" alt="unwined.svg"></img>
-                        <img src="./images/4rgex0ascb7yrgsa.svg" className="_307f224b" alt="pallace.svg"></img>
-                        <img src="./images/ucqelacyxyc68bvz.svg" className="_307f224b" alt="chiabele.svg"></img>
-                        <img src="./images/0dt47g3t2ffy7r28.svg" className="_307f224b" alt="lecoid.svg"></img>
-                        <img src="./images/133ugvf43x0psc82.svg" className="_307f224b" alt="lancelite.svg"></img>
-                        <img src="./images/2yrc335q2nikn4cc.svg" className="_307f224b" alt="hivebill.svg"></img>
-                        <img src="./images/2a8vrw51vy1lz6ab.svg" className="_307f224b" alt="frescon.svg"></img>
-                        <img src="./images/cftx5x40cssur9er.svg" className="_307f224b" alt="carassava.svg"></img>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-                </div>
-            </section>
+            
             <section className="_0ea537f6">
                 <div className="wr">
                 <div className="_e770eff3">
@@ -301,4 +246,67 @@ function Inicio () {
     );
 }
 
-export default Inicio;
+export default Home;
+
+function Marquee () {
+    return (
+        <>
+        <section className="_03763288">
+                <header className="_94212cd5">
+                <h2 className="_e44ebc81">Socios de confianza</h2>
+                <p className="_c98db934">Marcas y agencias líderes que confían en Hubber para expandir su alcance global.</p>
+                </header>
+                <div className="_ac090958">
+                <div className="_4d32de78 umso-marquee" style={{width: " 6633px", speed: 0.4}}>
+                    <div style={{animationDuration: "87.0472s"}} className="_ef9f47ee">
+                    <div className="_d673d676">
+                        <img src="./images/6ovw3a4z6o5mtfzb.svg" className="_307f224b" alt="palletfish.svg"></img>
+                        <img src="./images/crl58tr3aum5qqxt.svg" className="_307f224b" alt="m.c.p..svg"></img>
+                        <img src="./images/f2akjzux5n6kt1hq.svg" className="_307f224b" alt="epism.svg"></img>
+                        <img src="./images/0dt47g3t2ffy7r28.svg" className="_307f224b" alt="lecoid.svg"></img>
+                        <img src="./images/m94w5tqxbjg8vdoy.svg" className="_307f224b" alt="unwined.svg"></img>
+                        <img src="./images/4rgex0ascb7yrgsa.svg" className="_307f224b" alt="pallace.svg"></img>
+                        <img src="./images/ucqelacyxyc68bvz.svg" className="_307f224b" alt="chiabele.svg"></img>
+                        <img src="./images/0dt47g3t2ffy7r28.svg" className="_307f224b" alt="lecoid.svg"></img>
+                        <img src="./images/133ugvf43x0psc82.svg" className="_307f224b" alt="lancelite.svg"></img>
+                        <img src="./images/2yrc335q2nikn4cc.svg" className="_307f224b" alt="hivebill.svg"></img>
+                        <img src="./images/2a8vrw51vy1lz6ab.svg" className="_307f224b" alt="frescon.svg"></img>
+                        <img src="./images/cftx5x40cssur9er.svg" className="_307f224b" alt="carassava.svg"></img>
+                    </div>
+                    <div className="_bce3d2ba" aria-hidden="true">
+                        <div className="_d673d676">
+                        <img src="./images/6ovw3a4z6o5mtfzb.svg" className="_307f224b" alt="palletfish.svg"></img>
+                        <img src="./images/crl58tr3aum5qqxt.svg" className="_307f224b" alt="m.c.p..svg"></img>
+                        <img src="./images/f2akjzux5n6kt1hq.svg" className="_307f224b" alt="epism.svg"></img>
+                        <img src="./images/0dt47g3t2ffy7r28.svg" className="_307f224b" alt="lecoid.svg"></img>
+                        <img src="./images/m94w5tqxbjg8vdoy.svg" className="_307f224b" alt="unwined.svg"></img>
+                        <img src="./images/4rgex0ascb7yrgsa.svg" className="_307f224b" alt="pallace.svg"></img>
+                        <img src="./images/ucqelacyxyc68bvz.svg" className="_307f224b" alt="chiabele.svg"></img>
+                        <img src="./images/0dt47g3t2ffy7r28.svg" className="_307f224b" alt="lecoid.svg"></img>
+                        <img src="./images/133ugvf43x0psc82.svg" className="_307f224b" alt="lancelite.svg"></img>
+                        <img src="./images/2yrc335q2nikn4cc.svg" className="_307f224b" alt="hivebill.svg"></img>
+                        <img src="./images/2a8vrw51vy1lz6ab.svg" className="_307f224b" alt="frescon.svg"></img>
+                        <img src="./images/cftx5x40cssur9er.svg" className="_307f224b" alt="carassava.svg"></img>
+                        </div>
+                        <div className="_d673d676">
+                        <img src="./images/6ovw3a4z6o5mtfzb.svg" className="_307f224b" alt="palletfish.svg"></img>
+                        <img src="./images/crl58tr3aum5qqxt.svg" className="_307f224b" alt="m.c.p..svg"></img>
+                        <img src="./images/f2akjzux5n6kt1hq.svg" className="_307f224b" alt="epism.svg"></img>
+                        <img src="./images/0dt47g3t2ffy7r28.svg" className="_307f224b" alt="lecoid.svg"></img>
+                        <img src="./images/m94w5tqxbjg8vdoy.svg" className="_307f224b" alt="unwined.svg"></img>
+                        <img src="./images/4rgex0ascb7yrgsa.svg" className="_307f224b" alt="pallace.svg"></img>
+                        <img src="./images/ucqelacyxyc68bvz.svg" className="_307f224b" alt="chiabele.svg"></img>
+                        <img src="./images/0dt47g3t2ffy7r28.svg" className="_307f224b" alt="lecoid.svg"></img>
+                        <img src="./images/133ugvf43x0psc82.svg" className="_307f224b" alt="lancelite.svg"></img>
+                        <img src="./images/2yrc335q2nikn4cc.svg" className="_307f224b" alt="hivebill.svg"></img>
+                        <img src="./images/2a8vrw51vy1lz6ab.svg" className="_307f224b" alt="frescon.svg"></img>
+                        <img src="./images/cftx5x40cssur9er.svg" className="_307f224b" alt="carassava.svg"></img>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </section>
+        </>
+    );
+}

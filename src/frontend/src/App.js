@@ -12,9 +12,9 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { Routes, Route, Outlet, Link } from "react-router-dom";
+import { Routes, Route, Outlet, Link, useNavigate } from "react-router-dom";
 
-import Inicio from './pages/inicio/index';
+import Home from './pages/home/index';
 
 const pages = [
   {display: 'Buscar Productos', url: 'productos'},
@@ -25,8 +25,28 @@ const pages = [
 
 function App() {
 
+  
+
+  return (
+    <>
+      
+      <Routes>
+        <Route path="/" element={<Layout />} >
+          <Route index element={<Home />}/>
+          <Route path='productos' element={<Home />} />
+          <Route path='chat' element={<Home />} />
+          <Route path='directorio' element={<Home />} />
+        </Route>
+      </Routes>
+
+    </>
+  );
+}
+
+function Layout () {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -35,8 +55,11 @@ function App() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (to) => {
     setAnchorElNav(null);
+
+    if(to)
+      navigate(to);
   };
 
   const handleCloseUserMenu = () => {
@@ -56,7 +79,7 @@ function App() {
                 variant="h6"
                 noWrap
                 component="a"
-                href="#app-bar-with-responsive-menu"
+                click={navigate('/')}
                 sx={{
                   mr: 2,
                   display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex' },
@@ -65,7 +88,10 @@ function App() {
                   letterSpacing: '.3rem',
                   color: 'black',
                   textDecoration: 'none',
-                  paddingTop: '2rem'
+                  paddingTop: '2rem',
+                  textDecoration: "none",
+                  boxShadow: "none",
+                  cursor: "pointer"
                 }}
               >
                 HUBBER
@@ -101,8 +127,12 @@ function App() {
                   }}
                 >
                   {pages.map((page) => (
-                    <MenuItem key={page.display} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{page.display}</Typography>
+                    <MenuItem key={page.display} onClick={() => {handleCloseNavMenu(page.url)}}>
+                      <Typography 
+                        textAlign="center"
+                      >
+                        {page.display}
+                      </Typography>
                     </MenuItem>
                   ))}
                 </Menu>
@@ -112,7 +142,7 @@ function App() {
                 variant="h5"
                 noWrap
                 component="a"
-                href="#app-bar-with-responsive-menu"
+                click={navigate('/')}
                 sx={{
                   mr: 2,
                   display: { xs: 'inline-flex', md: 'none', lg: 'none' },
@@ -121,9 +151,11 @@ function App() {
                   fontWeight: 700,
                   letterSpacing: '.3rem',
                   color: 'black',
-                  textDecoration: 'none',
+                  textDecoration: "none",
+                  boxShadow: "none",
                   verticalAlign: 'middle',
-                  paddingTop: '2rem'
+                  paddingTop: '2rem',
+                  cursor: "pointer"
                 }}
               >
                 HUBBER
@@ -134,7 +166,7 @@ function App() {
                   {pages.map((page) => (
                     <Button
                       key={page.display}
-                      onClick={handleCloseNavMenu}
+                      onClick={() => {handleCloseNavMenu(page.url)}}
                       sx={{ my: 2, color: 'black', display: 'block' }}
                     >
                       {page.display}
@@ -149,9 +181,7 @@ function App() {
        </Container>
       </AppBar>
       
-      <Routes>
-        <Route path="/" element={<Inicio />} />
-      </Routes>
+      <Outlet />
       
       <footer className="_c4b89fde">
         <div className="wr">
@@ -241,9 +271,9 @@ function App() {
           </div>
         </div>
       </footer>
-
     </>
   );
 }
+
 
 export default App;

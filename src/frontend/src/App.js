@@ -16,11 +16,15 @@ import { Routes, Route, Outlet, Link, useNavigate } from "react-router-dom";
 
 import Home from './pages/home/index';
 import Chat from './pages/chat';
+import Login from './pages/login';
+import Register from './pages/register';
 
 const pages = [
   {display: 'Buscar Productos', url: '/productos'},
   {display: 'Soporte por chat', url:'/chat'},
-  {display: 'Nuestro Directorio', url: '/directorio'}
+  {display: 'Nuestro Directorio', url: '/directorio'},
+  {display: 'Ingresar', url:'/login'},
+  {display: 'Registrarse Ahora', url: '/register', style: {backgroundColor: 'rgb(206 206 206)'}}
 ];
 //const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -36,7 +40,9 @@ function App() {
           <Route index element={<Home />}/>
           <Route path='/productos' element={<Home />} />
           <Route path='/chat' element={<Chat />} />
-          <Route path='/directorio' element={<Home />} />
+          <Route path='/directorio' element={<Chat />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
         </Route>
       </Routes>
 
@@ -72,109 +78,107 @@ function Layout () {
       <AppBar position="static" style={{backgroundColor: "#fff"}}>
        <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Stack direction="row" spacing={0}>
-            <Stack direction="row">
-              <img src="./images/ejidz469qf05wyna.svg" className="_b9923f60" alt="11.svg"></img>
+          <Stack direction="row" spacing={0} display={'flex'} width={'100%'}>
+            <img src="./images/ejidz469qf05wyna.svg" className="_b9923f60" alt="11.svg"></img>
 
-              <Typography
-                variant="h6"
-                noWrap
-                component="a"
-                onClick={() => {navigate('/');}}
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              onClick={() => {navigate('/');}}
+              sx={{
+                mr: 2,
+                display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex' },
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'black',
+                textDecoration: 'none',
+                paddingTop: '2rem',
+                textDecoration: "none",
+                boxShadow: "none",
+                cursor: "pointer"
+              }}
+            >
+              HUBBER
+            </Typography>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex', justifyContent: 'flex-end' } }}>
+                {pages.map((page) => (
+                  <Button
+                    key={page.display}
+                    onClick={() => {handleCloseNavMenu(page.url)}}
+                    sx={{ my: 2, color: 'black', display: 'block' }}
+                    style= {page.style? {...page.style} : null}
+                  >
+                    {page.display}
+                  </Button>
+                ))}
+            </Box>
+
+
+            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none', lg: 'none' } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="black"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
                 sx={{
-                  mr: 2,
-                  display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex' },
-                  fontFamily: 'monospace',
-                  fontWeight: 700,
-                  letterSpacing: '.3rem',
-                  color: 'black',
-                  textDecoration: 'none',
-                  paddingTop: '2rem',
-                  textDecoration: "none",
-                  boxShadow: "none",
-                  cursor: "pointer"
+                  display: { xs: 'block', md: 'none', lg: 'none' },
                 }}
               >
-                HUBBER
-              </Typography>
-
-              <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none', lg: 'none' } }}>
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleOpenNavMenu}
-                  color="black"
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElNav}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-                  open={Boolean(anchorElNav)}
-                  onClose={handleCloseNavMenu}
-                  sx={{
-                    display: { xs: 'block', md: 'none', lg: 'none' },
-                  }}
-                >
-                  {pages.map((page) => (
-                    <MenuItem key={page.display} onClick={() => {handleCloseNavMenu(page.url)}}>
-                      <Typography 
-                        textAlign="center"
-                      >
-                        {page.display}
-                      </Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
-
-              <Typography
-                variant="h5"
-                noWrap
-                component="a"
-                onClick={() => {navigate('/');}}
-                sx={{
-                  mr: 2,
-                  display: { xs: 'inline-flex', md: 'none', lg: 'none' },
-                  flexGrow: 1,
-                  fontFamily: 'monospace',
-                  fontWeight: 700,
-                  letterSpacing: '.3rem',
-                  color: 'black',
-                  textDecoration: "none",
-                  boxShadow: "none",
-                  verticalAlign: 'middle',
-                  paddingTop: '2rem',
-                  cursor: "pointer"
-                }}
-              >
-                HUBBER
-              </Typography>
-            </Stack>
-            <Stack direction='row' justifyContent="end">
-              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex' } }}>
-                  {pages.map((page) => (
-                    <Button
-                      key={page.display}
-                      onClick={() => {handleCloseNavMenu(page.url)}}
-                      sx={{ my: 2, color: 'black', display: 'block' }}
+                {pages.map((page) => (
+                  <MenuItem key={page.display} onClick={() => {handleCloseNavMenu(page.url)}}>
+                    <Typography 
+                      textAlign="center"
                     >
                       {page.display}
-                    </Button>
-                  ))}
-              </Box>
-            </Stack>            
+                    </Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+
+            <Typography
+              variant="h5"
+              noWrap
+              component="a"
+              onClick={() => {navigate('/');}}
+              sx={{
+                mr: 2,
+                display: { xs: 'inline-flex', md: 'none', lg: 'none' },
+                flexGrow: 1,
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'black',
+                textDecoration: "none",
+                boxShadow: "none",
+                verticalAlign: 'middle',
+                paddingTop: '2rem',
+                cursor: "pointer"
+              }}
+            >
+              HUBBER
+            </Typography>     
           </Stack>          
 
         </Toolbar>

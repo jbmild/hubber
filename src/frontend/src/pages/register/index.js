@@ -4,6 +4,8 @@ import { TextField, Button, Card, CardContent, Typography, Alert, Box, IconButto
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { GoogleIcon, AppleIcon } from '../../components/icons';
+import { createUser, authOauth } from '../../services/authService';
+
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -21,23 +23,18 @@ const Register = () => {
       }
   
       try {
-        const response = await axios.post('http://localhost:5000/auth/register', { username, email, password });
-        setSuccess('Registration successful! You can now log in.');
-        setError(null);
+        createUser({ username, email, password }).then(() => {
+            setSuccess('Registration successful! You can now log in.');
+            setError(null);
+        });
+       
       } catch (err) {
         setError(err.response ? err.response.data.error : 'Something went wrong');
       }
     };
   
     const handleOAuthLogin = (provider) => {
-      const clientId = provider === 'google' ? 'YOUR_GOOGLE_CLIENT_ID' : 'YOUR_IOS_CLIENT_ID';// estos van en archivo de cfg
-      const redirectUri = 'http://localhost:5000/auth/callback';
-      const responseType = 'code';
-      const scope = 'profile email';
-  
-      const authUrl = `https://accounts.${provider}.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
-  
-      window.location.href = authUrl;
+      authOauth(provider);
     };
   
     return (

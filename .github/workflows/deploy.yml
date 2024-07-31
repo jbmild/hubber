@@ -1,32 +1,37 @@
-name: Deploy to AWS EC2
+name: CI
+
 on:
   push:
-    branches:
-      - main
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 20
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
-      - name: Deploy frontend to EC2
-        uses: appleboy/ssh-action@master
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    if: github.ref == 'refs/heads/master'
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test
+
+      - name: rsync deployments
+        uses: burnett01/rsync-deployments@5.1
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            ls  /home/ubuntu/hubber
-            cd /home/ubuntu/hubber
-            git checkout main
-            git pull origin main
-            cd /home/ubuntu/hubber/src/frontend
-            npm install
-            npm run build
-            sudo rm -rf /var/www/html
-            sudo mkdir /var/www/html
-            sudo scp -r /home/ubuntu/hubber/src/frontend/src/* /var/www/html/
-            sudo systemctl restart nginx
+          switches: -avzr --delete
+          path: ./src/backend/*
+          remote_path: /var/www/my-app/
+          remote_host: <host>.compute.amazonaws.com
+          remote_user: ubuntu
+          remote_key: "${{ secrets.EC2_SSH_KEY }}"

@@ -24,6 +24,7 @@ jobs:
             git checkout main
             git pull origin main
             cd /home/ubuntu/hubber/src/frontend/src
+            npm install
             npm build
             sudo rm -rf /var/www/html
             sudo mkdir /var/www/html

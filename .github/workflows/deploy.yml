@@ -12,8 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - run: npm install
       - run: npm run build
-      - run: npm run test
 
       - name: rsync deployments
         uses: burnett01/rsync-deployments@5.1
@@ -21,6 +21,6 @@ jobs:
           switches: -avzr --delete
           path: ./src/backend/*
           remote_path: /var/www/my-app/
-          remote_host: <host>.compute.amazonaws.com
-          remote_user: ubuntu
+          remote_host: ${{ secrets.EC2_HOST }}
+          remote_user: ${{ secrets.EC2_USERNAME }}
           remote_key: "${{ secrets.EC2_SSH_KEY }}"

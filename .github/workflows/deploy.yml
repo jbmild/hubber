@@ -28,5 +28,5 @@ jobs:
             npm build
             sudo rm -rf /var/www/html
             sudo mkdir /var/www/html
-            sudo scp -r /home/ubuntu/hubber/src/frontend/build/* /var/www/html/
+            sudo scp -r /home/ubuntu/hubber/src/frontend/src/* /var/www/html/
             sudo systemctl restart nginx

@@ -10,8 +10,19 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
   };
 
   
-  const handlePais = () => {
+  const handlePais = (params) => {
     const message = createChatBotMessage('Seleccione un pais',
+      {        
+        withAvatar: true,
+        widget: 'paises'
+      }
+    );
+
+    addMessageToState(message)
+  }
+
+  const handlePaisSeleccionado = (params) => {
+    const message = createChatBotMessage(`Selecciono: ${params.pais}`,
       {        
         withAvatar: true,
       }
@@ -20,7 +31,7 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
     addMessageToState(message)
   }
 
-  const handleNormativasBasicas = () => {
+  const handleNormativasBasicas = (params) => {
     const message = createChatBotMessage('Se le guiara por normaticas basicas',
       {        
         withAvatar: true,
@@ -37,7 +48,8 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
         return React.cloneElement(child, {
           actions: {
             handlePais,
-            handleNormativasBasicas
+            handleNormativasBasicas,
+            handlePaisSeleccionado
           },
         });
       })}

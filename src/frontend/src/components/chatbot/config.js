@@ -1,5 +1,6 @@
 import { createChatBotMessage } from 'react-chatbot-kit';
 import GeneralOptions from './OptionSelector/GeneralOptions';
+import PaisesOptions from './OptionSelector/PaisSelector';
 
 const botName = 'BOTSITO';
 
@@ -17,12 +18,18 @@ const config = {
   botName: botName,
   lang: 'es',
   state: {
+    paisSeleccionado: '',
   },
   widgets: [
     {
       widgetName: "options",
       widgetFunc: (props) => <GeneralOptions {...props} />,     
       mapStateToProps: ["messages"],
+    },
+    {
+      widgetName: "paises",
+      widgetFunc: (props) => <PaisesOptions {...props} />,     
+      mapStateToProps: ["messages", "paisSeleccionado"],
     },
   ]
 };

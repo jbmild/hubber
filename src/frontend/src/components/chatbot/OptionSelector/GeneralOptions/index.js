@@ -1,12 +1,8 @@
 import React from "react";
-import { useEffect } from "react";
 import Options from "../Options";
 
 const GeneralOptions = (props) => {
 
-    useEffect(() => {
-        console.log(props.actionProvider);
-    }, []);
     const options = [
         {
             name: "País especifico y producto",

@@ -10,7 +10,7 @@ const Options = props => {
           return (
             <div
               className="option-item"
-              onClick={option.handler}
+              onClick={() => (option.handler(option.params))}
               key={option.id}
             >
               {option.name}

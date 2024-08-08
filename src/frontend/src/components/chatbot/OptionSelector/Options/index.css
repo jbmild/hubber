@@ -24,7 +24,11 @@
     cursor: pointer;
   }
 
-    
+  .option-done > .option-item {
+   pointer-events: none;
+   cursor: default;
+  }
+ 
   .option-item:hover{
     background-color: #d0d0d0;
   }

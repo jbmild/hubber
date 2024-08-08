@@ -18,13 +18,12 @@ const config = {
   botName: botName,
   lang: 'es',
   state: {
-    paisSeleccionado: '',
   },
   widgets: [
     {
       widgetName: "options",
       widgetFunc: (props) => <GeneralOptions {...props} />,     
-      mapStateToProps: ["messages"],
+      mapStateToProps: ["messages", 'normativasBasicas'],
     },
     {
       widgetName: "paises",

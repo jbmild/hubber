@@ -8,7 +8,8 @@ const PaisesOptions = (props) => {
     const options = paises.map(p => ({
         name: p,
         handler: props.actionProvider.handlePaisSeleccionado,
-        params: {pais : p}
+        params: {pais : p},
+        id: p
     }));
 
     return <Options options={options} title="Options" {...props} />;

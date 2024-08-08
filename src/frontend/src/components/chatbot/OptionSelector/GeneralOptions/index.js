@@ -5,7 +5,7 @@ const GeneralOptions = (props) => {
 
     const options = [
         {
-            name: "País especifico y producto",
+            name: "País especifico",
             handler: props.actionProvider.handlePais,
             id: 1
         },

@@ -7,12 +7,21 @@ import theme from 'theme';
 import './styles.css';
 
 const ChatbotComponent = () => {
+  const validator = (message) => {
+    if (!message || message.length < 3 ) {
+          return false;
+    }
+    return true;
+  }
+
   return (    
     <Chatbot
         config={config}
         messageParser={MessageParser}
         actionProvider={ActionProvider}
         headerText='En que podemos ayudarle?'
+        placeholderText='Escriba su mensaje...'
+        validator={validator}
     />    
   );
 };

@@ -18,6 +18,7 @@ import Home from './pages/home/index';
 import Chat from './pages/chat';
 import Login from './pages/login';
 import Register from './pages/register';
+import Profile from './pages/profile';
 import PrivateRoute from './components/privateRoute';
 import { isAuthenticated, logOut } from 'services/authService';
 import { Grid } from '@mui/material';
@@ -32,6 +33,7 @@ function App() {
           <Route index element={<Home />}/>  
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
+          <Route path='/profile' element={<Profile />} />
           <Route element={<PrivateRoute />}>
             <Route path='/productos' element={<Chat />} />    
             <Route path='/chat' element={<Chat />} />

@@ -3,7 +3,7 @@ import Options from "../Options";
 
 const PaisesOptions = (props) => {
 
-    const paises = ['Brasil', 'Peru', 'Chile'];
+    const paises = ['Brasil', 'Colombia', 'Chile'];
 
     const options = paises.map(p => ({
         name: p,

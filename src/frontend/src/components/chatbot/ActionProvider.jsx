@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { sendMessage } from 'services/chatbotService';
+import { sendMessage, setPais } from 'services/chatbotService';
 import Loader from './loader';
 
 const ActionProvider = ({ createChatBotMessage, setState, children}) => {
@@ -107,15 +107,26 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
   }
 
   const handlePaisSeleccionado = (params) => {
-    const message = createChatBotMessage(`Quieres exportar a ${params.pais}, en que podemos guiarle?`,
-      opcionesBasicasMessage
-    );
+    setLoading(true);
+    const loadingMsg = createChatBotMessage(<Loader />)
+    setState((prev) => ({ ...prev, messages: [...prev.messages, loadingMsg], }))
 
-    addMessageToState(message);
-
-    setOptionsState((prev) => ({
-      ...prev,
-      paisSeleccionado: params.pais,
+    setPais(params.pais).then((response => {
+      setLoading(false);
+      
+      const chatbotMessage = createChatBotMessage(response,
+        opcionesBasicasMessage
+      );
+  
+      setState((prev) => {
+        const newPrevMsg = prev.messages.slice(0, -1)
+        return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
+      })
+  
+      setOptionsState((prev) => ({
+        ...prev,
+        paisSeleccionado: params.pais,
+      }));
     }));
   }
 

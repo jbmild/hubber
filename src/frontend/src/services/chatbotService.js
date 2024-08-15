@@ -1,12 +1,7 @@
 import axios from "axios";
-
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+const url = process.env.REACT_APP_BACKEND_URL;
 
 export async function sendMessage(message) {
-    await sleep(5000);
-
-    return `el mensaje enviado es ${message}`;
+    const response =  await axios.post(`${url}/chatbot`, { message : message });
+    return response.data.message;
 }

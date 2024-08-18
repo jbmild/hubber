@@ -1,26 +1,28 @@
-name: CI
+name: Deploy backend to AWS EC2
 on:
   push:
     branches:
       - main
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x]
     steps:
-      - uses: actions/checkout@v2
-
-      - run: npm install
-      - run: npm run build
-
-      - name: rsync deployments
-        uses: burnett01/rsync-deployments@5.1
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          switches: -avzr --delete
-          path: ./src/backend/*
-          remote_path: /var/www/my-app/
-          remote_host: ${{ secrets.EC2_HOST }}
-          remote_user: ${{ secrets.EC2_USERNAME }}
-          remote_key: "${{ secrets.EC2_SSH_KEY }}"
+          node-version: 20
+
+      - name: Deploy backend to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/hubber/src/backend
+            pm2 stop app.js
+            cd /home/ubuntu/hubber/
+            git pull origin main
+            cd /home/ubuntu/hubber/src/backend
+            npm install
+            pm2 start app.js

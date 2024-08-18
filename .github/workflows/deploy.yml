@@ -12,6 +12,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Add directory to PATH
+        run: echo "/home/ubuntu/.nvm/versions/node/v22.6.0/bin/pm2" >> $GITHUB_PATH
+
       - name: Deploy backend to EC2
         uses: appleboy/ssh-action@master
         with:

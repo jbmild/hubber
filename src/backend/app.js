@@ -7,10 +7,14 @@ const cors = require('cors');
 const { OpenAI } = require('openai');
 var bodyParser = require('body-parser');
 const { chatRoutes } = require('./chatbot');
+const { setClient, getPaisesDisponibles } = require('./db');
+const { MongoClient } = require('mongodb');
 
 const app = express();
 const port = process.env.PORT || 3000; // default port is 3000
- 
+ // URL de conexión a tu MongoDB Atlas
+const mongoUri = process.env.MONGO_URI;
+
 // create application/json parser
 var jsonParser = bodyParser.json()
 
@@ -42,6 +46,14 @@ app.get('/', (req, res) => {
 
 app.use('/chatbot', chatRoutes);
 
+app.get('/paises',async (req, res) => {
+    const paises = await getPaisesDisponibles();
+    return res.status(200).json(paises);
+});
+
 app.listen(port, async () => {
+    console.log(`Conectando al mongo de Facu`);
+    setClient(new MongoClient(mongoUri));
+    console.log("Conectado con exito.");
     console.log(`Server running on port ${port}`);
 });

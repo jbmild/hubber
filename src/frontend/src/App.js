@@ -8,7 +8,6 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
@@ -50,20 +49,7 @@ function Layout () {
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
   let location = useLocation();
 
-  const pages = [
-    {display: 'Buscar Productos', url: '/productos'},
-    {display: 'Soporte por chat', url:'/chat'},
-    {display: 'Nuestro Directorio', url: '/directorio'},    
-  ];
-  const pagesUser = [
-    {display: 'Ingresar', url:'/login', private : false },
-    {display: 'Registrarse Ahora', url: '/register', style: {backgroundColor: 'rgb(206 206 206)'}, private : false },
-    {display: 'Salir', onClick: () => { handleLogoutClick() }, style: {backgroundColor: 'rgb(206 206 206)'}, private : true },
-  ];
-  //const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
   const [anchorElNav, setAnchorElNav] = useState(null);
-  const [anchorElUser, setAnchorElUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -74,19 +60,12 @@ function Layout () {
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
 
   const handleCloseNavMenu = (to) => {
     setAnchorElNav(null);
 
     if(to)
       navigate(to);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
   };
 
   const handleLogoutClick = () => {
@@ -155,13 +134,6 @@ function Layout () {
                       sx={{ my: 2, color: 'black', display: 'block' }}
                     >
                       Ingresar
-                    </Button>
-                    <Button
-                      key={'btn-register-menu'}
-                      onClick={() => {handleCloseNavMenu('/register')}}
-                      sx={{ my: 2, color: 'black', display: 'block', backgroundColor: 'rgb(206 206 206)' }}
-                    >
-                      Registrarse Ahora
                     </Button>
                   </>
                 )}
@@ -249,16 +221,6 @@ function Layout () {
                         textAlign="center"
                       >
                         Ingresar
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem 
-                     key={'btn-register-menu'}
-                     onClick={() => {handleCloseNavMenu('/register')}}
-                    >
-                      <Typography 
-                        textAlign="center"
-                      >
-                        Registrarse Ahora
                       </Typography>
                     </MenuItem>
                   </>

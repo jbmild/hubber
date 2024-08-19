@@ -2,7 +2,7 @@ import { createChatBotMessage } from 'react-chatbot-kit';
 import GeneralOptions from './OptionSelector/GeneralOptions';
 import PaisesOptions from './OptionSelector/PaisSelector';
 
-const botName = 'BOTSITO';
+const botName = 'Hubber';
 
 const config = {
   initialMessages: [

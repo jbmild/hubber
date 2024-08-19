@@ -81,7 +81,7 @@ function Layout () {
        <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Stack direction="row" spacing={0} display={'flex'} width={'100%'}>
-            <img src="./images/ejidz469qf05wyna.svg" className="_b9923f60" alt="11.svg"></img>
+            <img src="./images/logo.png" className="_b9923f60" alt="11.svg" width={"100px"}></img>
 
             <Typography
               variant="h6"
@@ -102,7 +102,6 @@ function Layout () {
                 cursor: "pointer"
               }}
             >
-              HUBBER
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex', justifyContent: 'flex-end' } }}>
                 <Button

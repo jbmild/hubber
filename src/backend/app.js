@@ -4,6 +4,7 @@ const session = require('express-session');
 const passport = require('passport');
 const authRoutes = require('./auth');
 const cors = require('cors');
+var bodyParser = require("body-parser");
 
 const app = express();
 const port = process.env.PORT || 3000; // default port is 3000
@@ -20,6 +21,7 @@ app.use(cors({
     origin: process.env.CLIENT_URL, // Allow requests from this origin
     credentials: true
 }));
+app.use(bodyParser.json()); 
 
 // Initialize passport and use passport session middleware
 app.use(passport.initialize());
@@ -28,11 +30,7 @@ app.use(passport.session());
 // Use the authentication routes
 app.use('/auth', authRoutes);
 
-app.get('/', (req, res) => {
-    return res.status(200).json({
-        message: 'Hello World'
-    });
-});
+require('./routes')(app);
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

@@ -5,9 +5,17 @@ const passport = require('passport');
 const authRoutes = require('./auth');
 const cors = require('cors');
 var bodyParser = require("body-parser");
+const mongoose = require('mongoose');
 
 const app = express();
 const port = process.env.PORT || 3000; // default port is 3000
+
+mongoose.connect(process.env.MONGO_URL)
+    .then((result) => {
+        console.log('connected to Mongodb');
+    }).catch((err) => {
+        console.error(err);
+    });
 
 // Set up express-session middleware
 app.use(session({
@@ -21,7 +29,7 @@ app.use(cors({
     origin: process.env.CLIENT_URL, // Allow requests from this origin
     credentials: true
 }));
-app.use(bodyParser.json()); 
+app.use(bodyParser.json());
 
 // Initialize passport and use passport session middleware
 app.use(passport.initialize());

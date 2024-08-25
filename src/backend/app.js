@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 const { chatRoutes } = require('./chatbot');
 const { setClient, getPaisesDisponibles } = require('./db');
 const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
 
 const app = express();
 const port = process.env.PORT || 3000; // default port is 3000
@@ -17,6 +18,13 @@ const mongoUri = process.env.MONGO_URI;
 
 // create application/json parser
 var jsonParser = bodyParser.json()
+
+mongoose.connect(process.env.MONGO_URL)
+    .then((result) => {
+        console.log('connected to Mongodb');
+    }).catch((err) => {
+        console.error(err);
+    });
 
 // Set up express-session middleware
 app.use(session({
@@ -30,6 +38,7 @@ app.use(cors({
     origin: process.env.CLIENT_URL, // Allow requests from this origin
     credentials: true
 }));
+app.use(bodyParser.json());
 
 // Initialize passport and use passport session middleware
 app.use(passport.initialize());
@@ -38,11 +47,7 @@ app.use(passport.session());
 // Use the authentication routes
 app.use('/auth', authRoutes);
 
-app.get('/', (req, res) => {
-    return res.status(200).json({
-        message: 'Hello World'
-    });
-});
+require('./routes')(app);
 
 app.use('/chatbot', chatRoutes);
 

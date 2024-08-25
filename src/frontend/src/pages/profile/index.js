@@ -7,7 +7,7 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_BACKEND_URL}/auth/profile`, { withCredentials: true })
+    axios.get(`${process.env.BACKEND_URL}/auth/profile`, { withCredentials: true })
       .then(response => {
         setUser(response.data);
       })
@@ -17,7 +17,7 @@ const Profile = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    axios.get(`${process.env.REACT_APP_BACKEND_URL}/auth/logout`, { withCredentials: true })
+    axios.get(`${process.env.BACKEND_URL}/auth/logout`, { withCredentials: true })
       .then(() => {
         navigate('/login');
       });

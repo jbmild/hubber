@@ -2,8 +2,6 @@ import axios from 'axios';
 //import Config from '../appConfig.json';
 import Cookies from 'js-cookie';
 
-const url = '';
-
 export function isAuthenticated () {
     return Cookies.get('auth') ? true : false;
 }
@@ -40,11 +38,11 @@ export function authOauth (provider) {
 
     //const authUrl = `https://accounts.${provider}.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
 
-    window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/google`;
+    window.location.href = `${process.env.BACKEND_URL}/auth/google`;
 }
 
 export async function createUser (data) {
-    return axios.post(`${url}/users`, data);
+    return axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/create`, data);
 }
 
 export function logOut () {

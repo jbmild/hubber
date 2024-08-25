@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Card, CardContent, Typography, Alert, Box } from '@mui/material';
+import { TextField, Button, Card, CardContent, Typography, Alert, Box, Link, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { GoogleIcon, AppleIcon } from '../../components/icons';
 import { authStandard, authOauth } from '../../services/authService';
+import { Block } from '@mui/icons-material';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -13,22 +14,25 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleLogin = async (event) => {
-      event.preventDefault();
-  
-      try {
-        authStandard({username, password}, () => { navigate('/') });
-        
-        setError(null);
-      } catch (err) {
-        setError(err.response ? err.response.data.error : 'Something went wrong');
-      }
-    };
-  
-    const handleOAuthLogin = (provider) => {
-      authOauth(provider);
+        event.preventDefault();
+
+        try {
+            authStandard({ username, password }, () => { navigate('/') });
+
+            setError(null);
+        } catch (err) {
+            setError(err.response ? err.response.data.error : 'Something went wrong');
+        }
     };
 
-  
+    const handleOAuthLogin = (provider) => {
+        authOauth(provider);
+    };
+
+    const forgotPassword = () => {
+    };
+
+
     return (
         <Box
             display="flex"
@@ -61,7 +65,7 @@ const Login = () => {
                             required
                         />
                         <Button variant="contained" color="primary" type="submit" fullWidth>
-                        Login
+                            Login
                         </Button>
                         {error && <Alert severity="error" style={{ marginTop: '1rem' }}>{error}</Alert>}
                     </form>
@@ -84,10 +88,13 @@ const Login = () => {
                             Login with iOS
                         </Button>
                     </Box>
+                    <Divider style={{padding: "10px 0"}}/>
+                    <Link href="#" style={{padding: "10px 0 0 0", display: "block"}}>Olvide mi contraseña</Link>
+                    <Link href="/register" style={{padding: "5px 0", display: "block"}}>¿No tenes usuario? Registrate!</Link>
                 </CardContent>
             </Card>
         </Box>
     );
-  };
-  
-  export default Login;
+};
+
+export default Login;

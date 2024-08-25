@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { sendMessage, setPais } from 'services/chatbotService';
 import Loader from './loader';
+import { getPaises } from 'services/paisesService';
 
 const ActionProvider = ({ createChatBotMessage, setState, children}) => {
 
   const [optionsState, setOptionsState] = useState({
     normativasBasicas: null,
-    paisSeleccionado: null
+    paisSeleccionado: null,
+    paisesAyuda: []
   });
 
   const [bloquear, setBloquear] = useState(true);
@@ -27,16 +29,11 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
       const input = Array.from(document.getElementsByClassName("react-chatbot-kit-chat-input"))[0];
       const button = Array.from(document.getElementsByClassName("react-chatbot-kit-chat-btn-send"))[0];
 
-      if(optionsState.normativasBasicas){
-        input.removeAttribute('disabled');
-        button.removeAttribute('disabled');
-        setBloquear(false);
-      }else if(optionsState.paisSeleccionado){
-        input.removeAttribute('disabled');
-        button.removeAttribute('disabled');
-        setBloquear(false);        
-      }
+      input.removeAttribute('disabled');
+      button.removeAttribute('disabled');
+      setBloquear(false);        
     }
+
   }, [optionsState]);
 
 
@@ -74,24 +71,87 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
     const loadingMsg = createChatBotMessage(<Loader />)
     setState((prev) => ({ ...prev, messages: [...prev.messages, loadingMsg], }))
 
+    if(optionsState.normativasBasicas || optionsState.paisSeleccionado){
+      sendMessage(message).then((response) => {
+        setLoading(false);
+  
+  
+        const chatbotMessage = createChatBotMessage(response, opcionesBasicasMessage
+        );
+  
+        setState((prev) => {
+          const newPrevMsg = prev.messages.slice(0, -1)
+          return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
+        })
+      });
+    }else {
+      debugger;
+      if(message.toLowerCase().includes('ayuda') || message.toLowerCase().includes('mas opciones')){
+          getPaises().then((response) => {
+            setLoading(false);
 
-    sendMessage(message).then((response) => {
-      setLoading(false);
+            setOptionsState((prev) => ({
+              ...prev,
+              paisesAyuda: response
+            }));
+        
+            const chatbotMessage = createChatBotMessage(`Estos son los paises disponibles actualmente en nuestra base de conocicmiento:\n${response.join(', ')}.\n Ingrese alguno para poder guiarlo.`, opcionesBasicasMessage
+            );
+      
+            setState((prev) => {
+              const newPrevMsg = prev.messages.slice(0, -1)
+              return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
+            })
+        });
+      }else if(optionsState.paisesAyuda.length > 0){
+        if(optionsState.paisesAyuda.some( p => (p == message))){
+          setPais(message).then((response => {
+            setLoading(false);
+            
+            const chatbotMessage = createChatBotMessage(response,
+              opcionesBasicasMessage
+            );
+        
+            setState((prev) => {
+              const newPrevMsg = prev.messages.slice(0, -1)
+              return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
+            })
+        
+            setOptionsState((prev) => ({
+              ...prev,
+              paisSeleccionado: message,
+            }));
+          }));
+        }else{
+          setLoading(false);
+      
+          const chatbotMessage = createChatBotMessage('Por favor ingrese un país valido',
+            opcionesBasicasMessage
+          );
 
+          setState((prev) => {
+            const newPrevMsg = prev.messages.slice(0, -1)
+            return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
+          })
+        }
+      }else{
+        setLoading(false);
+      
+        const chatbotMessage = createChatBotMessage('Por favor ingrese un país valido',
+          opcionesBasicasMessage
+        );
 
-      const chatbotMessage = createChatBotMessage(response, opcionesBasicasMessage
-      );
-
-      setState((prev) => {
-        const newPrevMsg = prev.messages.slice(0, -1)
-        return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
-      })
-    });
+        setState((prev) => {
+          const newPrevMsg = prev.messages.slice(0, -1)
+          return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
+        })
+      }
+    }    
   }
 
   
   const handlePais = (params) => {
-    const message = createChatBotMessage('Seleccione un pais',
+    const message = createChatBotMessage('Ingrese un país, aqui tiene algunas sugerencias',
       {        
         ...opcionesBasicasMessage,
         widget: 'paises'

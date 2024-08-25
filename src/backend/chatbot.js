@@ -17,9 +17,9 @@ let index;
 
 // Crea índice
 async function createIndexPorPais(pais) {
-  const documents = await getDocumentosRegulaciones({pais: pais});
-  const index = await VectorStoreIndex.fromDocuments(documents);
-  console.log(index);
+  const mappedData = await getDocumentosRegulaciones({pais: pais});
+  const documentos= mappedData.map(item => new Document({ text: JSON.stringify(item) }));
+  const index = await VectorStoreIndex.fromDocuments(documentos);
   return index;
 }
 
@@ -42,6 +42,9 @@ router.post('/message', jsonParser, async (req, res) => {
   const pregunta = `${req.body.message}`;
 
   let botMessage = "";
+
+  //para no gastar mensajes en pruebas
+  return res.status(200).json({message: pregunta});
 
   try {
       const respuesta = await query(index, pregunta);

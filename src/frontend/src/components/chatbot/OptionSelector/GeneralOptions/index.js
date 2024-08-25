@@ -5,7 +5,7 @@ const GeneralOptions = (props) => {
 
     const options = [
         {
-            name: "País especifico",
+            name: "Por país a exportar",
             handler: props.actionProvider.handlePais,
             id: 1
         },

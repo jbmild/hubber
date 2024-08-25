@@ -49,9 +49,7 @@ async function getAll(collectionName, filter = {}, options = {}) {
     }
     const data = await getAll('barrerasAlfajores', filter, options);
     const mappedData = data.map(item => ({ pais: item.pais, codigoBarrera: item.codigoBarrera, titulo: item.titulo,descripcion:item.descripcion,normativaOrigen:item.normativaOrigen }));
-    const documentos= mappedData.map(item => new Document({ text: JSON.stringify(item) }));
-    //console.log("Documentos creados:", documentos);
-    return documentos;
+    return mappedData;
   }
   
   async function getPaisesDisponibles(){

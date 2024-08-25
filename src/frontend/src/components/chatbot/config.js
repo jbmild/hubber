@@ -23,12 +23,12 @@ const config = {
     {
       widgetName: "options",
       widgetFunc: (props) => <GeneralOptions {...props} />,     
-      mapStateToProps: ["messages", 'normativasBasicas'],
+      mapStateToProps: ["messages"],
     },
     {
       widgetName: "paises",
       widgetFunc: (props) => <PaisesOptions {...props} />,     
-      mapStateToProps: ["messages", "paisSeleccionado"],
+      mapStateToProps: ["messages"],
     },
   ]
 };

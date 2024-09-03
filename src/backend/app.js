@@ -6,20 +6,18 @@ const authRoutes = require('./auth');
 const cors = require('cors');
 const { OpenAI } = require('openai');
 var bodyParser = require('body-parser');
-const { chatRoutes } = require('./chatbot');
-const { setClient, getPaisesDisponibles } = require('./db');
+const { getPaisesDisponibles } = require('./services/dbService');
 const { MongoClient } = require('mongodb');
 const mongoose = require('mongoose');
+mongoose.set('debug', true);
 
 const app = express();
 const port = process.env.PORT || 3000; // default port is 3000
  // URL de conexión a tu MongoDB Atlas
-const mongoUri = process.env.MONGO_URI;
+const mongoUri = `${process.env.MONGO_URI}`;
+console.log(mongoUri);
 
-// create application/json parser
-var jsonParser = bodyParser.json()
-
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect(mongoUri)
     .then((result) => {
         console.log('connected to Mongodb');
     }).catch((err) => {
@@ -38,6 +36,7 @@ app.use(cors({
     origin: process.env.CLIENT_URL, // Allow requests from this origin
     credentials: true
 }));
+
 app.use(bodyParser.json());
 
 // Initialize passport and use passport session middleware
@@ -49,16 +48,6 @@ app.use('/auth', authRoutes);
 
 require('./routes')(app);
 
-app.use('/chatbot', chatRoutes);
-
-app.get('/paises',async (req, res) => {
-    const paises = await getPaisesDisponibles();
-    return res.status(200).json(paises);
-});
-
 app.listen(port, async () => {
-    console.log(`Conectando al mongo de Facu`);
-    setClient(new MongoClient(mongoUri));
-    console.log("Conectado con exito.");
     console.log(`Server running on port ${port}`);
 });

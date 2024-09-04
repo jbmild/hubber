@@ -1,7 +1,8 @@
 const Joi = require("joi");
 
 const PASSWORD_REGEX = new RegExp(
-    "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!.@#$%^&*])(?=.{8,})"
+    "[a-zA-Z0-9]{8,12}"
+    //"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!.@#$%^&*])(?=.{8,})"
 );
 
 exports.createValidator = Joi.object().keys({

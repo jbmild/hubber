@@ -4,13 +4,19 @@ const session = require('express-session');
 const passport = require('passport');
 const authRoutes = require('./auth');
 const cors = require('cors');
-var bodyParser = require("body-parser");
+const { OpenAI } = require('openai');
+var bodyParser = require('body-parser');
+const { MongoClient } = require('mongodb');
 const mongoose = require('mongoose');
+mongoose.set('debug', true);
 
 const app = express();
 const port = process.env.PORT || 3000; // default port is 3000
+ // URL de conexión a tu MongoDB Atlas
+const mongoUri = `${process.env.MONGO_URI}`;
+console.log(mongoUri);
 
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect(mongoUri)
     .then((result) => {
         console.log('connected to Mongodb');
     }).catch((err) => {
@@ -29,6 +35,7 @@ app.use(cors({
     origin: process.env.CLIENT_URL, // Allow requests from this origin
     credentials: true
 }));
+
 app.use(bodyParser.json());
 
 // Initialize passport and use passport session middleware
@@ -40,6 +47,6 @@ app.use('/auth', authRoutes);
 
 require('./routes')(app);
 
-app.listen(port, () => {
+app.listen(port, async () => {
     console.log(`Server running on port ${port}`);
 });

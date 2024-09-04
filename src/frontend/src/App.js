@@ -34,9 +34,9 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/profile' element={<Profile />} />
           <Route element={<PrivateRoute />}>
-            <Route path='/productos' element={<Chat />} />    
+            <Route path='/productos' element={<Home />} />    
             <Route path='/chat' element={<Chat />} />
-            <Route path='/directorio' element={<Chat />} />
+            <Route path='/directorio' element={<Home />} />
           </Route>
         </Route>
       </Routes>

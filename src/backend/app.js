@@ -6,7 +6,6 @@ const authRoutes = require('./auth');
 const cors = require('cors');
 const { OpenAI } = require('openai');
 var bodyParser = require('body-parser');
-const { getPaisesDisponibles } = require('./services/dbService');
 const { MongoClient } = require('mongodb');
 const mongoose = require('mongoose');
 mongoose.set('debug', true);

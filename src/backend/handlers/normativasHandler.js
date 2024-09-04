@@ -12,12 +12,10 @@ let index;
 
 // Crea índice
 async function crearIndexPorPais(pais) {
-  const mappedData = await Normativa.find({ pais:pais}).exec();
+  const mappedData = await Normativa.find({ pais:pais}, { _id: 0 }).exec();
   
   const documentos = mappedData.map(item => new Document({ text: JSON.stringify(item) }));
-  
-  console.log(mappedData, pais, documentos);
-  
+    
   const index = await VectorStoreIndex.fromDocuments(documentos);
   return index;
 }

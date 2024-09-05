@@ -21,6 +21,7 @@ import Profile from './pages/profile';
 import PrivateRoute from './components/privateRoute';
 import { isAuthenticated, logOut } from 'services/authService';
 import { Grid } from '@mui/material';
+import Browser from 'pages/browser';
 
 function App() {
 
@@ -34,7 +35,7 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/profile' element={<Profile />} />
           <Route element={<PrivateRoute />}>
-            <Route path='/productos' element={<Home />} />    
+            <Route path='/buscador' element={<Browser />} />    
             <Route path='/chat' element={<Chat />} />
             <Route path='/directorio' element={<Home />} />
           </Route>
@@ -106,10 +107,10 @@ function Layout () {
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex', justifyContent: 'flex-end' } }}>
                 <Button
                   key={'btn-productos-menu'}
-                  onClick={() => {handleCloseNavMenu('/productos')}}
+                  onClick={() => {handleCloseNavMenu('/buscador')}}
                   sx={{ my: 2, color: 'black', display: 'block' }}
                 >
-                  Buscar Productos
+                  Buscar Normativas
                 </Button>
                 <Button
                   key={'btn-chat-menu'}
@@ -181,12 +182,12 @@ function Layout () {
               >
                 <MenuItem 
                  key={'btn-productos-menu'}
-                 onClick={() => {handleCloseNavMenu('/productos')}}
+                 onClick={() => {handleCloseNavMenu('/buscador')}}
                 >
                   <Typography 
                     textAlign="center"
                   >
-                    Buscar Productos
+                    Buscar Normativas
                   </Typography>
                 </MenuItem>
                 <MenuItem 

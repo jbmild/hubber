@@ -1,0 +1,15 @@
+import axios from "axios";
+
+const url = `${process.env.REACT_APP_BACKEND_URL}/normativas`
+
+export async function getNormativas(page, limit, filters) {
+    const queryParams = new URLSearchParams({
+        page,
+        limit,
+        ...filters
+    });
+
+    const response =  await axios.get(`${url}?${queryParams.toString()}`);
+    console.log(response);
+    return response.data;
+}

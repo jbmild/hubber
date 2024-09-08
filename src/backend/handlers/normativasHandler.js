@@ -72,3 +72,35 @@ exports.handleTraerPaises = async (req, res) => {
 
   res.status(200).json(paises);
 }
+
+exports.handleTraerNormativas = async (req, res) => {
+  try{
+    console.log(req.query);
+    const filters = {
+      pais: req.query.pais
+    }
+
+    const result = await traerNormativasPaginado(req.query.page, req.query.limit, filters);
+
+    res.status(200).json(result);
+
+  }catch(err){
+    console.error('Error:', err);
+    res.status(500);
+  }
+}
+
+async function traerNormativasPaginado(page, limit, filters) {
+  const skip = page * limit;
+  const normativas = await Normativa.find(filters).
+    skip(skip).limit(limit).exec();
+
+  const totalItems = await Normativa.countDocuments(filters).exec();
+
+  return {
+    items: normativas,
+    page,
+    limit,
+    totalItems
+  };
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   TextField,
   Button,
@@ -19,45 +19,44 @@ import {
   useMediaQuery,
   useTheme,
   InputAdornment,
-  Fade
+  Fade,
+  CircularProgress,
+  LinearProgress
 } from '@mui/material';
 import { Close as CloseIcon, Search as SearchIcon } from '@mui/icons-material';
 import { getPaises } from 'services/paisesService'; // Importa la función getPaises
 import './style.css'; // Importa el archivo de estilos CSS
+import { getNormativas } from 'services/normativasService';
 
-// Datos de ejemplo para la tabla
-const data = [
-  { name: 'Normativa 1', lastUpdate: '2024-01-15', agency: 'Agencia A' },
-  { name: 'Normativa 2', lastUpdate: '2024-02-20', agency: 'Agencia B' },
-  { name: 'Normativa 3', lastUpdate: '2024-03-10', agency: 'Agencia C' },
-  // Agrega más datos según sea necesario
-];
+//esto deberia venir de la base, pero ahora no existe esa info
+const today = new Date();
 
 const PaginatedTable = () => {
+  const [data, setData] = useState([]);
   const [search, setSearch] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [countries, setCountries] = useState([]);
+  const [paisSeleccionado, setPaisSeleccionado] = useState('');
+  const [paises, setPaises] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openModal, setOpenModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [filterApplied, setFilterApplied] = useState(false); // Para controlar si se aplicó un filtro
+  const [totalItems, setTotalItems] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // Fetch countries from API
   useEffect(() => {
-    const fetchCountries = async () => {
+    const fetchPaises = async () => {
       try {
-        const fetchedCountries = await getPaises();
-        setCountries(fetchedCountries.map(p => p.pais));
+        const fetchedPaises = await getPaises();
+        setPaises(fetchedPaises.map(p => p.pais));
       } catch (error) {
-        console.error('Error fetching countries:', error);
+        console.error('Error fetching paises:', error);
       }
     };
 
-    fetchCountries();
+    fetchPaises();
   }, []);
 
   const handleSearchChange = (event) => {
@@ -65,20 +64,43 @@ const PaginatedTable = () => {
   };
 
   const handleCountryChange = (event, value) => {
-    setSelectedCountry(value || '');
+    setPaisSeleccionado(value || '');
   };
 
   const handleSearchClick = () => {
-    setFilterApplied(true);
+    if(!paisSeleccionado){
+      return;
+    }
+
+    searchInfo(page, rowsPerPage, {
+      pais: paisSeleccionado
+    });
   };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+
+    if(!paisSeleccionado){
+      return;
+    }
+
+    searchInfo(newPage, rowsPerPage, {
+      pais: paisSeleccionado
+    });
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    const newRowPerPage = parseInt(event.target.value, 10);
+    setRowsPerPage(newRowPerPage);
     setPage(0);
+
+    if(!paisSeleccionado){
+      return;
+    }
+
+    searchInfo(0, newRowPerPage, {
+      pais: paisSeleccionado
+    });
   };
 
   const handleRowClick = (row) => {
@@ -90,13 +112,22 @@ const PaginatedTable = () => {
     setOpenModal(false);
   };
 
-  // Filtrar datos basados en la búsqueda y selección de país
-  const filteredData = data.filter(item =>
-    (item.name.toLowerCase().includes(search.toLowerCase()) || !filterApplied) &&
-    (!selectedCountry || item.agency === selectedCountry)
-  );
+  const searchInfo = (pageTo, limit, filters) =>{
+    setLoading(true);
 
-  const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    getNormativas(pageTo, limit, filters).then(res =>{
+      setLoading(false);
+      setData(res.items.map(p => ({
+        id: p._id,
+        nombre: p.titulo,
+        descripcion: p.descripcion,
+        agencia: p.normativaOrigen,
+        ultimaActualizacion: `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
+      })));
+      setTotalItems(res.totalItems);
+    });
+
+  };
 
   return (
     <div
@@ -157,7 +188,7 @@ const PaginatedTable = () => {
           <Grid item xs={12} sm={3} md={3}>
             <Autocomplete
               freeSolo
-              options={countries} // Muestra todos los países para el Autocomplete
+              options={paises} // Muestra todos los países para el Autocomplete
               onChange={handleCountryChange}
               renderInput={(params) => (
                 <TextField
@@ -188,7 +219,7 @@ const PaginatedTable = () => {
                 />
               )}
               renderOption={(props, option) => (
-                <li {...props}>
+                <li {...props} key={option}>
                   {option}
                 </li>
               )}
@@ -208,7 +239,7 @@ const PaginatedTable = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={2} md={2} sx={{ height: '3em', paddingTop: '0 !important' }}>
+          <Grid item xs={12} sm={2} md={2} sx={{ height: '3em', paddingTop: '0 !important', marginTop: '1em !important' }}>
             <Button
               variant="contained"
               fullWidth
@@ -249,52 +280,65 @@ const PaginatedTable = () => {
           }}
         >
           <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ width: { xs: '100%', sm: '50%' } }}>Nombre</TableCell>
-                {!isSmallScreen && (
-                  <>
-                    <TableCell>Fecha Última Actualización</TableCell>
-                    <TableCell>Agencia</TableCell>
-                  </>
-                )}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {paginatedData.map((row) => (
-                <TableRow key={row.name} hover onClick={() => handleRowClick(row)}>
-                  <TableCell sx={{ width: { xs: '100%', sm: '50%' } }}>{row.name}</TableCell>
+            {
+              loading ? <></> : 
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ width: { xs: '100%', sm: '50%' } }}>Nombre</TableCell>
                   {!isSmallScreen && (
                     <>
-                      <TableCell>{row.lastUpdate}</TableCell>
-                      <TableCell>{row.agency}</TableCell>
+                      <TableCell sx={{ width: '15%' }}>Fecha Última Actualización</TableCell>
+                      <TableCell sx={{ width: '35%' }}>Agencia</TableCell>
                     </>
                   )}
                 </TableRow>
-              ))}
-              {/* Rellenar filas vacías si hay menos de 5 elementos */}
-              {filteredData.length < 5 && Array.from({ length: 5 - filteredData.length }).map((_, index) => (
-                <TableRow key={`empty-${index}`}>
-                  <TableCell colSpan={3} sx={{ height: '3em' }}></TableCell>
-                </TableRow>
-              ))}
+              </TableHead>
+            }
+            <TableBody>
+            {
+              loading ? 
+                <TableRow key={'spinner'}>
+                  <TableCell colSpan={12}>
+                    <LinearProgress color="primary" />
+                  </TableCell>
+                </TableRow>  
+              :              
+                <>
+                {data.map((row) => (
+                  <TableRow key={row.id} hover onClick={() => handleRowClick(row)}>
+                    <TableCell sx={{ width: { xs: '100%', sm: '50%' } }}>{row.nombre}</TableCell>
+                    {!isSmallScreen && (
+                      <>
+                        <TableCell>{row.ultimaActualizacion}</TableCell>
+                        <TableCell>{row.agencia}</TableCell>
+                      </>
+                    )}
+                  </TableRow>
+                ))}
+                {data.length < rowsPerPage && Array.from({ length: rowsPerPage - data.length }).map((_, index) => (
+                  <TableRow key={`empty-${index}`}>
+                    <TableCell colSpan={3} sx={{ height: '3em' }}></TableCell>
+                  </TableRow>
+                ))}
+                </>
+              }   
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={filteredData.length}
+          count={totalItems}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           sx={{ flexShrink: 0 }}
         />
+        {/*TransitionComponent={(props) => <Fade in={openModal} {...props} />}*/}
         <Dialog
           open={openModal}
           onClose={handleCloseModal}
-          TransitionComponent={(props) => <Fade in={openModal} {...props} />}
           sx={{
             '& .MuiDialog-paper': {
               width: { xs: '90vw', md: '50vw' }, // Tamaño del modal en pantallas grandes y móviles
@@ -314,13 +358,11 @@ const PaginatedTable = () => {
           <DialogContent>
             {selectedRow && (
               <div>
-                <p>Nombre: {selectedRow.name}</p>
-                {!isSmallScreen && (
-                  <>
-                    <p>Fecha Última Actualización: {selectedRow.lastUpdate}</p>
-                    <p>Agencia: {selectedRow.agency}</p>
-                  </>
-                )}
+                <p>Nombre: {selectedRow.nombre}</p>
+                <p>Fecha Última Actualización: {selectedRow.ultimaActualizacion}</p>
+                <p>Agencia: {selectedRow.agencia}</p>
+                <p>Descripcion:</p>
+                <p>{selectedRow.descripcion}</p>
               </div>
             )}
           </DialogContent>

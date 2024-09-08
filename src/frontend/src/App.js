@@ -47,16 +47,19 @@ function App() {
 }
 
 function Layout () {
-  const [authenticated, setAuthenticated] = useState(isAuthenticated());
+  const [authenticated, setAuthenticated] = useState(false);
   let location = useLocation();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setAuthenticated(isAuthenticated());
-  }
-  , [location.pathname])
+    const checkAuth = async () => {
+      const auth = await isAuthenticated();
+      setAuthenticated(auth);
+    };
+    checkAuth();
+  }, [location.pathname]);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -75,7 +78,7 @@ function Layout () {
     setAuthenticated(false);
     navigate('/');
   }
-
+  
   return (
     <>
       <AppBar position="static" style={{backgroundColor: "#fff"}}>

@@ -3,19 +3,20 @@ const bcrypt = require('bcrypt');
 const SALT_WORK_FACTOR = 10;
 
 const UserSchema = new mongoose.Schema({
-        email: { type: String, required: true, index: { unique: true } },
-        username: { type: String, required: true, index: { unique: true } },
-        password: { type: String, required: true }
-    },{
-        collection: 'usuarios'
-    }
+    email: { type: String, required: true, index: { unique: true } },
+    username: { type: String, required: true },
+    password: { type: String }
+}, {
+    collection: 'usuarios'
+}
 );
 
+// Password hashing logic only for non-OAuth users
 UserSchema.pre('save', function (next) {
     var user = this;
 
-    // only hash the password if it has been modified (or is new)
-    if (!user.isModified('password')) return next();
+    // If password is empty (OAuth user), skip hashing
+    if (!user.password || !user.isModified('password')) return next();
 
     // generate a salt
     bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
@@ -33,6 +34,7 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.methods.comparePassword = function (candidatePassword, cb) {
+    if (!this.password) return cb(null, false); // No password for OAuth users
     bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
         if (err) return cb(err);
         cb(null, isMatch);

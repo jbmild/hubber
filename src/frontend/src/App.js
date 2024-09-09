@@ -17,6 +17,7 @@ import Home from './pages/home/index';
 import Chat from './pages/chat';
 import Login from './pages/login';
 import Register from './pages/register';
+import Exportar from './pages/exportar';
 import Profile from './pages/profile';
 import PrivateRoute from './components/privateRoute';
 import { isAuthenticated, logOut } from 'services/authService';
@@ -38,6 +39,7 @@ function App() {
             <Route path='/buscador' element={<Browser />} />    
             <Route path='/chat' element={<Chat />} />
             <Route path='/directorio' element={<Home />} />
+			<Route path='/exportar' element={<Exportar />} />
           </Route>
         </Route>
       </Routes>
@@ -107,12 +109,22 @@ function Layout () {
               }}
             >
             </Typography>
+		
+			
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex', justifyContent: 'flex-end' } }}>
+			
+				<Button key={'btn-exportar-menu'}
+				onClick={() => {handleCloseNavMenu('/exportar')}}
+				sx={{ my: 2, color: 'black', display: 'block' }}>
+				Empieza a Exportar
+				</Button>
+				
                 <Button
                   key={'btn-productos-menu'}
                   onClick={() => {handleCloseNavMenu('/buscador')}}
                   sx={{ my: 2, color: 'black', display: 'block' }}
                 >
+				
                   Buscar Normativas
                 </Button>
                 <Button
@@ -183,6 +195,16 @@ function Layout () {
                   display: { xs: 'block', md: 'none', lg: 'none' },
                 }}
               >
+				{/* Para pantallas grandes */}
+
+				<MenuItem 
+				  key={'btn-exportar-menu'}
+				  onClick={() => {handleCloseNavMenu('/exportar')}}
+				>
+				  <Typography textAlign="center">
+					Empieza a Exportar
+				  </Typography>
+				</MenuItem>
                 <MenuItem 
                  key={'btn-productos-menu'}
                  onClick={() => {handleCloseNavMenu('/buscador')}}

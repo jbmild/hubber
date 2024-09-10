@@ -16,8 +16,8 @@ const headers = {
     "Referer": "https://app.powerbi.com/"
     };
 
-export async function getPosiciones() { //Va a buscar al Mongo las posiciones arancelarias
-    const response =  await axios.get(`${url}`);
+export async function getPosiciones(newQuery, newOffset) { //Va a buscar al Mongo las posiciones arancelarias
+    const response =  await axios.get(`${url}?query=${newQuery}&limit=10&offset=${newOffset}`);
     return response.data;
 }
 
@@ -102,6 +102,7 @@ export async function tabla_ima(posicionArancelaria) {//Valores Generales de IMA
         throw error;
     };
 
+    //Response para pruebas
     //const response = {"jobIds":["3e0c0f0c-4e36-4e03-9633-1ca81c67083a"],"results":[{"jobId":"3e0c0f0c-4e36-4e03-9633-1ca81c67083a","result":{"data":{"timestamp":"2024-09-04T17:47:31.134Z","rootActivityId":"cdafb840-64ce-4da4-9db3-14c26c7baa88","descriptor":{"Select":[{"Kind":1,"Depth":0,"Value":"G1","GroupKeys":[{"Source":{"Entity":"ima_unpivot","Property":"Pais"},"Calc":"G1","IsSameAsSelect":"True"}],"Name":"ima_unpivot.Pais"},{"Kind":2,"Value":"M1","Format":"0.0","Name":"Sum(ima_unpivot.ima_total)"},{"Kind":1,"Depth":0,"Value":"G2","GroupKeys":[{"Source":{"Entity":"Paises","Property":"flags_iso.URL"},"Calc":"G2","IsSameAsSelect":"True"}],"Name":"Paises.flags_iso.URL"}],"Expressions":{"Primary":{"Groupings":[{"Keys":[{"Source":{"Entity":"ima_unpivot","Property":"Pais"},"Select":0},{"Source":{"Entity":"Paises","Property":"flags_iso.URL"},"Select":2}],"Member":"DM1"}]}},"Version":2},"metrics":{"Version":"1.0.0","Events":[{"Id":"b00fa0af-f351-4198-b37c-e303fda3df2c","Name":"Execute Semantic Query","Component":"DSE","Start":"2024-09-04T17:47:31.1344926Z","End":"2024-09-04T17:47:31.1808944Z"},{"Id":"84ee4d02-5c97-4eff-a18e-3aa4f5d1a9a9","ParentId":"b00fa0af-f351-4198-b37c-e303fda3df2c","Name":"Execute DAX Query","Component":"DSE","Start":"2024-09-04T17:47:31.1344926Z","End":"2024-09-04T17:47:31.1808944Z","Metrics":{"RowCount":10}},{"Id":"9BE852F3-EC53-44F9-B4B0-9BC9EF96AF47","ParentId":"84ee4d02-5c97-4eff-a18e-3aa4f5d1a9a9","Name":"Execute Query","Component":"AS","Start":"2024-09-04T17:47:31.16Z","End":"2024-09-04T17:47:31.18Z"},{"Id":"D9C28E61-276A-480A-B0C8-F2B95D82C268","ParentId":"9BE852F3-EC53-44F9-B4B0-9BC9EF96AF47","Name":"Serialize Rowset","Component":"AS","Start":"2024-09-04T17:47:31.18Z","End":"2024-09-04T17:47:31.18Z"}]},"fromCache":"False","dsr":{"Version":2,"MinorVersion":1,"DS":[{"N":"DS0","PH":[{"DM1":[{"S":[{"N":"G1","T":1,"DN":"D0"},{"N":"G2","T":1,"DN":"D1"},{"N":"M1","T":3}],"C":[0,0,5.336]},{"C":[1,1,5.264]},{"C":[2,2,"5.112000000000001"]},{"C":[3,3,5.064]},{"C":[4,4,"4.9839999999999991"]},{"C":[5,5,"4.9319999999999995"]},{"C":[6,6,4.904]},{"C":[7,7,4.744]},{"C":[8,8,4.7]},{"C":[9,9,"4.6419999999999995"]}]}],"IC":"True","HAD":"True","ValueDicts":{"D0":["Chile","Brasil","China","Alemania","Canadá","Ucrania","Namibia","Israel","Bahamas","Italia"],"D1":["https://www.worldometers.info//img/flags/small/tn_ci-flag.gif","https://www.worldometers.info//img/flags/small/tn_br-flag.gif","https://www.worldometers.info//img/flags/small/tn_ch-flag.gif","https://www.worldometers.info//img/flags/small/tn_gm-flag.gif","https://www.worldometers.info//img/flags/small/tn_ca-flag.gif","https://www.worldometers.info//img/flags/small/tn_up-flag.gif","https://www.worldometers.info//img/flags/small/tn_wa-flag.gif","https://www.worldometers.info//img/flags/small/tn_is-flag.gif","https://www.worldometers.info//img/flags/small/tn_bf-flag.gif","https://www.worldometers.info//img/flags/small/tn_it-flag.gif"]}}]}}}}]};
     //return parseIMA(response);
 };

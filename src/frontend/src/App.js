@@ -23,6 +23,7 @@ import PrivateRoute from './components/privateRoute';
 import { isAuthenticated, logOut } from 'services/authService';
 import { Grid } from '@mui/material';
 import Browser from 'pages/browser';
+import Markets from 'pages/markets';
 
 function App() {
 
@@ -39,7 +40,8 @@ function App() {
             <Route path='/buscador' element={<Browser />} />    
             <Route path='/chat' element={<Chat />} />
             <Route path='/directorio' element={<Home />} />
-			<Route path='/exportar' element={<Exportar />} />
+			      <Route path='/exportar' element={<Exportar />} />
+            <Route path='/mercados' element={<Markets />} />   
           </Route>
         </Route>
       </Routes>
@@ -113,18 +115,23 @@ function Layout () {
 			
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex', justifyContent: 'flex-end' } }}>
 			
-				<Button key={'btn-exportar-menu'}
-				onClick={() => {handleCloseNavMenu('/exportar')}}
-				sx={{ my: 2, color: 'black', display: 'block' }}>
-				Empieza a Exportar
-				</Button>
+                <Button key={'btn-exportar-menu'}
+                  onClick={() => {handleCloseNavMenu('/exportar')}}
+                  sx={{ my: 2, color: 'black', display: 'block' }}>
+                  Empieza a Exportar
+                </Button>
+
+                <Button key={'btn-mercados-menu'}
+                  onClick={() => {handleCloseNavMenu('/mercados')}}
+                  sx={{ my: 2, color: 'black', display: 'block' }}>
+                  Recomendador de Mercados
+                </Button>
 				
                 <Button
                   key={'btn-productos-menu'}
                   onClick={() => {handleCloseNavMenu('/buscador')}}
                   sx={{ my: 2, color: 'black', display: 'block' }}
                 >
-				
                   Buscar Normativas
                 </Button>
                 <Button
@@ -197,14 +204,22 @@ function Layout () {
               >
 				{/* Para pantallas grandes */}
 
-				<MenuItem 
-				  key={'btn-exportar-menu'}
-				  onClick={() => {handleCloseNavMenu('/exportar')}}
-				>
-				  <Typography textAlign="center">
-					Empieza a Exportar
-				  </Typography>
-				</MenuItem>
+                <MenuItem 
+                  key={'btn-exportar-menu'}
+                  onClick={() => {handleCloseNavMenu('/exportar')}}
+                >
+                  <Typography textAlign="center">
+                  Empieza a Exportar
+                  </Typography>
+                </MenuItem>
+                <MenuItem 
+                  key={'btn-mercados-menu'}
+                  onClick={() => {handleCloseNavMenu('/mercados')}}
+                >
+                  <Typography textAlign="center">
+                  Recomendador de Mercados
+                  </Typography>
+                </MenuItem>
                 <MenuItem 
                  key={'btn-productos-menu'}
                  onClick={() => {handleCloseNavMenu('/buscador')}}

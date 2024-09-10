@@ -11,7 +11,9 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
+
 import { Routes, Route, Outlet, useLocation, useNavigate } from "react-router-dom";
+
 
 import Home from './pages/home/index';
 import Chat from './pages/chat';
@@ -25,6 +27,14 @@ import { Grid } from '@mui/material';
 import Browser from 'pages/browser';
 import Markets from 'pages/markets';
 
+import ExportProcess from './pages/exportar/ExportProcess';
+import ExportRegimes from './pages/exportar/ExportRegimes';
+import ExportRequirements from './pages/exportar/ExportRequirements';
+import ProductPreparation from './pages/exportar/ProductPreparation';
+import Incoterms from './pages/exportar/Incoterms';
+import PaymentsAndReimbursements from './pages/exportar/PaymentsAndReimbursements';
+import ExportCosts from './pages/exportar/ExportCosts';
+
 function App() {
 
   return (
@@ -37,11 +47,18 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/profile' element={<Profile />} />
           <Route element={<PrivateRoute />}>
-            <Route path='/buscador' element={<Browser />} />    
-            <Route path='/chat' element={<Chat />} />
-            <Route path='/directorio' element={<Home />} />
-			      <Route path='/exportar' element={<Exportar />} />
-            <Route path='/mercados' element={<Markets />} />   
+          <Route path='/buscador' element={<Browser />} />    
+          <Route path='/chat' element={<Chat />} />
+		  <Route path='/directorio' element={<Home />} />
+		  <Route path='/exportar' element={<Exportar />} />
+	  <Route path='/mercados' element={<Markets />} />  
+          <Route path='/exportar/proceso' element={<ExportProcess />} />
+          <Route path='/exportar/regimenes' element={<ExportRegimes />} />
+          <Route path='/exportar/requisitos' element={<ExportRequirements />} />
+          <Route path='/exportar/preparacion' element={<ProductPreparation />} />
+          <Route path='/exportar/incoterms' element={<Incoterms />} />
+          <Route path='/exportar/cobros' element={<PaymentsAndReimbursements />} />
+          <Route path='/exportar/costos' element={<ExportCosts />} />
           </Route>
         </Route>
       </Routes>
@@ -50,12 +67,13 @@ function App() {
   );
 }
 
-function Layout () {
+function Layout() {
   const [authenticated, setAuthenticated] = useState(false);
   let location = useLocation();
+  const navigate = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
-  const navigate = useNavigate();
+  const [anchorElExport, setAnchorElExport] = useState(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -71,9 +89,16 @@ function Layout () {
 
   const handleCloseNavMenu = (to) => {
     setAnchorElNav(null);
+    if (to) navigate(to);
+  };
 
-    if(to)
-      navigate(to);
+  const handleOpenExportMenu = (event) => {
+    setAnchorElExport(event.currentTarget);
+  };
+
+  const handleCloseExportMenu = (to) => {
+    setAnchorElExport(null);
+    if (to) navigate(to);
   };
 
   const handleLogoutClick = () => {
@@ -81,52 +106,66 @@ function Layout () {
     logOut();
     setAuthenticated(false);
     navigate('/');
-  }
-  
+  };
+
+  const exportMenuItems = [
+    { label: 'Proceso de una exportación', path: '/exportar/proceso' },
+    { label: 'Regímenes vigentes', path: '/exportar/regimenes' },
+    { label: 'Requisitos básicos y documentación obligatoria', path: '/exportar/requisitos' },
+    { label: '¿Cómo preparar tu producto?', path: '/exportar/preparacion' },
+    { label: 'Incoterms', path: '/exportar/incoterms' },
+    { label: 'Cobros y reintegros', path: '/exportar/cobros' },
+    { label: 'Costos', path: '/exportar/costos' },
+  ];
+
   return (
     <>
       <AppBar position="static" style={{backgroundColor: "#fff"}}>
-       <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Stack direction="row" spacing={0} display={'flex'} width={'100%'}>
-            <img src="./images/logo.png" className="_b9923f60" alt="11.svg" width={"100px"}></img>
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            <Stack direction="row" spacing={0} display={'flex'} width={'100%'}>
+              <img src="/images/logo.png" className="_b9923f60" alt="11.svg" width={"100px"}></img>
 
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              onClick={() => {navigate('/');}}
-              sx={{
-                mr: 2,
-                display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex' },
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'black',
-                textDecoration: 'none',
-                paddingTop: '2rem',
-                textDecoration: "none",
-                boxShadow: "none",
-                cursor: "pointer"
-              }}
-            >
-            </Typography>
-		
-			
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex', justifyContent: 'flex-end' } }}>
-			
-                <Button key={'btn-exportar-menu'}
-                  onClick={() => {handleCloseNavMenu('/exportar')}}
-                  sx={{ my: 2, color: 'black', display: 'block' }}>
+              <Typography
+                variant="h6"
+                noWrap
+                component="a"
+                onClick={() => {navigate('/');}}
+                sx={{
+                  mr: 2,
+                  display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex' },
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'black',
+                  textDecoration: 'none',
+                  paddingTop: '2rem',
+                  cursor: "pointer"
+                }}
+              >
+              </Typography>
+
+              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex', justifyContent: 'flex-end' } }}>
+                <Button
+                  key={'btn-exportar-menu'}
+                  onClick={handleOpenExportMenu}
+                  sx={{ my: 2, color: 'black', display: 'block' }}
+                  
+                >
                   Empieza a Exportar
                 </Button>
+                <Menu
+                  anchorEl={anchorElExport}
+                  open={Boolean(anchorElExport)}
+                  onClose={() => handleCloseExportMenu()}
+                >
+                  {exportMenuItems.map((item) => (
+                    <MenuItem key={item.path} onClick={() => handleCloseExportMenu(item.path)}>
+                      {item.label}
+                    </MenuItem>
+                  ))}
+                </Menu>
 
-                <Button key={'btn-mercados-menu'}
-                  onClick={() => {handleCloseNavMenu('/mercados')}}
-                  sx={{ my: 2, color: 'black', display: 'block' }}>
-                  Recomendador de Mercados
-                </Button>
-				
                 <Button
                   key={'btn-productos-menu'}
                   onClick={() => {handleCloseNavMenu('/buscador')}}
@@ -139,6 +178,11 @@ function Layout () {
                   onClick={() => {handleCloseNavMenu('/chat')}}
                   sx={{ my: 2, color: 'black', display: 'block' }}
                 >
+                <Button key={'btn-mercados-menu'}
+                  onClick={() => {handleCloseNavMenu('/mercados')}}
+                  sx={{ my: 2, color: 'black', display: 'block' }}>
+                  Recomendador de Mercados
+                </Button>
                   Soporte por chat
                 </Button>
                 <Button
@@ -149,164 +193,151 @@ function Layout () {
                   Nuestro Directorio
                 </Button>
                 {!authenticated && (
-                  <>
-                    <Button
-                      key={'btn-login-menu'}
-                      onClick={() => {handleCloseNavMenu('/login')}}
-                      sx={{ my: 2, color: 'black', display: 'block' }}
-                    >
-                      Ingresar
-                    </Button>
-                  </>
+                  <Button
+                    key={'btn-login-menu'}
+                    onClick={() => {handleCloseNavMenu('/login')}}
+                    sx={{ my: 2, color: 'black', display: 'block' }}
+                  >
+                    Ingresar
+                  </Button>
                 )}
                 {authenticated && (
-                  <>
-                    <Button
-                      key={'btn-register-menu'}
-                      onClick={handleLogoutClick}
-                      sx={{ my: 2, color: 'black', display: 'block', backgroundColor: 'rgb(206 206 206)' }}
-                    >
-                      Salir
-                    </Button>
-                  </>
+                  <Button
+                    key={'btn-register-menu'}
+                    onClick={handleLogoutClick}
+                    sx={{ my: 2, color: 'black', display: 'block', backgroundColor: 'rgb(206 206 206)' }}
+                  >
+                    Salir
+                  </Button>
                 )}                
-            </Box>
+              </Box>
 
+              <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none', lg: 'none' } }}>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleOpenNavMenu}
+                  color="black"
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorElNav}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                  open={Boolean(anchorElNav)}
+                  onClose={() => {handleCloseNavMenu(null)}}
+                  sx={{
+                    display: { xs: 'block', md: 'none', lg: 'none' },
+                  }}
+                >
+                  <MenuItem 
+                    key={'btn-exportar-menu'}
+                    onClick={handleOpenExportMenu}
+                  >
+                    <Typography textAlign="center">
+                      Empieza a Exportar
+                    </Typography>
+                  </MenuItem>
+                  {exportMenuItems.map((item) => (
+                    <MenuItem key={item.path} onClick={() => handleCloseExportMenu(item.path)} sx={{ pl: 4 }}>
+                      <Typography textAlign="center">{item.label}</Typography>
+                    </MenuItem>
+                  ))}
+                  <MenuItem 
+                    key={'btn-productos-menu'}
+                    onClick={() => {handleCloseNavMenu('/buscador')}}
+                  >
+                    <Typography textAlign="center">
+                      Buscar Normativas
+                    </Typography>
+                  </MenuItem>
 
-            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none', lg: 'none' } }}>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenNavMenu}
-                color="black"
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={() => {handleCloseNavMenu(null)}}
-                sx={{
-                  display: { xs: 'block', md: 'none', lg: 'none' },
-                }}
-              >
-				{/* Para pantallas grandes */}
-
-                <MenuItem 
-                  key={'btn-exportar-menu'}
-                  onClick={() => {handleCloseNavMenu('/exportar')}}
-                >
-                  <Typography textAlign="center">
-                  Empieza a Exportar
-                  </Typography>
-                </MenuItem>
-                <MenuItem 
-                  key={'btn-mercados-menu'}
-                  onClick={() => {handleCloseNavMenu('/mercados')}}
-                >
-                  <Typography textAlign="center">
-                  Recomendador de Mercados
-                  </Typography>
-                </MenuItem>
-                <MenuItem 
-                 key={'btn-productos-menu'}
-                 onClick={() => {handleCloseNavMenu('/buscador')}}
-                >
-                  <Typography 
-                    textAlign="center"
-                  >
-                    Buscar Normativas
-                  </Typography>
-                </MenuItem>
-                <MenuItem 
-                  key={'btn-chat-menu'}
-                  onClick={() => {handleCloseNavMenu('/chat')}}
-                >
-                  <Typography 
-                    textAlign="center"
-                  >
-                   Soporte por chat
-                  </Typography>
-                </MenuItem>
-                <MenuItem 
-                   key={'btn-dir-menu'}
-                   onClick={() => {handleCloseNavMenu('/directorio')}}
-                >
-                  <Typography 
-                    textAlign="center"
-                  >
-                    Nuestro Directorio
-                  </Typography>
-                </MenuItem>
-                <Divider sx={{ my: 0.5 }} />
-                {!authenticated && (
-                  <>                    
                     <MenuItem 
-                       key={'btn-login-menu'}
-                       onClick={() => {handleCloseNavMenu('/login')}}
+                    key={'btn-mercados-menu'}
+                    onClick={() => {handleCloseNavMenu('/mercados')}}
+                  >
+                    <Typography textAlign="center">
+                      Recomendar mercados
+                    </Typography>
+                  </MenuItem>
+
+		    
+                  <MenuItem 
+                    key={'btn-chat-menu'}
+                    onClick={() => {handleCloseNavMenu('/chat')}}
+                  >
+                    <Typography textAlign="center">
+                      Soporte por chat
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem 
+                    key={'btn-dir-menu'}
+                    onClick={() => {handleCloseNavMenu('/directorio')}}
+                  >
+                    <Typography textAlign="center">
+                      Nuestro Directorio
+                    </Typography>
+                  </MenuItem>
+                  <Divider sx={{ my: 0.5 }} />
+                  {!authenticated && (
+                    <MenuItem 
+                      key={'btn-login-menu'}
+                      onClick={() => {handleCloseNavMenu('/login')}}
                     >
-                      <Typography 
-                        textAlign="center"
-                      >
+                      <Typography textAlign="center">
                         Ingresar
                       </Typography>
                     </MenuItem>
-                  </>
-                )}
-                {authenticated && (                  
-                  <MenuItem 
-                    key={'btn-register-menu'}
-                    onClick={handleLogoutClick}
-                  >
-                    <Typography 
-                      textAlign="center"
+                  )}
+                  {authenticated && (                  
+                    <MenuItem 
+                      key={'btn-register-menu'}
+                      onClick={handleLogoutClick}
                     >
-                     Salir
-                    </Typography>
-                  </MenuItem>
-                )}
-              </Menu>
-            </Box>
+                      <Typography textAlign="center">
+                        Salir
+                      </Typography>
+                    </MenuItem>
+                  )}
+                </Menu>
+              </Box>
 
-            <Typography
-              variant="h5"
-              noWrap
-              component="a"
-              onClick={() => {navigate('/');}}
-              sx={{
-                mr: 2,
-                display: { xs: 'inline-flex', md: 'none', lg: 'none' },
-                flexGrow: 1,
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'black',
-                textDecoration: "none",
-                boxShadow: "none",
-                verticalAlign: 'middle',
-                paddingTop: '2rem',
-                cursor: "pointer"
-              }}
-            >
-              HUBBER
-            </Typography>     
-          </Stack>          
-
-        </Toolbar>
-          
-       </Container>
+              <Typography
+                variant="h5"
+                noWrap
+                component="a"
+                onClick={() => {navigate('/');}}
+                sx={{
+                  mr: 2,
+                  display: { xs: 'inline-flex', md: 'none', lg: 'none' },
+                  flexGrow: 1,
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.3rem',
+                  color: 'black',
+                  textDecoration: "none",
+                  boxShadow: "none",
+                  verticalAlign: 'middle',
+                  paddingTop: '2rem',
+                  cursor: "pointer"
+                }}
+              >
+                HUBBER
+              </Typography>     
+            </Stack>          
+          </Toolbar>
+        </Container>
       </AppBar>
       
       <Outlet />

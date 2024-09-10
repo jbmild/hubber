@@ -49,9 +49,9 @@ function App() {
           <Route element={<PrivateRoute />}>
           <Route path='/buscador' element={<Browser />} />    
           <Route path='/chat' element={<Chat />} />
-		  <Route path='/directorio' element={<Home />} />
-		  <Route path='/exportar' element={<Exportar />} />
-	  <Route path='/mercados' element={<Markets />} />  
+          <Route path='/directorio' element={<Home />} />
+          <Route path='/exportar' element={<Exportar />} />
+          <Route path='/mercados' element={<Markets />} />  
           <Route path='/exportar/proceso' element={<ExportProcess />} />
           <Route path='/exportar/regimenes' element={<ExportRegimes />} />
           <Route path='/exportar/requisitos' element={<ExportRequirements />} />
@@ -150,7 +150,6 @@ function Layout() {
                   key={'btn-exportar-menu'}
                   onClick={handleOpenExportMenu}
                   sx={{ my: 2, color: 'black', display: 'block' }}
-                  
                 >
                   Empieza a Exportar
                 </Button>
@@ -178,12 +177,12 @@ function Layout() {
                   onClick={() => {handleCloseNavMenu('/chat')}}
                   sx={{ my: 2, color: 'black', display: 'block' }}
                 >
+                  Soporte por chat
+                </Button>
                 <Button key={'btn-mercados-menu'}
                   onClick={() => {handleCloseNavMenu('/mercados')}}
                   sx={{ my: 2, color: 'black', display: 'block' }}>
                   Recomendador de Mercados
-                </Button>
-                  Soporte por chat
                 </Button>
                 <Button
                   key={'btn-dir-menu'}

@@ -17,7 +17,9 @@ const ExportProcess = () => {
       <p>
         Antes de pensar en trámites y permisos, debes conocer bien los costos de producción y de embalaje de tus productos. Saber cuánto te cuesta producir y embalar es clave para calcular el precio final de exportación y asegurarte de que sea rentable.
       </p>
-     <p> <a href="/exportar/preparacion" className="more-info-link">¿Cómo preparar tu producto?</a>  </p>
+      <a href="/exportar/preparacion" className="more-info-link">¿Cómo preparar tu producto?</a>  
+	  &nbsp; {/* Esto añade un espacio entre los enlaces */}
+	  &nbsp; {/* Esto añade un espacio entre los enlaces */}
 	  <a href="/exportar/regimenes" className="more-info-link">¿Qué métodos para exportar existen?</a>
 
      

@@ -30,7 +30,6 @@ import Markets from 'pages/markets';
 import ExportProcess from './pages/exportar/ExportProcess';
 import ExportRegimes from './pages/exportar/ExportRegimes';
 import ExportRequirements from './pages/exportar/ExportRequirements';
-import ProductPreparation from './pages/exportar/ProductPreparation';
 import Incoterms from './pages/exportar/Incoterms';
 import PaymentsAndReimbursements from './pages/exportar/PaymentsAndReimbursements';
 import ExportCosts from './pages/exportar/ExportCosts';
@@ -55,7 +54,7 @@ function App() {
           <Route path='/exportar/proceso' element={<ExportProcess />} />
           <Route path='/exportar/regimenes' element={<ExportRegimes />} />
           <Route path='/exportar/requisitos' element={<ExportRequirements />} />
-          <Route path='/exportar/preparacion' element={<ProductPreparation />} />
+          
           <Route path='/exportar/incoterms' element={<Incoterms />} />
           <Route path='/exportar/cobros' element={<PaymentsAndReimbursements />} />
           <Route path='/exportar/costos' element={<ExportCosts />} />
@@ -112,7 +111,6 @@ function Layout() {
     { label: 'Proceso de una exportación', path: '/exportar/proceso' },
     { label: 'Regímenes vigentes', path: '/exportar/regimenes' },
     { label: 'Requisitos básicos y documentación obligatoria', path: '/exportar/requisitos' },
-    { label: '¿Cómo preparar tu producto?', path: '/exportar/preparacion' },
     { label: 'Incoterms', path: '/exportar/incoterms' },
     { label: 'Cobros y reintegros', path: '/exportar/cobros' },
     { label: 'Costos', path: '/exportar/costos' },

@@ -1,0 +1,122 @@
+.export-regimes-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.export-regimes-container h1 {
+  text-align: center;
+  color: #003366;
+  margin-bottom: 20px;
+}
+
+.export-regimes-container h2 {
+  margin-top: 30px;
+  color: #003366;
+}
+
+.export-regimes-container p {
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.export-regimes-container ul {
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.export-regimes-container li {
+  margin-bottom: 10px;
+}
+
+.export-regimes-container strong {
+  font-weight: bold;
+}
+.export-regimes-container p {
+  line-height: 1.6;
+  margin-bottom: 20px;
+  text-align: justify; /* Justifica el texto de los párrafos */
+}
+
+.export-regimes-banner {
+  width: 100%;
+  height: auto;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.export-regimenes-image {
+  width: 80%; /* Ajusta este valor según tu preferencia */
+  max-width: 800px; /* Limita el ancho máximo de la imagen */
+  height: auto;
+  display: block;
+  margin: 20px auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.courier-info-link {
+  display: inline-block;
+  position: relative;
+  color: #007BFF; /* Color azul para el enlace */
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease; /* Transición suave para el color */
+}
+
+.courier-info-link::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px; /* Altura de la línea de subrayado */
+  background-color: #007BFF;
+  bottom: -2px; /* Posición de la línea respecto al texto */
+  left: 0;
+  transform: scaleX(0); /* Inicia invisible */
+  transform-origin: bottom right; /* Punto de inicio de la animación */
+  transition: transform 0.3s ease; /* Transición de animación */
+}
+
+.courier-info-link:hover {
+  color: #0056b3; /* Color más oscuro cuando se pasa el ratón */
+}
+
+.courier-info-link:hover::after {
+  transform: scaleX(1); /* La línea se expande completamente al pasar el ratón */
+  transform-origin: bottom left; /* Punto de fin de la animación */
+}
+
+.courier-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.courier-popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close-popup-btn {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #003366;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}

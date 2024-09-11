@@ -1,0 +1,52 @@
+.container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.container h1 {
+  text-align: center;
+  color: #003366;
+  margin-bottom: 20px;
+}
+
+.container h2 {
+  margin-top: 30px;
+  color: #003366;
+}
+
+.container p {
+  line-height: 1.6;
+  margin-bottom: 20px;
+  text-align: justify; /* Justifica el texto de los párrafos */
+}
+
+.container ul, .container ol {
+  margin-bottom: 20px;
+  padding-left: 20px;
+}
+
+.container li {
+  margin-bottom: 10px;
+}
+
+.container strong {
+  font-weight: bold;
+}
+
+
+.banner-image {
+  max-width: 75%; /* Ajusta el porcentaje para hacer las imágenes más pequeñas */
+  height: auto; /* Mantiene la proporción de la imagen */
+  margin: 20px auto; /* Centra la imagen horizontalmente */
+  display: block; /* Asegura que el margen automático funcione */
+}
+
+/* Si deseas ajustar el tamaño solo para pantallas grandes */
+@media (min-width: 768px) {
+  .banner-image {
+    max-width: 60%; /* Cambia el valor para pantallas grandes */
+  }
+}

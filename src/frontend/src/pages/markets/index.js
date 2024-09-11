@@ -81,7 +81,7 @@ const Markets = () => {
         console.log(res);
     })
     setShowTable(true);
-    document.getElementById('container-ima').style.height = '111vh';
+    document.getElementById('container-ima').style.height = '112vh';
     document.getElementById('div-ima').style.height = '130vh';
   };
 
@@ -216,7 +216,7 @@ const Markets = () => {
                 <>
                 {data.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell sx={{ width: { xs: '100%', sm: '50%' } }}> <img src={row.bandera} alt="bandera" style={{"width":"25px"}}/> {row.pais}</TableCell>
+                    <TableCell sx={{ width: { xs: '100%', sm: '50%' } }}> <img src={row.bandera} alt=" " style={{"width":"25px"}}/> {row.pais}</TableCell>
                     {!isSmallScreen && (
                       <>
                         <TableCell>{Number(row.puntaje).toFixed(2)}</TableCell>

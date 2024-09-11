@@ -90,9 +90,11 @@ function parsePaises(data){
 };
 
 
-export async function tabla_ima(posicionArancelaria) {//Valores Generales de IMA
+export async function tabla_ima(pos) {//Valores Generales de IMA
+    const posicionArancelaria = pos.replace(/"/g, '\\"');
     const body = `{\"version\":\"1.0.0\",\"queries\":[{\"Query\":{\"Commands\":[{\"SemanticQueryDataShapeCommand\":{\"Query\":{\"Version\":2,\"From\":[{\"Name\":\"i\",\"Entity\":\"ima_unpivot\",\"Type\":0},{\"Name\":\"p\",\"Entity\":\"Paises\",\"Type\":0},{\"Name\":\"subquery\",\"Expression\":{\"Subquery\":{\"Query\":{\"Version\":2,\"From\":[{\"Name\":\"i1\",\"Entity\":\"ima_unpivot\",\"Type\":0},{\"Name\":\"p2\",\"Entity\":\"Paises\",\"Type\":0},{\"Name\":\"p11\",\"Entity\":\"productos\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i1\"}},\"Property\":\"Pais\"},\"Name\":\"field\"}],\"Where\":[{\"Condition\":{\"Comparison\":{\"ComparisonKind\":0,\"Left\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i1\"}},\"Property\":\"Pais\"}},\"Right\":{\"AnyValue\":{\"DefaultValueOverridesAncestors\":true}}}}},{\"Condition\":{\"Comparison\":{\"ComparisonKind\":0,\"Left\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"p2\"}},\"Property\":\"flags_iso.URL\"}},\"Right\":{\"AnyValue\":{\"DefaultValueOverridesAncestors\":true}}}}},{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"p11\"}},\"Property\":\"Codigo + desc\"}}],\"Values\":[[{\"Literal\":{\"Value\":\"\'${posicionArancelaria}\'\"}}]]}}}],\"OrderBy\":[{\"Direction\":1,\"Expression\":{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i1\"}},\"Property\":\"Sorting\"}},\"Function\":0}}}],\"Top\":10}}},\"Type\":2},{\"Name\":\"p1\",\"Entity\":\"productos\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"Pais\"},\"Name\":\"ima_unpivot.Pais\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"ima_total\"}},\"Function\":1},\"Name\":\"Sum(ima_unpivot.ima_total)\"},{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"p\"}},\"Property\":\"flags_iso.URL\"},\"Name\":\"Paises.flags_iso.URL\",\"NativeReferenceName\":\" \"}],\"Where\":[{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"Pais\"}}],\"Table\":{\"SourceRef\":{\"Source\":\"subquery\"}}}}},{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"p1\"}},\"Property\":\"Codigo + desc\"}}],\"Values\":[[{\"Literal\":{\"Value\":\"\'${posicionArancelaria}\'\"}}]]}}}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"ima_total\"}},\"Function\":1}}}]},\"Binding\":{\"Primary\":{\"Groupings\":[{\"Projections\":[0,1,2]}]},\"DataReduction\":{\"DataVolume\":3,\"Primary\":{\"Window\":{\"Count\":500}}},\"Version\":1},\"ExecutionMetricsKind\":1}}]},\"QueryId\":\"\",\"ApplicationContext\":{\"DatasetId\":\"8d196c10-223d-40f5-b770-7291cf7a5cdd\",\"Sources\":[{\"ReportId\":\"f826b8bc-6fef-40cd-9231-2c5d0438b7bc\",\"VisualId\":\"602bdc0682fd364320a4\"}]}}],\"cancelQueries\":[],\"modelId\":8198277}`;
 
+    console.log(body);
     try {
         const response = await axios.post(urlIMA, body, { headers });
         const data = response.data;
@@ -103,7 +105,7 @@ export async function tabla_ima(posicionArancelaria) {//Valores Generales de IMA
     };
 
     //Response para pruebas
-    //const response = {"jobIds":["3e0c0f0c-4e36-4e03-9633-1ca81c67083a"],"results":[{"jobId":"3e0c0f0c-4e36-4e03-9633-1ca81c67083a","result":{"data":{"timestamp":"2024-09-04T17:47:31.134Z","rootActivityId":"cdafb840-64ce-4da4-9db3-14c26c7baa88","descriptor":{"Select":[{"Kind":1,"Depth":0,"Value":"G1","GroupKeys":[{"Source":{"Entity":"ima_unpivot","Property":"Pais"},"Calc":"G1","IsSameAsSelect":"True"}],"Name":"ima_unpivot.Pais"},{"Kind":2,"Value":"M1","Format":"0.0","Name":"Sum(ima_unpivot.ima_total)"},{"Kind":1,"Depth":0,"Value":"G2","GroupKeys":[{"Source":{"Entity":"Paises","Property":"flags_iso.URL"},"Calc":"G2","IsSameAsSelect":"True"}],"Name":"Paises.flags_iso.URL"}],"Expressions":{"Primary":{"Groupings":[{"Keys":[{"Source":{"Entity":"ima_unpivot","Property":"Pais"},"Select":0},{"Source":{"Entity":"Paises","Property":"flags_iso.URL"},"Select":2}],"Member":"DM1"}]}},"Version":2},"metrics":{"Version":"1.0.0","Events":[{"Id":"b00fa0af-f351-4198-b37c-e303fda3df2c","Name":"Execute Semantic Query","Component":"DSE","Start":"2024-09-04T17:47:31.1344926Z","End":"2024-09-04T17:47:31.1808944Z"},{"Id":"84ee4d02-5c97-4eff-a18e-3aa4f5d1a9a9","ParentId":"b00fa0af-f351-4198-b37c-e303fda3df2c","Name":"Execute DAX Query","Component":"DSE","Start":"2024-09-04T17:47:31.1344926Z","End":"2024-09-04T17:47:31.1808944Z","Metrics":{"RowCount":10}},{"Id":"9BE852F3-EC53-44F9-B4B0-9BC9EF96AF47","ParentId":"84ee4d02-5c97-4eff-a18e-3aa4f5d1a9a9","Name":"Execute Query","Component":"AS","Start":"2024-09-04T17:47:31.16Z","End":"2024-09-04T17:47:31.18Z"},{"Id":"D9C28E61-276A-480A-B0C8-F2B95D82C268","ParentId":"9BE852F3-EC53-44F9-B4B0-9BC9EF96AF47","Name":"Serialize Rowset","Component":"AS","Start":"2024-09-04T17:47:31.18Z","End":"2024-09-04T17:47:31.18Z"}]},"fromCache":"False","dsr":{"Version":2,"MinorVersion":1,"DS":[{"N":"DS0","PH":[{"DM1":[{"S":[{"N":"G1","T":1,"DN":"D0"},{"N":"G2","T":1,"DN":"D1"},{"N":"M1","T":3}],"C":[0,0,5.336]},{"C":[1,1,5.264]},{"C":[2,2,"5.112000000000001"]},{"C":[3,3,5.064]},{"C":[4,4,"4.9839999999999991"]},{"C":[5,5,"4.9319999999999995"]},{"C":[6,6,4.904]},{"C":[7,7,4.744]},{"C":[8,8,4.7]},{"C":[9,9,"4.6419999999999995"]}]}],"IC":"True","HAD":"True","ValueDicts":{"D0":["Chile","Brasil","China","Alemania","Canadá","Ucrania","Namibia","Israel","Bahamas","Italia"],"D1":["https://www.worldometers.info//img/flags/small/tn_ci-flag.gif","https://www.worldometers.info//img/flags/small/tn_br-flag.gif","https://www.worldometers.info//img/flags/small/tn_ch-flag.gif","https://www.worldometers.info//img/flags/small/tn_gm-flag.gif","https://www.worldometers.info//img/flags/small/tn_ca-flag.gif","https://www.worldometers.info//img/flags/small/tn_up-flag.gif","https://www.worldometers.info//img/flags/small/tn_wa-flag.gif","https://www.worldometers.info//img/flags/small/tn_is-flag.gif","https://www.worldometers.info//img/flags/small/tn_bf-flag.gif","https://www.worldometers.info//img/flags/small/tn_it-flag.gif"]}}]}}}}]};
+    //const response = {"jobIds":["a203db06-6ba4-4fb0-b812-8fb34b3f0121"],"results":[{"jobId":"a203db06-6ba4-4fb0-b812-8fb34b3f0121","result":{"data":{"timestamp":"2024-09-11T01:14:02.799Z","rootActivityId":"7e3f27d8-25b0-4f0f-aff7-952dc2adbb94","descriptor":{"Select":[{"Kind":1,"Depth":0,"Value":"G1","GroupKeys":[{"Source":{"Entity":"ima_unpivot","Property":"Pais"},"Calc":"G1","IsSameAsSelect":true}],"Name":"ima_unpivot.Pais"},{"Kind":2,"Value":"M1","Format":"0.0","Name":"Sum(ima_unpivot.ima_total)"},{"Kind":1,"Depth":0,"Value":"G2","GroupKeys":[{"Source":{"Entity":"Paises","Property":"flags_iso.URL"},"Calc":"G2","IsSameAsSelect":true}],"Name":"Paises.flags_iso.URL"}],"Expressions":{"Primary":{"Groupings":[{"Keys":[{"Source":{"Entity":"ima_unpivot","Property":"Pais"},"Select":0},{"Source":{"Entity":"Paises","Property":"flags_iso.URL"},"Select":2}],"Member":"DM1"}]}},"Version":2},"metrics":{"Version":"1.0.0","Events":[{"Id":"44158aeb-648f-4598-bfed-1ffa0069f8b5","Name":"Execute Semantic Query","Component":"DSE","Start":"2024-09-11T01:14:02.7997441Z","End":"2024-09-11T01:14:02.8621898Z"},{"Id":"775dbf54-e1d1-4473-802e-efbccbb9579f","ParentId":"44158aeb-648f-4598-bfed-1ffa0069f8b5","Name":"Execute DAX Query","Component":"DSE","Start":"2024-09-11T01:14:02.7997441Z","End":"2024-09-11T01:14:02.8621898Z","Metrics":{"RowCount":10}},{"Id":"42691E79-2B6C-45A7-9A3B-65A9D96AA041","ParentId":"775dbf54-e1d1-4473-802e-efbccbb9579f","Name":"Execute Query","Component":"AS","Start":"2024-09-11T01:14:02.85Z","End":"2024-09-11T01:14:02.867Z"},{"Id":"544CD51F-098A-4847-BDE1-E09632603CF9","ParentId":"42691E79-2B6C-45A7-9A3B-65A9D96AA041","Name":"Serialize Rowset","Component":"AS","Start":"2024-09-11T01:14:02.867Z","End":"2024-09-11T01:14:02.867Z"}]},"fromCache":false,"dsr":{"Version":2,"MinorVersion":1,"DS":[{"N":"DS0","PH":[{"DM1":[{"S":[{"N":"G1","T":1,"DN":"D0"},{"N":"G2","T":1,"DN":"D1"},{"N":"M1","T":3}],"C":[0,0,4]},{"C":[1,1,"3.7280000000000006"]},{"C":[2,2,"3.600000000000001"]},{"C":[3,3,"3.6000000000000005"]},{"C":[4,4],"R":4},{"C":[5,5,"3.5680000000000005"]},{"C":[6,6,"3.5560000000000005"]},{"C":[7,7],"R":4},{"C":[8,8,"3.3200000000000003"]},{"C":[9,9,"3.2319999999999998"]}]}],"IC":true,"HAD":true,"ValueDicts":{"D0":["Tailandia","Eslovaquia","Luxemburgo","Hong Kong, China","Maldivas","Rumania","Camerún","Canadá","España","Portugal"],"D1":["https://www.worldometers.info//img/flags/small/tn_th-flag.gif","https://www.worldometers.info//img/flags/small/tn_lo-flag.gif","https://www.worldometers.info//img/flags/small/tn_lu-flag.gif","https://www.worldometers.info/img/flags/small/tn_hk-flag.gif","https://www.worldometers.info//img/flags/small/tn_mv-flag.gif","https://www.worldometers.info//img/flags/small/tn_ro-flag.gif","https://www.worldometers.info//img/flags/small/tn_cm-flag.gif","https://www.worldometers.info//img/flags/small/tn_ca-flag.gif","https://www.worldometers.info//img/flags/small/tn_sp-flag.gif","https://www.worldometers.info//img/flags/small/tn_po-flag.gif"]}}]}}}}]};
     //return parseIMA(response);
 };
 
@@ -112,14 +114,39 @@ function parseIMA(data){
     const paises = valor["ValueDicts"]['D0'];
     const banderas = valor["ValueDicts"]['D1'];
     const puntajes = valor["PH"][0]['DM1'];
-    const valores = [];
     const response = [];
 
-    puntajes.forEach(puntaje => {
-        valores.push(puntaje['C'][2]);
-    });
-    
     for (let i = 0; i < paises.length; i++) {
+
+        let pais = paises[puntajes[i]['C'][0]]; 
+        let bandera = banderas[puntajes[i]['C'][1]]; 
+        let puntaje = 0.0;
+        let skip = null;
+
+        if(puntajes[i]["Ø"]){
+            skip = puntajes[i]["Ø"];
+            if(skip == 1){pais = 'N/A'}; //sin nombre (creo que nunca pasa)
+            if(skip == 2){bandera = 'images/logo_.jpg'}; //sin bandera
+        }
+
+        if(puntajes[i]['R'] && puntajes[i]['C'].length <3){
+            puntaje = response[i-1].puntaje;
+        } else {
+            if(!skip){
+                puntaje = puntajes[i]['C'][2];
+            } else {
+                puntaje = puntajes[i]['C'][1];
+            }
+        }
+
+        response.push({
+            pais: pais,
+            puntaje: puntaje,
+            bandera: bandera
+          });
+    };
+    
+   /* for (let i = 0; i < paises.length; i++) {
         const pais = paises[i];
         const puntaje = valores[i];
         const bandera = banderas[i];
@@ -129,6 +156,6 @@ function parseIMA(data){
             bandera: bandera
           });
     };
-
+*/
     return response;
 }

@@ -150,7 +150,7 @@ function Layout() {
                   sx={{ my: 2, color: 'black', display: 'block' }}
                   
                 >
-                  Empieza a Exportar
+                  Información General
                 </Button>
                 <Menu
                   anchorEl={anchorElExport}
@@ -246,7 +246,7 @@ function Layout() {
                     onClick={handleOpenExportMenu}
                   >
                     <Typography textAlign="center">
-                      Empieza a Exportar
+                      Información General
                     </Typography>
                   </MenuItem>
                   {exportMenuItems.map((item) => (

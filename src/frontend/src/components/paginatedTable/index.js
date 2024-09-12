@@ -21,12 +21,16 @@ import {
   InputAdornment,
   Fade,
   CircularProgress,
-  LinearProgress
+  LinearProgress,
+  Tabs,
+  Tab,
+  Box
 } from '@mui/material';
 import { Close as CloseIcon, Search as SearchIcon } from '@mui/icons-material';
 import { getPaises } from 'services/paisesService'; // Importa la función getPaises
 import './style.css'; // Importa el archivo de estilos CSS
 import { getNormativas } from 'services/normativasService';
+import TabPanel, {a11yProps} from 'components/tabs/tabs';
 
 //esto deberia venir de la base, pero ahora no existe esa info
 const today = new Date();
@@ -42,7 +46,8 @@ const PaginatedTable = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
-
+  const [tabSelected, setTabSelected] = useState(0);
+  
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -112,8 +117,16 @@ const PaginatedTable = () => {
     setOpenModal(false);
   };
 
-  const searchInfo = (pageTo, limit, filters) =>{
+  const searchInfo = (pageTo, limit, filters) =>{   
+
     setLoading(true);
+
+    if(!search.toLowerCase().includes('alfajor')){
+      setLoading(false);
+      setData([]);
+      setTotalItems(0);
+      return;
+    }
 
     getNormativas(pageTo, limit, filters).then(res =>{
       setLoading(false);
@@ -127,6 +140,10 @@ const PaginatedTable = () => {
       setTotalItems(res.totalItems);
     });
 
+  };
+
+  const handleTabChange = (event, newValue) => {
+    setTabSelected(newValue);
   };
 
   return (
@@ -350,25 +367,64 @@ const PaginatedTable = () => {
           }}
         >
           <DialogTitle>
-            Detalles
-            <Button onClick={handleCloseModal} sx={{ position: 'absolute', right: 0, top: 0 }}>
+            Normativa
+            <Button onClick={handleCloseModal} sx={{ position: 'absolute', right: 0, top: 0 , paddingBlock: '1em'}}>
               <CloseIcon />
             </Button>
           </DialogTitle>
           <DialogContent>
             {selectedRow && (
               <div>
-                <p>Nombre: {selectedRow.nombre}</p>
-                <p>Fecha Última Actualización: {selectedRow.ultimaActualizacion}</p>
-                <p>Agencia: {selectedRow.agencia}</p>
-                <p>Descripcion:</p>
-                <p>{selectedRow.descripcion}</p>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell sx={{ width: { md: '40%'} }}>
+                        Nombre
+                      </TableCell>
+                      <TableCell sx={{ width: { md: '60%'} }}>
+                        {selectedRow.nombre}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                    <TableCell sx={{ width: { md: '40%'} }}>
+                      Fecha Última Actualización
+                      </TableCell>
+                      <TableCell sx={{ width: { md: '60%'} }}>
+                        {selectedRow.ultimaActualizacion}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                    <TableCell sx={{ width: { md: '40%'} }}>
+                      Agencia
+                      </TableCell>
+                      <TableCell sx={{ width: { md: '60%'} }}>
+                        {selectedRow.agencia}
+                      </TableCell>
+                    </TableRow>                    
+                  </TableBody>
+                </Table>
+                <Box sx={{ width: '100%' }}>
+                  <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs value={tabSelected} onChange={handleTabChange} aria-label="basic tabs example">
+                      <Tab label="Descripcion" {...a11yProps(0)} />
+                      <Tab label="Informacion Certificación" {...a11yProps(1)} disabled/>
+                    </Tabs>
+                  </Box>
+                  <TabPanel value={tabSelected} index={0}>
+                    <p>
+                      {selectedRow.descripcion}
+                    </p>
+                  </TabPanel>
+                  <TabPanel value={tabSelected} index={1}>
+                    WIP
+                  </TabPanel>
+                </Box>
               </div>
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseModal} color="primary">
-              Cerrar
+            <Button variant='contained' color='success' sx={{width: '100%'}}>
+              Normativa Cumplida
             </Button>
           </DialogActions>
         </Dialog>

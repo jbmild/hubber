@@ -36,6 +36,7 @@ import AuthProvider from "./hooks/AuthProvider";
 import { useAuth } from "./hooks/AuthProvider";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import YourProduct from './pages/exportar/YourProduct';
 
 function App() {
 
@@ -61,6 +62,7 @@ function App() {
             <Route path='/exportar/incoterms' element={<Incoterms />} />
             <Route path='/exportar/cobros' element={<PaymentsAndReimbursements />} />
             <Route path='/exportar/costos' element={<ExportCosts />} />
+            <Route path='/exportar/tu-producto' element={<YourProduct />} />
           </Route>
         </Route>
       </Routes>
@@ -101,6 +103,7 @@ function Layout() {
     { label: 'Incoterms', path: '/exportar/incoterms' },
     { label: 'Cobros y reintegros', path: '/exportar/cobros' },
     { label: 'Costos', path: '/exportar/costos' },
+    { label: 'Tu Producto', path: '/exportar/tu-producto' },
   ];
 
   const auth = useAuth();

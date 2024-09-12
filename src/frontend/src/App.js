@@ -33,6 +33,7 @@ import ExportRequirements from './pages/exportar/ExportRequirements';
 import Incoterms from './pages/exportar/Incoterms';
 import PaymentsAndReimbursements from './pages/exportar/PaymentsAndReimbursements';
 import ExportCosts from './pages/exportar/ExportCosts';
+import YourProduct from './pages/exportar/YourProduct';
 
 function App() {
 
@@ -58,6 +59,7 @@ function App() {
           <Route path='/exportar/incoterms' element={<Incoterms />} />
           <Route path='/exportar/cobros' element={<PaymentsAndReimbursements />} />
           <Route path='/exportar/costos' element={<ExportCosts />} />
+	  <Route path='/exportar/tu-producto' element={<YourProduct />} />
           </Route>
         </Route>
       </Routes>
@@ -114,6 +116,7 @@ function Layout() {
     { label: 'Incoterms', path: '/exportar/incoterms' },
     { label: 'Cobros y reintegros', path: '/exportar/cobros' },
     { label: 'Costos', path: '/exportar/costos' },
+    { label: 'Tu Producto', path: '/exportar/tu-producto' },
   ];
 
   return (

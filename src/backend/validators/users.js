@@ -1,5 +1,5 @@
-const Joi = require("joi");
-
+const { joiMessages } = require('./joiErrorMessages');
+const Joi = require('joi').defaults(schema => schema.options(joiMessages));
 const PASSWORD_REGEX = new RegExp(
     "[a-zA-Z0-9]{8,12}"
     //"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!.@#$%^&*])(?=.{8,})"

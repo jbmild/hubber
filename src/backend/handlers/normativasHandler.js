@@ -41,7 +41,7 @@ exports.handlePostMessage = async (req, res) => {
     let botMessage = "";
     
     //para no gastar mensajes en pruebas
-    return res.status(200).json({message: pregunta});
+    //return res.status(200).json({message: pregunta});
     
     try {
         const respuesta = await query(index, pregunta);

@@ -1,6 +1,7 @@
 require('dotenv').config();
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
 const express = require('express');
 const router = express.Router();
 const User = require('./models/users');
@@ -21,7 +22,6 @@ passport.use(new GoogleStrategy({
       user = new User({
         email: profile.emails[0].value,
         username: profile.displayName,
-        password: '' // No password for OAuth users
       });
       await user.save();
     }
@@ -30,6 +30,21 @@ passport.use(new GoogleStrategy({
   } catch (err) {
     return done(err, null);
   }
+}));
+
+passport.use(new LocalStrategy(async (username, password, cb) => {
+  const user = await User.findOne({ username })
+  if (!user) {
+    return cb(null, false)
+  }
+
+  console.log("reviso pass")
+  if(!user.comparePassword(password)){
+    console.log("no coincide pass")
+    return cb(null, false)
+  }
+  console.log("todo ok")
+  return cb(null, user);
 }));
 
 // Passport serialization
@@ -50,10 +65,28 @@ passport.deserializeUser(async (id, done) => {
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/google/callback',
-  passport.authenticate('google', { failureRedirect: '/' }),
+  passport.authenticate('google', { failureRedirect: '/login' }),
   (req, res) => {
     // Successful authentication, redirect home.
-    res.redirect(`${process.env.CLIENT_URL}/register?success=true`);
+    res.redirect(`${process.env.CLIENT_URL}/`);
   });
+
+router.get('/profile', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
+  res.json(req.user);
+});
+
+router.get('/logout', (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      console.error(err);
+    }
+    res.redirect('/');
+  });
+});
+
+router.post('/login', passport.authenticate('local', { failureRedirect: '/login', successRedirect: '/' }));
 
 module.exports = router;

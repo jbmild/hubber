@@ -1,25 +1,40 @@
 import React, { useState } from 'react';
 import { TextField, Button, Card, CardContent, Typography, Alert, Box, Link, Divider } from '@mui/material';
-import { GoogleIcon, AppleIcon } from '../../components/icons';
+import { GoogleIcon } from '../../components/icons';
 import { authOauth } from '../../services/authService';
-import { useAuth } from "../../hooks/AuthProvider";
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
-    const auth = useAuth();
-    const handleSubmitEvent = (e) => {
+    const handleSubmitEvent = async (e) => {
         e.preventDefault();
         if (username !== "" && password !== "") {
-            auth.loginAction({ username, password });
+            try {
+                const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/login`, { username, password })
+                if (response) {
+                    if (response.data.error) {
+                        toast(response.data.message)
+                        return;
+                    } else {
+                        toast("Ingreso correctamente.")
+                        navigate("/");
+                        return;
+                    }
+
+                }
+                throw new Error(response.message);
+            } catch (err) {
+                console.log(err);
+                toast.error("Usuario/contraseña incorrectos")
+            }
             return;
         }
         alert("pleae provide a valid input");
-    };
-
-    const handleOAuthLogin = (provider) => {
-        authOauth(provider);
     };
 
     const forgotPassword = () => {
@@ -64,20 +79,11 @@ const Login = () => {
                     <Box mt={2}>
                         <Button
                             variant="outlined"
-                            onClick={() => handleOAuthLogin('google')}
+                            onClick={() => authOauth()}
                             fullWidth
                             startIcon={<GoogleIcon />}
                         >
                             Login with Google
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            onClick={() => handleOAuthLogin('ios')}
-                            fullWidth
-                            startIcon={<AppleIcon />}
-                            style={{ marginTop: '8px' }}
-                        >
-                            Login with iOS
                         </Button>
                     </Box>
                     <Divider style={{ padding: "10px 0" }} />

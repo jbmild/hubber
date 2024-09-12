@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
@@ -11,6 +11,7 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
+import { isAuthenticated, logOut } from './services/authService';
 
 import { Routes, Route, Outlet, useLocation, useNavigate } from "react-router-dom";
 
@@ -32,8 +33,6 @@ import ExportRequirements from './pages/exportar/ExportRequirements';
 import Incoterms from './pages/exportar/Incoterms';
 import PaymentsAndReimbursements from './pages/exportar/PaymentsAndReimbursements';
 import ExportCosts from './pages/exportar/ExportCosts';
-import AuthProvider from "./hooks/AuthProvider";
-import { useAuth } from "./hooks/AuthProvider";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import YourProduct from './pages/exportar/YourProduct';
@@ -41,7 +40,7 @@ import YourProduct from './pages/exportar/YourProduct';
 function App() {
 
   return (
-    <AuthProvider>
+    <>
       <ToastContainer />
       <Routes>
         <Route path="/" element={<Layout />} >
@@ -67,16 +66,25 @@ function App() {
         </Route>
       </Routes>
 
-    </AuthProvider>
+    </>
   );
 }
 
 function Layout() {
+  const [authenticated, setAuthenticated] = useState(false);
   let location = useLocation();
   const navigate = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElExport, setAnchorElExport] = useState(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const auth = await isAuthenticated();
+      setAuthenticated(auth);
+    };
+    checkAuth();
+  }, [location.pathname]);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -96,6 +104,13 @@ function Layout() {
     if (to) navigate(to);
   };
 
+  const handleLogoutClick = () => {
+    setAnchorElNav(null);
+    logOut();
+    setAuthenticated(false);
+    navigate('/');
+  };
+
   const exportMenuItems = [
     { label: 'Proceso de una exportación', path: '/exportar/proceso' },
     { label: 'Regímenes vigentes', path: '/exportar/regimenes' },
@@ -106,8 +121,6 @@ function Layout() {
     { label: 'Tu Producto', path: '/exportar/tu-producto' },
   ];
 
-  const auth = useAuth();
-  console.log(auth)
   return (
     <>
       <AppBar position="static" style={{ backgroundColor: "#fff" }}>
@@ -184,7 +197,7 @@ function Layout() {
                 >
                   Nuestro Directorio
                 </Button>
-                {!auth.token && (
+                {!authenticated && (
                   <Button
                     key={'btn-login-menu'}
                     onClick={() => { handleCloseNavMenu('/login') }}
@@ -193,10 +206,10 @@ function Layout() {
                     Ingresar
                   </Button>
                 )}
-                {auth.token && (
+                {authenticated && (
                   <Button
                     key={'btn-register-menu'}
-                    onClick={() => { auth.logOut() }}
+                    onClick={handleLogoutClick}
                     sx={{ my: 2, color: 'black', display: 'block', backgroundColor: 'rgb(206 206 206)' }}
                   >
                     Salir
@@ -282,7 +295,7 @@ function Layout() {
                     </Typography>
                   </MenuItem>
                   <Divider sx={{ my: 0.5 }} />
-                  {!auth.token && (
+                  {!authenticated && (
                     <MenuItem
                       key={'btn-login-menu'}
                       onClick={() => { handleCloseNavMenu('/login') }}
@@ -292,10 +305,10 @@ function Layout() {
                       </Typography>
                     </MenuItem>
                   )}
-                  {auth.token && (
+                  {authenticated && (
                     <MenuItem
                       key={'btn-register-menu'}
-                      onClick={() => { auth.logOut() }}
+                      onClick={handleLogoutClick}
                     >
                       <Typography textAlign="center">
                         Salir

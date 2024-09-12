@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { TextField, Button, Card, CardContent, Typography, Alert, Box, IconButton } from '@mui/material';
-import { GoogleIcon, AppleIcon } from '../../components/icons';
+import { GoogleIcon } from '../../components/icons';
 import { createUser, authOauth } from '../../services/authService';
 import { toast } from 'react-toastify';
 
@@ -11,6 +11,16 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+
+    useEffect(() => {
+        if (searchParams.get('success') === 'true') {
+            toast.success("El usuario fue creado.")
+            navigate("/login");
+        }
+    }, [searchParams, navigate]);
+
+
 
     const handleRegister = async (event) => {
         event.preventDefault();
@@ -87,20 +97,11 @@ const Register = () => {
                     <Box mt={2}>
                         <Button
                             variant="outlined"
-                            onClick={() => handleOAuthLogin('google')}
+                            onClick={() => handleOAuthLogin()}
                             fullWidth
                             startIcon={<GoogleIcon />}
                         >
                             Register with Google
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            onClick={() => handleOAuthLogin('ios')}
-                            fullWidth
-                            startIcon={<AppleIcon />}
-                            style={{ marginTop: '8px' }}
-                        >
-                            Register with iOS
                         </Button>
                     </Box>
                 </CardContent>

@@ -1,28 +1,21 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { TextField, Button, Card, CardContent, Typography, Alert, Box, Link, Divider } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import { GoogleIcon, AppleIcon } from '../../components/icons';
-import { authStandard, authOauth } from '../../services/authService';
-import { Block } from '@mui/icons-material';
+import { authOauth } from '../../services/authService';
+import { useAuth } from "../../hooks/AuthProvider";
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState(null);
-    const navigate = useNavigate();
 
-    const handleLogin = async (event) => {
-        event.preventDefault();
-
-        try {
-            authStandard({ username, password }, () => { navigate('/') });
-
-            setError(null);
-        } catch (err) {
-            setError(err.response ? err.response.data.error : 'Something went wrong');
+    const auth = useAuth();
+    const handleSubmitEvent = (e) => {
+        e.preventDefault();
+        if (username !== "" && password !== "") {
+            auth.loginAction({ username, password });
+            return;
         }
+        alert("pleae provide a valid input");
     };
 
     const handleOAuthLogin = (provider) => {
@@ -46,7 +39,7 @@ const Login = () => {
                     <Typography variant="h4" gutterBottom align="center">
                         Login
                     </Typography>
-                    <form onSubmit={handleLogin}>
+                    <form onSubmit={handleSubmitEvent}>
                         <TextField
                             fullWidth
                             margin="normal"
@@ -67,7 +60,6 @@ const Login = () => {
                         <Button variant="contained" color="primary" type="submit" fullWidth>
                             Login
                         </Button>
-                        {error && <Alert severity="error" style={{ marginTop: '1rem' }}>{error}</Alert>}
                     </form>
                     <Box mt={2}>
                         <Button
@@ -88,9 +80,9 @@ const Login = () => {
                             Login with iOS
                         </Button>
                     </Box>
-                    <Divider style={{padding: "10px 0"}}/>
-                    <Link href="#" style={{padding: "10px 0 0 0", display: "block"}}>Olvide mi contraseña</Link>
-                    <Link href="/register" style={{padding: "5px 0", display: "block"}}>¿No tenes usuario? Registrate!</Link>
+                    <Divider style={{ padding: "10px 0" }} />
+                    <Link href="#" style={{ padding: "10px 0 0 0", display: "block" }}>Olvide mi contraseña</Link>
+                    <Link href="/register" style={{ padding: "5px 0", display: "block" }}>¿No tenes usuario? Registrate!</Link>
                 </CardContent>
             </Card>
         </Box>

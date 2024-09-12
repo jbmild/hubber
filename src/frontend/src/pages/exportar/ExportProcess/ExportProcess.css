@@ -1,0 +1,79 @@
+.export-process-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.export-process-container h1 {
+  text-align: center; /* Centra el título principal */
+  color: #003366;
+  margin-bottom: 20px;
+}
+
+.export-process-container h2 {
+  margin-top: 30px;
+  color: #003366;
+  /* No hay text-align, los títulos secundarios están alineados a la izquierda */
+}
+
+.export-process-container p {
+  line-height: 1.6;
+  margin-bottom: 20px;
+  text-align: justify; /* Justifica el texto de los párrafos */
+}
+
+.export-process-image {
+  width: 100%;
+  height: auto;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: block; /* Asegura que las imágenes sean elementos de bloque */
+  margin-left: auto; /* Centra la imagen */
+  margin-right: auto; /* Centra la imagen */
+}
+.more-info-link {
+  display: inline-block;
+  margin: 20px 0;
+  padding: 10px 15px;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  position: relative;
+  overflow: hidden;
+}
+
+.more-info-link {
+  display: inline-flex;
+  align-items: center;
+  margin: 20px 0;
+  padding: 10px 15px;
+  color: #007bff; /* Color de texto */
+  text-decoration: none;
+  border: 2px solid #007bff; /* Color del borde */
+  border-radius: 5px;
+  font-weight: bold;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.3s, background-color 0.3s;
+}
+
+.more-info-link::before {
+  
+  font-size: 1.2em;
+  margin-right: 10px; /* Espacio entre el ícono y el texto */
+  color: #007bff;
+  transition: color 0.3s;
+}
+
+.more-info-link:hover {
+  color: #ffffff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.more-info-link:hover::before {
+  color: #ffffff;
+}

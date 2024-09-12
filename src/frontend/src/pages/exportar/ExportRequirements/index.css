@@ -1,0 +1,40 @@
+.contenedor {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #003366;
+  text-align: center;
+}
+
+h2 {
+  color: #003366;
+  margin-top: 30px;
+}
+
+p {
+  text-align: justify;
+  line-height: 1.6;
+}
+
+.banner {
+  display: block;
+  margin: 20px auto;
+  max-width: 100%;
+  width:800px;  /* Ajusta este valor según sea necesario */
+  height: 300px; /* Mantiene la proporción de aspecto */
+  
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.banner2 {
+  display: block;
+  margin: 20px auto;
+  max-width: 85%; /* Ajusta este valor según sea necesario */
+  height: auto; /* Mantiene la proporción de aspecto */
+  border-radius: 8px;
+  
+}

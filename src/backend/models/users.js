@@ -33,12 +33,17 @@ UserSchema.pre('save', function (next) {
     });
 });
 
-UserSchema.methods.comparePassword = function (candidatePassword, cb) {
-    if (!this.password) return cb(null, false); // No password for OAuth users
-    bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
-        if (err) return cb(err);
-        cb(null, isMatch);
-    });
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+    if (!this.password) return false // No password for OAuth users
+
+    let resp = undefined
+    await bcrypt.compare(candidatePassword, this.password).then((result) => {
+        resp = result
+    }).catch((err) => {
+        resp = false
+    })
+
+    return resp
 };
 
 module.exports = mongoose.model('Users', UserSchema);

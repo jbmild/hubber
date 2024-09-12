@@ -10,3 +10,8 @@ exports.createValidator = Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().pattern(PASSWORD_REGEX).min(8).required(),
 });
+
+exports.loginValidator = Joi.object().keys({
+    username: Joi.string().required(),
+    password: Joi.string().pattern(PASSWORD_REGEX).min(8).required(),
+});

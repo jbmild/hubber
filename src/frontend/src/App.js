@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
@@ -22,7 +22,6 @@ import Register from './pages/register';
 import Exportar from './pages/exportar';
 import Profile from './pages/profile';
 import PrivateRoute from './components/privateRoute';
-import { isAuthenticated, logOut } from 'services/authService';
 import { Grid } from '@mui/material';
 import Browser from 'pages/browser';
 import Markets from 'pages/markets';
@@ -33,54 +32,49 @@ import ExportRequirements from './pages/exportar/ExportRequirements';
 import Incoterms from './pages/exportar/Incoterms';
 import PaymentsAndReimbursements from './pages/exportar/PaymentsAndReimbursements';
 import ExportCosts from './pages/exportar/ExportCosts';
+import AuthProvider from "./hooks/AuthProvider";
+import { useAuth } from "./hooks/AuthProvider";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
   return (
-    <>
-      
+    <AuthProvider>
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<Layout />} >
-          <Route index element={<Home />}/>  
+          <Route index element={<Home />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/profile' element={<Profile />} />
           <Route element={<PrivateRoute />}>
-          <Route path='/buscador' element={<Browser />} />    
-          <Route path='/chat' element={<Chat />} />
-		  <Route path='/directorio' element={<Home />} />
-		  <Route path='/exportar' element={<Exportar />} />
-	  <Route path='/mercados' element={<Markets />} />  
-          <Route path='/exportar/proceso' element={<ExportProcess />} />
-          <Route path='/exportar/regimenes' element={<ExportRegimes />} />
-          <Route path='/exportar/requisitos' element={<ExportRequirements />} />
-          
-          <Route path='/exportar/incoterms' element={<Incoterms />} />
-          <Route path='/exportar/cobros' element={<PaymentsAndReimbursements />} />
-          <Route path='/exportar/costos' element={<ExportCosts />} />
+            <Route path='/buscador' element={<Browser />} />
+            <Route path='/chat' element={<Chat />} />
+            <Route path='/directorio' element={<Home />} />
+            <Route path='/exportar' element={<Exportar />} />
+            <Route path='/mercados' element={<Markets />} />
+            <Route path='/exportar/proceso' element={<ExportProcess />} />
+            <Route path='/exportar/regimenes' element={<ExportRegimes />} />
+            <Route path='/exportar/requisitos' element={<ExportRequirements />} />
+
+            <Route path='/exportar/incoterms' element={<Incoterms />} />
+            <Route path='/exportar/cobros' element={<PaymentsAndReimbursements />} />
+            <Route path='/exportar/costos' element={<ExportCosts />} />
           </Route>
         </Route>
       </Routes>
 
-    </>
+    </AuthProvider>
   );
 }
 
 function Layout() {
-  const [authenticated, setAuthenticated] = useState(false);
   let location = useLocation();
   const navigate = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElExport, setAnchorElExport] = useState(null);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const auth = await isAuthenticated();
-      setAuthenticated(auth);
-    };
-    checkAuth();
-  }, [location.pathname]);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -100,13 +94,6 @@ function Layout() {
     if (to) navigate(to);
   };
 
-  const handleLogoutClick = () => {
-    setAnchorElNav(null);
-    logOut();
-    setAuthenticated(false);
-    navigate('/');
-  };
-
   const exportMenuItems = [
     { label: 'Proceso de una exportación', path: '/exportar/proceso' },
     { label: 'Regímenes vigentes', path: '/exportar/regimenes' },
@@ -116,9 +103,11 @@ function Layout() {
     { label: 'Costos', path: '/exportar/costos' },
   ];
 
+  const auth = useAuth();
+  console.log(auth)
   return (
     <>
-      <AppBar position="static" style={{backgroundColor: "#fff"}}>
+      <AppBar position="static" style={{ backgroundColor: "#fff" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <Stack direction="row" spacing={0} display={'flex'} width={'100%'}>
@@ -128,7 +117,7 @@ function Layout() {
                 variant="h6"
                 noWrap
                 component="a"
-                onClick={() => {navigate('/');}}
+                onClick={() => { navigate('/'); }}
                 sx={{
                   mr: 2,
                   display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex' },
@@ -148,7 +137,7 @@ function Layout() {
                   key={'btn-exportar-menu'}
                   onClick={handleOpenExportMenu}
                   sx={{ my: 2, color: 'black', display: 'block' }}
-                  
+
                 >
                   Información General
                 </Button>
@@ -166,50 +155,50 @@ function Layout() {
 
                 <Button
                   key={'btn-productos-menu'}
-                  onClick={() => {handleCloseNavMenu('/buscador')}}
+                  onClick={() => { handleCloseNavMenu('/buscador') }}
                   sx={{ my: 2, color: 'black', display: 'block' }}
                 >
                   Buscar Normativas
                 </Button>
-				
-				<Button key={'btn-mercados-menu'}
-                  onClick={() => {handleCloseNavMenu('/mercados')}}
+
+                <Button key={'btn-mercados-menu'}
+                  onClick={() => { handleCloseNavMenu('/mercados') }}
                   sx={{ my: 2, color: 'black', display: 'block' }}>
-                 Recomendar mercados
+                  Recomendar mercados
                 </Button>
-				
+
                 <Button
                   key={'btn-chat-menu'}
-                  onClick={() => {handleCloseNavMenu('/chat')}}
+                  onClick={() => { handleCloseNavMenu('/chat') }}
                   sx={{ my: 2, color: 'black', display: 'block' }}
                 >
                   Soporte por chat
                 </Button>
                 <Button
                   key={'btn-dir-menu'}
-                  onClick={() => {handleCloseNavMenu('/directorio')}}
+                  onClick={() => { handleCloseNavMenu('/directorio') }}
                   sx={{ my: 2, color: 'black', display: 'block' }}
                 >
                   Nuestro Directorio
                 </Button>
-                {!authenticated && (
+                {!auth.token && (
                   <Button
                     key={'btn-login-menu'}
-                    onClick={() => {handleCloseNavMenu('/login')}}
+                    onClick={() => { handleCloseNavMenu('/login') }}
                     sx={{ my: 2, color: 'black', display: 'block' }}
                   >
                     Ingresar
                   </Button>
                 )}
-                {authenticated && (
+                {auth.token && (
                   <Button
                     key={'btn-register-menu'}
-                    onClick={handleLogoutClick}
+                    onClick={() => { auth.logOut() }}
                     sx={{ my: 2, color: 'black', display: 'block', backgroundColor: 'rgb(206 206 206)' }}
                   >
                     Salir
                   </Button>
-                )}                
+                )}
               </Box>
 
               <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none', lg: 'none' } }}>
@@ -236,12 +225,12 @@ function Layout() {
                     horizontal: 'left',
                   }}
                   open={Boolean(anchorElNav)}
-                  onClose={() => {handleCloseNavMenu(null)}}
+                  onClose={() => { handleCloseNavMenu(null) }}
                   sx={{
                     display: { xs: 'block', md: 'none', lg: 'none' },
                   }}
                 >
-                  <MenuItem 
+                  <MenuItem
                     key={'btn-exportar-menu'}
                     onClick={handleOpenExportMenu}
                   >
@@ -254,56 +243,56 @@ function Layout() {
                       <Typography textAlign="center">{item.label}</Typography>
                     </MenuItem>
                   ))}
-                  <MenuItem 
+                  <MenuItem
                     key={'btn-productos-menu'}
-                    onClick={() => {handleCloseNavMenu('/buscador')}}
+                    onClick={() => { handleCloseNavMenu('/buscador') }}
                   >
                     <Typography textAlign="center">
                       Buscar Normativas
                     </Typography>
                   </MenuItem>
 
-                    <MenuItem 
+                  <MenuItem
                     key={'btn-mercados-menu'}
-                    onClick={() => {handleCloseNavMenu('/mercados')}}
+                    onClick={() => { handleCloseNavMenu('/mercados') }}
                   >
                     <Typography textAlign="center">
                       Recomendar mercados
                     </Typography>
                   </MenuItem>
 
-		    
-                  <MenuItem 
+
+                  <MenuItem
                     key={'btn-chat-menu'}
-                    onClick={() => {handleCloseNavMenu('/chat')}}
+                    onClick={() => { handleCloseNavMenu('/chat') }}
                   >
                     <Typography textAlign="center">
                       Soporte por chat
                     </Typography>
                   </MenuItem>
-                  <MenuItem 
+                  <MenuItem
                     key={'btn-dir-menu'}
-                    onClick={() => {handleCloseNavMenu('/directorio')}}
+                    onClick={() => { handleCloseNavMenu('/directorio') }}
                   >
                     <Typography textAlign="center">
                       Nuestro Directorio
                     </Typography>
                   </MenuItem>
                   <Divider sx={{ my: 0.5 }} />
-                  {!authenticated && (
-                    <MenuItem 
+                  {!auth.token && (
+                    <MenuItem
                       key={'btn-login-menu'}
-                      onClick={() => {handleCloseNavMenu('/login')}}
+                      onClick={() => { handleCloseNavMenu('/login') }}
                     >
                       <Typography textAlign="center">
                         Ingresar
                       </Typography>
                     </MenuItem>
                   )}
-                  {authenticated && (                  
-                    <MenuItem 
+                  {auth.token && (
+                    <MenuItem
                       key={'btn-register-menu'}
-                      onClick={handleLogoutClick}
+                      onClick={() => { auth.logOut() }}
                     >
                       <Typography textAlign="center">
                         Salir
@@ -317,7 +306,7 @@ function Layout() {
                 variant="h5"
                 noWrap
                 component="a"
-                onClick={() => {navigate('/');}}
+                onClick={() => { navigate('/'); }}
                 sx={{
                   mr: 2,
                   display: { xs: 'inline-flex', md: 'none', lg: 'none' },
@@ -334,21 +323,21 @@ function Layout() {
                 }}
               >
                 HUBBER
-              </Typography>     
-            </Stack>          
+              </Typography>
+            </Stack>
           </Toolbar>
         </Container>
       </AppBar>
-      
+
       <Outlet />
-      
+
       <footer className="_c4b89fde">
         <div className="wr">
           <div className="_bea1daea">
             <Grid container>
               <Grid item xs={12} md={3}>
                 <span className="_c0e4633f">© 2024 Hubber</span>
-                <div className="_a6d0f97b" style={{scale:0.5}}>
+                <div className="_a6d0f97b" style={{ scale: 0.5 }}>
                   <div className="_379aefea">
                     <a href="https://www.facebook.com/" className="_77e6fd5c">
                       <svg
@@ -386,7 +375,7 @@ function Layout() {
                   </div>
                   <div className="_370825cf umsoPluginTarget"></div>
                 </div>
-              </Grid>              
+              </Grid>
               <Grid item xs={12} md={9}>
                 <ul className="_d1a0a8ea">
                   <li className="_0fc50e27">

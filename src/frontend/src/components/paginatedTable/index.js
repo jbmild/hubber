@@ -135,7 +135,7 @@ const PaginatedTable = () => {
         nombre: p.titulo,
         descripcion: p.descripcion,
         agencia: p.normativaOrigen,
-        ultimaActualizacion: `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`
+        ultimaActualizacion: p.fechaImplementacion.split('T')[0],
       })));
       setTotalItems(res.totalItems);
     });

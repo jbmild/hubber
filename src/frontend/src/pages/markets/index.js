@@ -1,8 +1,8 @@
 //En algun lado (aca o en el component) tengo que importar el servicio
-import { getPosiciones, tabla_ima } from "services/marketsService";
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { detalle_ima_test, tabla_ima_test, detalle_ima, getPosiciones, tabla_ima } from "services/marketsService";
+import React, { useState } from 'react';
 import {
+    Box,
     Button,
     Grid,
     Paper,
@@ -27,8 +27,10 @@ const Markets = () => {
   const [totalResults, setTotalResults] = useState(0); // Estado para la cantidad total de resultados
   const [open, setOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState('');
-  const [data, setData] = useState([]);
+  const [ima, setIma] = useState([]);
+  const [detalleIma, setDetalleIma] = useState([]);
   const [showTable, setShowTable] = useState(false);
+  const [showTableDetails, setShowTableDetails] = useState(false);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -40,7 +42,6 @@ const Markets = () => {
     setResults(prev => newOffset === 0 ? response.posiciones : [...prev, ...response.posiciones]);
     setTotalResults(response.totalResults); // Almacena el total de resultados disponibles
     setLoading(false);
-    console.log(results);
   };
 
   const handleInputChange = (e) => {
@@ -52,7 +53,6 @@ const Markets = () => {
   const handleScroll = (e) => {
     if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight && !loading) {
       const newOffset = offset + 10;
-      // Verificar si ya hemos cargado todos los resultados
       if (results.length < totalResults) {
         setOffset(newOffset);
         fetchResults(query, newOffset);
@@ -62,6 +62,7 @@ const Markets = () => {
 
   const handleSelection = (event, newValue) => {
     setShowTable(false);
+    setShowTableDetails(false);
     document.getElementById('container-ima').style.height = '10vh';
     document.getElementById('div-ima').style.height = '30vh';
     if(newValue){
@@ -75,14 +76,14 @@ const Markets = () => {
   const handleSubmit = () => {
     setLoading(true);
     
-    tabla_ima(selectedValue).then(res => {
+    tabla_ima_test(selectedValue).then(res => {
         setLoading(false);
-        setData(res);
+        setIma(res);
         console.log(res);
     })
     setShowTable(true);
-    document.getElementById('container-ima').style.height = '112vh';
-    document.getElementById('div-ima').style.height = '130vh';
+    document.getElementById('div-ima').style.height = '150vh';
+    document.getElementById('container-ima').style.height = '120vh';
   };
 
   const handleOpen = () => {
@@ -94,18 +95,31 @@ const Markets = () => {
     setOpen(false);
   }
 
+  const getIMADetails = () => {
+    setLoading(true);
+    detalle_ima_test(selectedValue).then(res => {
+      setLoading(false);
+      setDetalleIma(res);
+      console.log(res)
+    })
+    setShowTableDetails(true);
+    document.getElementById('div-ima').style.height = '240vh';
+    document.getElementById('container-ima').style.height = '215vh';
+    };
+
   return (
-    <div id='div-ima'
-    style={{
+    <Box id='div-ima'
+    sx={{
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      height: '30vh',
+      height: { xs: '25vh', sm: '25vh', md: '30vh' },
+      flexDirection: 'column'
     }}
     >
       <Paper id='container-ima'
         sx={{
-          padding: { xs: '1em', sm: '1.5em', md: '2em' },
+          padding: { xs: '3.5em', sm: '2.5em', md: '2em' },
           maxWidth: '80vw',
           width: '100%',
           height: '10vh',
@@ -120,16 +134,17 @@ const Markets = () => {
             onOpen={handleOpen}
             onClose={handleClose}
             onChange={handleSelection}
-            onInputChange={handleInputChange} // Cambia cuando el input cambia
-            getOptionLabel={(option) => option.posicion} // Lo que se muestra en la lista
+            onInputChange={handleInputChange}
+            getOptionLabel={(option) => option.posicion}
             options={results}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             loading={loading}
-            // Sobrescribimos el comportamiento del listbox para detectar el scroll
+
             ListboxProps={{
               onScroll: handleScroll,
-              style: { maxHeight: '300px', overflow: 'auto' },
+              style: { maxHeight: '40vh', overflow: 'auto' },
             }}
+
             renderInput={(params) => (
             <TextField
               {...params}
@@ -139,7 +154,7 @@ const Markets = () => {
                 ...params.InputProps,
                 endAdornment: (
                   <>
-                    {loading ? <CircularProgress color="inherit" size={10} /> : null}
+                    {loading ? <CircularProgress color="inherit" size={15} /> : null}
                     {params.InputProps.endAdornment}
                   </>
                 ),
@@ -176,8 +191,8 @@ const Markets = () => {
           sx={{
             flex: 1,
             overflowY: 'auto',
-            maxHeight: 'calc(130vh - 12.5em)', // Ajuste basado en em para altura
-            marginTop: '2em',
+            maxHeight: 'calc(215vh - 4.5em)',
+            marginTop: '1.5em',
             '&::-webkit-scrollbar': {
               width: '0.5em',
             },
@@ -195,10 +210,12 @@ const Markets = () => {
               loading ? <></> : 
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ width: { xs: '100%', sm: '20%' } }}>Pais</TableCell>
+                    <TableCell sx={{ width: { xs: '20%', sm: '20%', md: '25%' } }}>Pais</TableCell>
+                    <TableCell sx={{ width:  { xs: '20%', sm: '20%', md: '20%' } }}>Indice de Mercado Atractivo</TableCell>
                   {!isSmallScreen && (
                     <>
-                    <TableCell sx={{ width: '65%' }}>Indice de Mercado Atractivo</TableCell>
+                    <TableCell sx={{ width: { xs: '20%', sm: '20%', md: '25%' } }}>Pais</TableCell>
+                    <TableCell sx={{ width:  { xs: '20%', sm: '20%', md: '20%' } }}>Normativas</TableCell>
                     </>
                   )}
                 </TableRow>
@@ -214,111 +231,112 @@ const Markets = () => {
                 </TableRow>  
               :              
                 <>
-                {data.map((row) => (
+                {ima.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell sx={{ width: { xs: '100%', sm: '50%' } }}> <img src={row.bandera} alt=" " style={{"width":"25px"}}/> {row.pais}</TableCell>
-                    {!isSmallScreen && (
-                      <>
-                        <TableCell>{Number(row.puntaje).toFixed(2)}</TableCell>
-                      </>
-                    )}
+                    <TableCell> <img src={row.bandera} alt=" " style={{"width":"25px"}}/> {row.pais}</TableCell>
+                    <TableCell align='center'>
+                      <span style={{ 
+                          color: row.puntaje >= 7 ? 'green' : row.puntaje >= 4 ? 'orange' : row.puntaje >= 1 ?'red' : 'black' 
+                      }}>
+                        {Number(row.puntaje).toFixed(2)} 
+                      </span>
+                      <span style={{}}> / 10</span>
+                    </TableCell>
                   </TableRow>
                 ))}
                 </>
               }   
             </TableBody>
           </Table>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={getIMADetails}
+            sx={{
+              display: 'flex',
+              fontSize: 12,
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '0.2em',
+              textTransform: 'none',
+              '& .MuiButton-startIcon': {
+                marginRight: '0.5em'
+              }
+            }}
+            >
+              Mostrar Detalles IMA
+            </Button>
+            {showTableDetails && (<TableContainer style={{ overflowX: 'auto', paddingTop:'1em'}}>
+              <Table style={{borderCollapse: 'collapse', width:'100%'}}>
+              {
+                loading ?
+                  <TableRow key={'spinner'}>
+                    <TableCell colSpan={12}>
+                      <LinearProgress color="primary" />
+                    </TableCell>
+                  </TableRow>
+                : <>
+                  <TableHead>
+                    <TableRow key='paises'>
+                      <TableCell style={{fontWeight:'bold',
+                            position: 'sticky',
+                            left: 0,/* Fija la primera columna */
+                            backgroundColor: 'white', /* Asegura que el fondo sea visible al hacer scroll */
+                            zIndex: 1, /* Asegura que la columna esté por encima del contenido */
+                            whiteSpace: 'nowrap'
+                            }}></TableCell>
+                      {detalleIma.paises.map((pais) => (
+                      <TableCell style={{whiteSpace: 'nowrap'}}>{pais}</TableCell>
+                    ))}
+                    </TableRow>
+                  </TableHead>
+                    <TableBody>
+                      {detalleIma.puntajesPorCategoria.map((categoria) => (
+                          <TableRow key={categoria.titulo}>
+                            <TableCell style={{fontWeight:'bold',
+                            position: 'sticky',
+                            left: 0,/* Fija la primera columna */
+                            backgroundColor: 'white', /* Asegura que el fondo sea visible al hacer scroll */
+                            zIndex: 1, /* Asegura que la columna esté por encima del contenido */
+                            whiteSpace: 'nowrap'
+                            }}
+                            >
+                              {categoria.titulo}
+                            </TableCell>
+                             {categoria.puntajes.map((valor) => (
+                            <TableCell
+                              style={{
+                                color: valor >= 9 ? 'lightgreen' :valor >= 7 ? 'green' : valor >= 5 ? 'orange' : 'red',
+                                fontWeight: valor >= 9 ? 'bold' : 'light',
+                                textAlign: 'center',
+                                whiteSpace: 'nowrap'
+                            }}
+                            >
+                              {Number(valor).toFixed(2)}</TableCell>
+                             ))}
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </>
+                }
+                </Table>
+            </TableContainer>)}
         </TableContainer>)}
       </Paper>
-    </div>  
+      <Box sx={{
+          height: '1.5em',
+          fontSize: 10,
+          fontWeight: 'light',
+          fontStyle: 'oblique',
+          flexDirection: 'column',
+        }}>
+          <p>Fuente: Agencia Argentina de Inversiones y Comercio Internacional. Calculadora de Índice de Mercados Atractivos: <a target="_blank" href='https://exportargentina.org.ar/mercados'> https://exportargentina.org.ar/mercados</a>. Método de cálculo: 
+           <a target="_blank" href='https://www.inversionycomercio.ar/pdf/Informe_IMA_2023.pdf'> https://www.inversionycomercio.ar/pdf/Informe_IMA_2023.pdf </a></p>
+        </Box>
+    </Box>  
+    
   );
 };
 
- /* return (
-    <div onScroll={handleScroll} style={{ height: '300px', overflowY: 'scroll' }}>
-      <input type="text" value={query} onChange={handleInputChange} />
-      <ul>
-        {results.map((result) => (
-          <li key={result._id}>{result.posicion}</li>
-        ))}
-      </ul>
-      {loading && <p>Loading...</p>}
-    </div>
-  );
-};*/
-/*
-  return (
-    <div>
-      <h2>Seleccione el producto</h2>
-      <select onChange={handleSelection} value={selectedValue}>
-        <option value="">Seleccione</option>
-        {options.map((option) => (
-          <option key={option._id} value={option.posicion}>
-            {option.posicion}
-          </option>
-        ))}
-      </select>
-      <button onClick={handleSubmit} disabled={!selectedValue}>Buscar</button>
-
-      <TableContainer
-          sx={{
-            flex: 1,
-            overflowY: 'auto',
-            maxHeight: 'calc(80vh - 12.5em)', // Ajuste basado en em para altura
-            marginTop: '2em',
-            '&::-webkit-scrollbar': {
-              width: '0.5em',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: 'rgba(0, 0, 0, 0.2)',
-              borderRadius: '0.25em',
-            },
-            '&::-webkit-scrollbar-track': {
-              background: 'rgba(0, 0, 0, 0.1)',
-            }
-          }}
-        >
-          <Table>
-            {
-              loading ? <></> : 
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ width: { xs: '100%', sm: '20%' } }}>Pais</TableCell>
-                  {!isSmallScreen && (
-                    <>
-                    <TableCell sx={{ width: '65%' }}>Indice de Mercado Atractivo</TableCell>
-                    </>
-                  )}
-                </TableRow>
-              </TableHead>
-            }
-            <TableBody>
-            {
-              loading ? 
-                <TableRow key={'spinner'}>
-                  <TableCell colSpan={12}>
-                    <LinearProgress color="primary" />
-                  </TableCell>
-                </TableRow>  
-              :              
-                <>
-                {data.map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell sx={{ width: { xs: '100%', sm: '50%' } }}> <img src={row.bandera} alt="bandera" style={{"width":"30px"}}/> {row.pais}</TableCell>
-                    {!isSmallScreen && (
-                      <>
-                        <TableCell>{Number(row.puntaje).toFixed(2)}</TableCell>
-                      </>
-                    )}
-                  </TableRow>
-                ))}
-                </>
-              }   
-            </TableBody>
-          </Table>
-        </TableContainer>
-    </div>
-  );
-};
-*/
+ 
 export default Markets;

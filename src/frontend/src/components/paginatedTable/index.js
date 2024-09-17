@@ -31,6 +31,7 @@ import { getPaises } from 'services/paisesService'; // Importa la función getPa
 import './style.css'; // Importa el archivo de estilos CSS
 import { getNormativas } from 'services/normativasService';
 import TabPanel, {a11yProps} from 'components/tabs/tabs';
+import TableRowsLoader from './loader';
 
 //esto deberia venir de la base, pero ahora no existe esa info
 const today = new Date();
@@ -132,10 +133,11 @@ const PaginatedTable = () => {
       setLoading(false);
       setData(res.items.map(p => ({
         id: p._id,
-        nombre: p.titulo,
+        titulo: p.titulo,
         descripcion: p.descripcion,
-        agencia: p.normativaOrigen,
-        ultimaActualizacion: p.fechaImplementacion.split('T')[0],
+        agencia: p.agencia,
+        origen: p.normativaOrigen,
+        fechaImplementacion: p.fechaImplementacion.split('T')[0],
       })));
       setTotalItems(res.totalItems);
     });
@@ -147,12 +149,13 @@ const PaginatedTable = () => {
   };
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh'
+        height: { md: '100vh', sm: 'unset'},
+        paddingBlock: { md: 0, sm: '1em', xs: '1.5em'}
       }}
     >
       <Paper
@@ -160,7 +163,7 @@ const PaginatedTable = () => {
           padding: { xs: '1em', sm: '1.5em', md: '2em' },
           maxWidth: '80vw',
           width: '100%',
-          height: '80vh',
+          height: { md: '80vh', sm:'fit-content'},
           display: 'flex',
           flexDirection: 'column'
         }}
@@ -282,59 +285,41 @@ const PaginatedTable = () => {
           sx={{
             flex: 1,
             overflowY: 'auto',
-            maxHeight: 'calc(80vh - 12.5em)', // Ajuste basado en em para altura
             marginTop: '2em',
-            '&::-webkit-scrollbar': {
-              width: '0.5em',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: 'rgba(0, 0, 0, 0.2)',
-              borderRadius: '0.25em',
-            },
-            '&::-webkit-scrollbar-track': {
-              background: 'rgba(0, 0, 0, 0.1)',
-            }
           }}
         >
-          <Table>
-            {
-              loading ? <></> : 
-              <TableHead>
+          <Table stickyHeader sx={{height: '100%'}}>
+            <TableHead>
                 <TableRow>
-                  <TableCell sx={{ width: { xs: '100%', sm: '50%' } }}>Nombre</TableCell>
+                  <TableCell sx={{ width: { xs: '100%', sm: '40%' } }}>Titulo</TableCell>
                   {!isSmallScreen && (
                     <>
-                      <TableCell sx={{ width: '15%' }}>Fecha Última Actualización</TableCell>
-                      <TableCell sx={{ width: '35%' }}>Agencia</TableCell>
+                      <TableCell sx={{ width: '45%' }}>Normativa</TableCell>
+                      <TableCell sx={{ width: '15%' }}>Fecha de Implementación</TableCell>
                     </>
                   )}
                 </TableRow>
               </TableHead>
-            }
-            <TableBody>
+            <TableBody sx={{ overflowY: 'auto'}}>
             {
               loading ? 
-                <TableRow key={'spinner'}>
-                  <TableCell colSpan={12}>
-                    <LinearProgress color="primary" />
-                  </TableCell>
-                </TableRow>  
+                <TableRowsLoader rowsNum={rowsPerPage} cellsNum={(isSmallScreen ? 1 : 3)} />
               :              
                 <>
                 {data.map((row) => (
                   <TableRow key={row.id} hover onClick={() => handleRowClick(row)}>
-                    <TableCell sx={{ width: { xs: '100%', sm: '50%' } }}>{row.nombre}</TableCell>
+                    <TableCell sx={{ width: { xs: '100%', sm: '40%' } }}>{row.titulo}</TableCell>
                     {!isSmallScreen && (
                       <>
-                        <TableCell>{row.ultimaActualizacion}</TableCell>
-                        <TableCell>{row.agencia}</TableCell>
+                        <TableCell>{row.origen}</TableCell>
+                        <TableCell>{row.fechaImplementacion}</TableCell>
                       </>
                     )}
                   </TableRow>
                 ))}
                 {data.length < rowsPerPage && Array.from({ length: rowsPerPage - data.length }).map((_, index) => (
                   <TableRow key={`empty-${index}`}>
-                    <TableCell colSpan={3} sx={{ height: '3em' }}></TableCell>
+                    <TableCell colSpan={3}></TableCell>
                   </TableRow>
                 ))}
                 </>
@@ -372,64 +357,134 @@ const PaginatedTable = () => {
               <CloseIcon />
             </Button>
           </DialogTitle>
-          <DialogContent>
+          <DialogContent sx={{
+            height: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: 'hidden'
+          }}>
             {selectedRow && (
-              <div>
-                <Table>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell sx={{ width: { md: '40%'} }}>
-                        Nombre
-                      </TableCell>
-                      <TableCell sx={{ width: { md: '60%'} }}>
-                        {selectedRow.nombre}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                    <TableCell sx={{ width: { md: '40%'} }}>
-                      Fecha Última Actualización
-                      </TableCell>
-                      <TableCell sx={{ width: { md: '60%'} }}>
-                        {selectedRow.ultimaActualizacion}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                    <TableCell sx={{ width: { md: '40%'} }}>
-                      Agencia
-                      </TableCell>
-                      <TableCell sx={{ width: { md: '60%'} }}>
-                        {selectedRow.agencia}
-                      </TableCell>
-                    </TableRow>                    
-                  </TableBody>
-                </Table>
-                <Box sx={{ width: '100%' }}>
-                  <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={tabSelected} onChange={handleTabChange} aria-label="basic tabs example">
-                      <Tab label="Descripcion" {...a11yProps(0)} />
-                      <Tab label="Informacion Certificación" {...a11yProps(1)} disabled/>
-                    </Tabs>
-                  </Box>
-                  <TabPanel value={tabSelected} index={0}>
-                    <p>
-                      {selectedRow.descripcion}
-                    </p>
-                  </TabPanel>
-                  <TabPanel value={tabSelected} index={1}>
-                    WIP
-                  </TabPanel>
+              <Box sx={{ width: '100%'}}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                  <Tabs variant='scrollable' scrollButtons={'auto'} allowScrollButtonsMobile={true} value={tabSelected} onChange={handleTabChange} aria-label="basic tabs example">
+                    <Tab label="Información Basica" {...a11yProps(0)} />
+                    <Tab label="Descripción" {...a11yProps(1)} />
+                    <Tab label="Información de Certificación" {...a11yProps(2)} disabled/>
+                  </Tabs>
                 </Box>
-              </div>
+                <TabPanel className={'tabPanel'} value={tabSelected} index={0}>
+                  <Table>
+                    <TableBody>
+                      { isSmallScreen ? 
+                        <>
+                          <TableRow>
+                            <TableCell sx={{textAlign: 'center', fontWeight: 'bold'}}>
+                              Titulo
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell>
+                              {selectedRow.titulo}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell sx={{textAlign: 'center', fontWeight: 'bold'}}>
+                              Normativa
+                            </TableCell>
+                          </TableRow>   
+                          <TableRow>
+                            <TableCell>
+                              {selectedRow.origen}
+                            </TableCell>
+                          </TableRow>
+                          {selectedRow.agencia && 
+                            <>
+                              <TableRow>
+                                <TableCell sx={{textAlign: 'center', fontWeight: 'bold'}}>
+                                  Agencia
+                                </TableCell>                              
+                              </TableRow>   
+                              <TableRow>
+                                <TableCell>
+                                  {selectedRow.agencia}
+                                </TableCell>
+                              </TableRow>
+                            </>
+                          }
+                          <TableRow>
+                            <TableCell sx={{textAlign: 'center', fontWeight: 'bold'}}>
+                              Fecha de Implementación
+                            </TableCell>                            
+                          </TableRow> 
+                          <TableRow>
+                            <TableCell sx={{textAlign: 'center'}}>
+                              {selectedRow.fechaImplementacion}
+                            </TableCell>
+                          </TableRow>
+                        </>
+                        :
+                        <>
+                          <TableRow>
+                            <TableCell sx={{ width: { md: '40%'} }}>
+                              Titulo
+                            </TableCell>
+                            <TableCell sx={{ width: { md: '60%'} }}>
+                              {selectedRow.titulo}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell sx={{ width: { md: '40%'} }}>
+                            Normativa
+                            </TableCell>
+                            <TableCell sx={{ width: { md: '60%'} }}>
+                              {selectedRow.origen}
+                            </TableCell>
+                          </TableRow>   
+                          {selectedRow.agencia && 
+                            <TableRow>
+                              <TableCell sx={{ width: { md: '40%'} }}>
+                              Agencia
+                              </TableCell>
+                              <TableCell sx={{ width: { md: '60%'} }}>
+                                {selectedRow.agencia}
+                              </TableCell>
+                            </TableRow>   
+                          }
+                          <TableRow>
+                            <TableCell sx={{ width: { md: '40%'} }}>
+                              Fecha de Implementación
+                            </TableCell>
+                            <TableCell sx={{ width: { md: '60%'} }}>
+                              {selectedRow.fechaImplementacion}
+                            </TableCell>
+                          </TableRow>   
+                        </>
+                      }                                  
+                    </TableBody>
+                  </Table>
+                </TabPanel>
+                <TabPanel className={'tabPanel'} value={tabSelected} index={1}>
+                  <p>
+                    {selectedRow.descripcion}
+                  </p>
+                </TabPanel>
+                <TabPanel className={'tabPanel'} value={tabSelected} index={2}>
+                  WIP
+                </TabPanel>
+              </Box>
             )}
           </DialogContent>
           <DialogActions>
-            <Button variant='contained' color='success' sx={{width: '100%'}}>
+            <Button variant='contained' color='success' sx={{width: '50%'}}>
               Normativa Cumplida
+            </Button>
+            <Button variant='outlined' color='primary' sx={{width: '50%'}}>
+              Seguir Normativa
             </Button>
           </DialogActions>
         </Dialog>
       </Paper>
-    </div>
+    </Box>
   );
 };
 

@@ -6,7 +6,8 @@ const NormativaSchema = new Schema({
         titulo: String,
         descripcion: String,
         agencia: String,
-        normativaOrigen: String
+        normativaOrigen: String,
+        fechaImplementacion: String
     },{
         collection: 'barrerasAlfajores'
     }

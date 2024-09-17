@@ -11,6 +11,7 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
+import MisNormativas from 'components/misNormativas';
 import { isAuthenticated, logOut } from './services/authService';
 
 import { Routes, Route, Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -62,6 +63,7 @@ function App() {
             <Route path='/exportar/cobros' element={<PaymentsAndReimbursements />} />
             <Route path='/exportar/costos' element={<ExportCosts />} />
             <Route path='/exportar/tu-producto' element={<YourProduct />} />
+            <Route path='/misNormativas' element={<MisNormativas />} />
           </Route>
         </Route>
       </Routes>
@@ -197,6 +199,15 @@ function Layout() {
                 >
                   Nuestro Directorio
                 </Button>
+                {authenticated && (
+                  <Button
+                    key={'btn-mis-normativas'}
+                    onClick={() => { handleCloseNavMenu('/misNormativas') }}
+                    sx={{ my: 2, color: 'black', display: 'block' }}
+                  >
+                    Mis Normativas
+                  </Button>
+                )}
                 {!authenticated && (
                   <Button
                     key={'btn-login-menu'}
@@ -294,6 +305,16 @@ function Layout() {
                       Nuestro Directorio
                     </Typography>
                   </MenuItem>
+                  {authenticated && (
+                    <MenuItem
+                      key={'btn-mis-normativas'}
+                      onClick={() => { handleCloseNavMenu('/misNormativas') }}
+                    >
+                      <Typography textAlign="center">
+                        Mis Normativas
+                      </Typography>
+                    </MenuItem>
+                  )}
                   <Divider sx={{ my: 0.5 }} />
                   {!authenticated && (
                     <MenuItem

@@ -5,7 +5,14 @@ const SALT_WORK_FACTOR = 10;
 const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, index: { unique: true } },
     username: { type: String, required: true },
-    password: { type: String }
+    password: { type: String },
+    normativasUsuario: [
+        {
+            idNormativa: { type: mongoose.Schema.Types.ObjectId, ref: 'Normativa' },
+            fechaAprobacion: { type: Date, default: Date.now },
+            status: { type: String, enum: ['Pendiente', 'Aprobado'] }
+        }
+    ]
 }, {
     collection: 'usuarios'
 }

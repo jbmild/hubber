@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import TabPanel, {a11yProps} from 'components/tabs/tabs';
+import './style.css';
 
 const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
 

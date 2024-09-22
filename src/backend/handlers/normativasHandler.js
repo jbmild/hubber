@@ -77,7 +77,15 @@ exports.handleTraerNormativas = async (req, res) => {
   try{
     console.log(req.query);
     const filters = {
-      pais: req.query.pais
+      $and:[
+        { 
+          $or: [
+            { codigos: { $in:  req.query.producto } },
+            { etiquetas: { $in:  req.query.producto } }
+          ]
+        },
+        { pais: req.query.pais }
+      ] 
     }
 
     const result = await traerNormativasPaginado(req.query.page, req.query.limit, filters);
@@ -92,7 +100,7 @@ exports.handleTraerNormativas = async (req, res) => {
 
 async function traerNormativasPaginado(page, limit, filters) {
   const skip = page * limit;
-  const normativas = await Normativa.find(filters).
+  const normativas = await Normativa.find(filters, { etiquetas: 0, codigos: 0}).
     skip(skip).limit(limit).exec();
 
   const totalItems = await Normativa.countDocuments(filters).exec();

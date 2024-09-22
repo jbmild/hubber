@@ -7,10 +7,12 @@ const NormativaSchema = new Schema({
         descripcion: String,
         agencia: String,
         normativaOrigen: String,
-        fechaImplementacion: String
+        fechaImplementacion: String,
+        etiquetas: [String],
+        codigos: [String]
     },{
-        collection: 'barrerasAlfajores'
+        collection: 'barrerasComerciales'
     }
 );
 
-module.exports = mongoose.model('Normativa', NormativaSchema, 'barrerasAlfajores');
+module.exports = mongoose.model('Normativa', NormativaSchema, 'barrerasComerciales');

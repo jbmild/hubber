@@ -70,6 +70,7 @@ const PaginatedTable = () => {
     }
 
     searchInfo(page, rowsPerPage, {
+      producto: search,
       pais: paisSeleccionado
     });
   };
@@ -82,6 +83,7 @@ const PaginatedTable = () => {
     }
 
     searchInfo(newPage, rowsPerPage, {
+      producto: search,
       pais: paisSeleccionado
     });
   };
@@ -96,6 +98,7 @@ const PaginatedTable = () => {
     }
 
     searchInfo(0, newRowPerPage, {
+      producto: search,
       pais: paisSeleccionado
     });
   };
@@ -109,7 +112,7 @@ const PaginatedTable = () => {
 
     setLoading(true);
 
-    if(!search.toLowerCase().includes('alfajor')){
+    if(!filters.producto || filters.producto === ''){
       setLoading(false);
       setData([]);
       setTotalItems(0);

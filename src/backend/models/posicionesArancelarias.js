@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const PosicionSchema = new Schema({
+const PosicionIMASchema = new Schema({
         posicion: String,
     },{
         collection: 'posicionesima'
     }
 );
 
-module.exports = mongoose.model('PosicionArancelaria', PosicionSchema, 'posicionesima');
+module.exports = mongoose.model('PosicionArancelaria', PosicionIMASchema, 'posicionesima');

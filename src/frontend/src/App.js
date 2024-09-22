@@ -27,6 +27,7 @@ import PrivateRoute from './components/privateRoute';
 import { Grid } from '@mui/material';
 import Browser from 'pages/browser';
 import Markets from 'pages/markets';
+import ProductClassifier from 'pages/clasificarProductos';
 
 import ExportProcess from './pages/exportar/ExportProcess';
 import ExportRegimes from './pages/exportar/ExportRegimes';
@@ -52,7 +53,7 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path='/buscador' element={<Browser />} />
             <Route path='/chat' element={<Chat />} />
-            <Route path='/directorio' element={<Home />} />
+            <Route path='/clasificarProductos' element={<ProductClassifier />} />
             <Route path='/exportar' element={<Exportar />} />
             <Route path='/mercados' element={<Markets />} />
             <Route path='/exportar/proceso' element={<ExportProcess />} />
@@ -194,10 +195,10 @@ function Layout() {
                 </Button>
                 <Button
                   key={'btn-dir-menu'}
-                  onClick={() => { handleCloseNavMenu('/directorio') }}
+                  onClick={() => { handleCloseNavMenu('/clasificarProductos') }}
                   sx={{ my: 2, color: 'black', display: 'block' }}
                 >
-                  Nuestro Directorio
+                  Clasifica tu Producto
                 </Button>
                 {authenticated && (
                   <Button
@@ -299,10 +300,10 @@ function Layout() {
                   </MenuItem>
                   <MenuItem
                     key={'btn-dir-menu'}
-                    onClick={() => { handleCloseNavMenu('/directorio') }}
+                    onClick={() => { handleCloseNavMenu('/clasificarProductos') }}
                   >
                     <Typography textAlign="center">
-                      Nuestro Directorio
+                      Clasifica tu Producto
                     </Typography>
                   </MenuItem>
                   {authenticated && (

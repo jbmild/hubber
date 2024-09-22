@@ -1,5 +1,6 @@
 import re
-from traductor import translate
+from .traductor import translate
+import datetime
 
 def get_normativa(url):
     idsCatalogos = re.search(r'CatalogueIdList[\w=,]+', url).group().split('=')[1].split(',')
@@ -32,7 +33,7 @@ def tituloSPS(titulo):
     final = final.replace('[X]', '').strip()
     return final
 
-def parse_normativa(tabla, language, tipoDoc):
+def parse_normativa(tabla, language, tipoDoc, producto):
     tds = []
     rows = tabla.find_all("tr", recursive = False)
     
@@ -54,11 +55,22 @@ def parse_normativa(tabla, language, tipoDoc):
         titulo = translate(titulo, "es")
         descripcion = translate(descripcion, "es")
 
+    if producto == 1:
+        etiquetas = ["alfajor", "alfajores"]
+    
+    if producto == 2:
+        etiquetas = ["vino", "vinos"]
+    
+    if producto == 3:
+        etiquetas = ["miel"]
+
     normativa = {
         "pais" : pais,
         "titulo" : titulo,
         "descripcion" : descripcion,
         "agencia" : agencia,
-        "normativaOrigen" : normativa
+        "normativaOrigen" : normativa,
+        "fechaImplementacion": datetime.datetime.today(),
+        "etiquetas": etiquetas
     }
     return normativa

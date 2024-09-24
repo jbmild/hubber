@@ -6,6 +6,7 @@ import {
     Button,
     Dialog,
     DialogTitle,
+    DialogContent,
     Input,
     Box,
     Grid,
@@ -94,7 +95,7 @@ const ProductClassifier = () => {
                         </Button>
                     </Grid>
                     <Grid item xs={12} sm={10} md={10}>
-                        <p><Button   
+                        <p ><Button   
                         
                             sx={{textTransform: 'none',
                                 '&:hover': {
@@ -105,12 +106,12 @@ const ProductClassifier = () => {
                     </Grid>
                 </Grid>
                 <Dialog 
-                
+                        keepMounted
                         open={openModal}           
                         onClose={handleCloseModal}
                         sx={{
                             '& .MuiDialog-paper': {
-                            maxWidth: {xs:"100%", sm:"95%" ,md:'85%'},
+                            maxWidth: {xs:"100%", sm:"95%" ,md:'90%'},
                             width: { xs: '100vw', sm: '95vw', md: '90vw' }, 
                             height: { xs: '90vh', md: '90vh' }, 
                             overflow: 'auto',
@@ -123,17 +124,30 @@ const ProductClassifier = () => {
                         <CloseIcon />
                         </Button>
                     </DialogTitle>
-                    <Table>
-                        <TableBody>
-                            {(secciones && secciones.length > 0) ? (
-                                secciones.map((seccion) => (
-                                <PosicionRow key={seccion._id} seccion={seccion} nivel={0} />
-                            ))
-                            ) : (
-                            <p>Cargando secciones...</p>  
-                            )}
-                        </TableBody>
-                    </Table>
+                    <DialogContent 
+                        sx={{ 
+                            '&::-webkit-scrollbar': {
+                                width: '0.5em',
+                            },
+                            '&::-webkit-scrollbar-thumb': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                            borderRadius: '0.25em',
+                            },
+                            '&::-webkit-scrollbar-track': {
+                            background: 'rgba(0, 0, 0, 0.1)',
+                        }}}>
+                        <Table>
+                            <TableBody >
+                                {(secciones && secciones.length > 0) ? (
+                                    secciones.map((seccion) => (
+                                    <PosicionRow key={seccion._id} seccion={seccion} nivel={0} />
+                                ))
+                                ) : (
+                                <p>Cargando secciones...</p>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </DialogContent>
 
                 </Dialog>
             </Paper>

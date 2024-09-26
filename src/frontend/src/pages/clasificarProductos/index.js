@@ -1,29 +1,20 @@
-import PosicionRow from "components/arbolPosiciones";
+import ArbolPosiciones from "components/arbolPosiciones";
 import { clasificar } from "services/clasificadorService";
-import { getSecciones } from "services/arbolService";
-import React, { useState ,useCallback} from 'react';
+import React, { useState } from 'react';
 import { 
     Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
     Input,
     Box,
     Grid,
     Paper,
-    Table,
-    TableBody,
 } from '@mui/material';
-import { Search as SearchIcon,
-    Close as CloseIcon
+import { Search as SearchIcon
 } from '@mui/icons-material';
 
 
 const ProductClassifier = () => {
 
     const [inputValue, setInputValue] = useState(''); 
-    const [openModal, setOpenModal] = useState(false);
-    const [secciones, setSecciones] = useState([]);
 
 
     const handleInputChange = (event) => {
@@ -34,18 +25,6 @@ const ProductClassifier = () => {
         const prediccion = await clasificar(inputValue);
         console.log(prediccion);
     };
-
-    const handleCloseModal = useCallback(() => {
-        setOpenModal(false);  
-      });
-
-    const handleArbolClick = async () => {
-        getSecciones().then(res => {
-            setSecciones(res.secciones);
-        })
-        //console.log(secciones);
-        setOpenModal(true);
-      };
 
     return(
         <Box
@@ -95,61 +74,10 @@ const ProductClassifier = () => {
                         </Button>
                     </Grid>
                     <Grid item xs={12} sm={10} md={10}>
-                        <p ><Button   
-                        
-                            sx={{textTransform: 'none',
-                                '&:hover': {
-                                    textDecoration: 'underline', 
-                                    backgroundColor: 'transparent'}}}
-                                    onClick={handleArbolClick}>
-                            Búsqueda en forma de árbol</Button></p>
+                        <ArbolPosiciones />
                     </Grid>
                 </Grid>
-                <Dialog 
-                        keepMounted
-                        open={openModal}           
-                        onClose={handleCloseModal}
-                        sx={{
-                            '& .MuiDialog-paper': {
-                            maxWidth: {xs:"100%", sm:"95%" ,md:'90%'},
-                            width: { xs: '100vw', sm: '95vw', md: '90vw' }, 
-                            height: { xs: '90vh', md: '90vh' }, 
-                            overflow: 'auto',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            },
-                }}>
-                    <DialogTitle sx={{position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 1}}> Búsqueda en forma de árbol
-                        <Button onClick={handleCloseModal} sx={{ position: 'absolute', right: 0, top: 0 , paddingBlock: '1em'}}>
-                        <CloseIcon />
-                        </Button>
-                    </DialogTitle>
-                    <DialogContent 
-                        sx={{ 
-                            '&::-webkit-scrollbar': {
-                                width: '0.5em',
-                            },
-                            '&::-webkit-scrollbar-thumb': {
-                            backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                            borderRadius: '0.25em',
-                            },
-                            '&::-webkit-scrollbar-track': {
-                            background: 'rgba(0, 0, 0, 0.1)',
-                        }}}>
-                        <Table>
-                            <TableBody >
-                                {(secciones && secciones.length > 0) ? (
-                                    secciones.map((seccion) => (
-                                    <PosicionRow key={seccion._id} seccion={seccion} nivel={0} />
-                                ))
-                                ) : (
-                                <p>Cargando secciones...</p>
-                                )}
-                            </TableBody>
-                        </Table>
-                    </DialogContent>
 
-                </Dialog>
             </Paper>
         </Box>
     )

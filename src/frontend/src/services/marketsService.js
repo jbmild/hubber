@@ -51,7 +51,7 @@ function parseIMA(data){
         if(puntajes[i]["Ø"]){
             skip = puntajes[i]["Ø"];
             if(skip == 1){pais = 'N/A'}; //sin nombre (creo que nunca pasa)
-            if(skip == 2){bandera = 'https://https://www.worldometers.info//img/flags/small/tn_tz-flag.gif'}; //sin bandera
+            if(skip == 2){bandera = './images/flags/'+pais+'.png'}; //sin bandera
         }
 
         if(puntajes[i]['R'] && puntajes[i]['C'].length <3){

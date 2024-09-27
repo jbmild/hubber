@@ -24,6 +24,7 @@ const Markets = () => {
   const [results, setResults] = useState([]);
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingDetalles, setLoadingDetalles] = useState(false);
   const [totalResults, setTotalResults] = useState(0); // Estado para la cantidad total de resultados
   const [open, setOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState('');
@@ -92,9 +93,9 @@ const Markets = () => {
   }
 
   const getIMADetails = () => {
-    setLoading(true);
+    setLoadingDetalles(true);
     detalle_ima(selectedValue).then(res => {
-      setLoading(false);
+      setLoadingDetalles(false);
       setDetalleIma(res);
       console.log(res)
     })
@@ -260,7 +261,7 @@ const Markets = () => {
             <TableContainer style={{ overflowX: 'auto', paddingTop:'1em'}}>
               <Table style={{borderCollapse: 'collapse', width:'100%'}}>
               {
-                loading ?
+                loadingDetalles ?
                   <TableRow key={'spinner'}>
                     <TableCell colSpan={12}>
                       <LinearProgress color="primary" />

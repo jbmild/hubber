@@ -68,7 +68,9 @@ function PosicionRow({seccion, nivel}) {
         {
         seccion.desde ? 
         (    
-        <TableCell component="th" scope="row" align="center" sx=
+        <TableCell component="th" scope="row" align="center" 
+        onClick={handleOpenRow}
+        sx=
         {{
             border: '0px',
             width: {xs: "40vw", sm: "20vw" ,md: "9vw"}
@@ -84,7 +86,9 @@ function PosicionRow({seccion, nivel}) {
                 <span style={{fontWeight:'bold'}}>{seccion.posicion}</span>
             </TableCell>
         ) : (
-            <TableCell align="left" sx={{
+            <TableCell 
+            onClick={handleOpenRow}
+            align="left" sx={{
                 border: '0px',
                 width: {xs:"40vw" , sm:"20vw" , md:`${(nivel)*4.5}vw`}
                 }}>
@@ -107,7 +111,9 @@ function PosicionRow({seccion, nivel}) {
                     </Button>
             </TableCell>
         ):(      
-            <TableCell sx={{border: '0px',
+            <TableCell 
+            onClick={handleOpenRow}
+            sx={{border: '0px',
                     width: {xs:"50vw" , sm:"60vw" , md:"90vw"}
                     }}>
                     {seccion.descripcion}

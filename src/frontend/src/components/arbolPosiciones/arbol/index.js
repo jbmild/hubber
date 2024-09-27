@@ -4,6 +4,7 @@ import {
     Dialog,
     DialogContent,
     DialogTitle,
+    Divider,
     Table,
     TableBody,
 } from '@mui/material';
@@ -51,7 +52,10 @@ function DialogArbol({secciones, openModal, handleCloseModal}) {
                             <TableBody >
                                 {(secciones && secciones.length > 0) ? (
                                     secciones.map((seccion) => (
-                                    <PosicionRow key={seccion._id} seccion={seccion} nivel={0} />
+                                   <>
+                                   <PosicionRow key={seccion._id} seccion={seccion} nivel={0} />
+                                    <Divider />
+                                    </>
                                 ))
                                 ) : (
                                 <p>Cargando secciones...</p>

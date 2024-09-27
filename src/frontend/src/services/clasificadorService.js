@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const backend = `${process.env.REACT_APP_BACKEND_URL}/clasificador`;
+const backend = `${process.env.REACT_APP_BACKEND_URL}`;
 const translate = async (text, idioma) => {
     let texto = text.replace('. ', '.');
     texto = encodeURIComponent(texto);
@@ -28,6 +28,16 @@ const translate = async (text, idioma) => {
   
 export async function clasificar(producto) {
   producto = await translate(producto, "en");
-  const response =  await axios.get(`${backend}?producto=${producto}`);
-  return response.data;
+  const response =  await axios.get(`${backend}/clasificador?producto=${producto}`);
+  var respuesta = [];
+  const predicciones = response.data.predicciones
+
+  for(let i=0; i<predicciones.length; i++){
+    const pos = predicciones[i][0];
+    const posicion = await axios.get(`${backend}/mercados?query=${pos}`);
+    const obj = {"posicion": posicion.data.posiciones[0].posicion, "porcentaje" : predicciones[i][1]}
+    respuesta.push(obj)
+  }
+
+  return respuesta;
 }

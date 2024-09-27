@@ -63,8 +63,6 @@ const Markets = () => {
   const handleSelection = (event, newValue) => {
     setShowTable(false);
     setShowTableDetails(false);
-    document.getElementById('container-ima').style.height = '10vh';
-    document.getElementById('div-ima').style.height = '30vh';
     if(newValue){
       setSelectedValue(newValue.posicion);
     } else {
@@ -76,14 +74,12 @@ const Markets = () => {
   const handleSubmit = () => {
     setLoading(true);
     
-    tabla_ima_test(selectedValue).then(res => {
+    tabla_ima(selectedValue).then(res => {
         setLoading(false);
         setIma(res);
         console.log(res);
     })
     setShowTable(true);
-    document.getElementById('div-ima').style.height = '150vh';
-    document.getElementById('container-ima').style.height = '120vh';
   };
 
   const handleOpen = () => {
@@ -97,34 +93,34 @@ const Markets = () => {
 
   const getIMADetails = () => {
     setLoading(true);
-    detalle_ima_test(selectedValue).then(res => {
+    detalle_ima(selectedValue).then(res => {
       setLoading(false);
       setDetalleIma(res);
       console.log(res)
     })
     setShowTableDetails(true);
-    document.getElementById('div-ima').style.height = '240vh';
-    document.getElementById('container-ima').style.height = '215vh';
     };
 
   return (
-    <Box id='div-ima'
+    <Box
     sx={{
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      height: { xs: '25vh', sm: '25vh', md: '30vh' },
-      flexDirection: 'column'
+      minHeight: { xs: '25vh', sm: '25vh', md: '30vh' },
+      flexDirection: 'column',
+      padding: '1em'
     }}
     >
-      <Paper id='container-ima'
+      <Paper
         sx={{
           padding: { xs: '3.5em', sm: '2.5em', md: '2em' },
           maxWidth: '80vw',
           width: '100%',
-          height: '10vh',
+          minHeight: '10vh',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          transition: 'all 0.3s ease'
         }}
       >
       <Grid container spacing={2} alignItems="center">
@@ -212,12 +208,6 @@ const Markets = () => {
                 <TableRow>
                     <TableCell sx={{ width: { xs: '20%', sm: '20%', md: '25%' } }}>Pais</TableCell>
                     <TableCell sx={{ width:  { xs: '20%', sm: '20%', md: '20%' } }}>Indice de Mercado Atractivo</TableCell>
-                  {!isSmallScreen && (
-                    <>
-                    <TableCell sx={{ width: { xs: '20%', sm: '20%', md: '25%' } }}>Pais</TableCell>
-                    <TableCell sx={{ width:  { xs: '20%', sm: '20%', md: '20%' } }}>Normativas</TableCell>
-                    </>
-                  )}
                 </TableRow>
               </TableHead>
             }
@@ -234,7 +224,7 @@ const Markets = () => {
                 {ima.map((row) => (
                   <TableRow key={row.id}>
                     <TableCell> <img src={row.bandera} alt=" " style={{"width":"25px"}}/> {row.pais}</TableCell>
-                    <TableCell align='center'>
+                    <TableCell align='left'>
                       <span style={{ 
                           color: row.puntaje >= 7 ? 'green' : row.puntaje >= 4 ? 'orange' : row.puntaje >= 1 ?'red' : 'black' 
                       }}>
@@ -266,7 +256,8 @@ const Markets = () => {
             >
               Mostrar Detalles IMA
             </Button>
-            {showTableDetails && (<TableContainer style={{ overflowX: 'auto', paddingTop:'1em'}}>
+            {showTableDetails && (
+            <TableContainer style={{ overflowX: 'auto', paddingTop:'1em'}}>
               <Table style={{borderCollapse: 'collapse', width:'100%'}}>
               {
                 loading ?
@@ -280,9 +271,9 @@ const Markets = () => {
                     <TableRow key='paises'>
                       <TableCell style={{fontWeight:'bold',
                             position: 'sticky',
-                            left: 0,/* Fija la primera columna */
-                            backgroundColor: 'white', /* Asegura que el fondo sea visible al hacer scroll */
-                            zIndex: 1, /* Asegura que la columna esté por encima del contenido */
+                            left: 0,
+                            backgroundColor: 'white', 
+                            zIndex: 1, 
                             whiteSpace: 'nowrap'
                             }}></TableCell>
                       {detalleIma.paises.map((pais) => (
@@ -295,9 +286,9 @@ const Markets = () => {
                           <TableRow key={categoria.titulo}>
                             <TableCell style={{fontWeight:'bold',
                             position: 'sticky',
-                            left: 0,/* Fija la primera columna */
-                            backgroundColor: 'white', /* Asegura que el fondo sea visible al hacer scroll */
-                            zIndex: 1, /* Asegura que la columna esté por encima del contenido */
+                            left: 0,
+                            backgroundColor: 'white',
+                            zIndex: 1, 
                             whiteSpace: 'nowrap'
                             }}
                             >

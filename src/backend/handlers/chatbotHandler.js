@@ -78,9 +78,9 @@ exports.handleSetPais = async (req, res) => {
 }
 
 exports.handlePostMessage = async (req, res) => {
-    const pregunta = `${req.body.message}`;
-        
-    req.session.chatContext += `Usuario: ${pregunta}\n`;
+    const pregunta = `${req.body.message}`.replace();
+    
+    req.session.chatContext = req.session.chatContext.concat({user: 'Usuario', message: `${pregunta}`});
 
     let botMessage = "";
     
@@ -88,16 +88,17 @@ exports.handlePostMessage = async (req, res) => {
     //return res.status(200).json({message: pregunta});
     
     try {
-        const respuesta = await query(req.body.chatKey, pregunta, req.session.chatContext);
+        const ctx = req.session.chatContext.map(p => (`${p.user}: ${p.message}`)).join('\n');
+
+        const respuesta = await query(req.body.chatKey, pregunta, ctx);
     
         botMessage = botMessage.concat(respuesta);
         
-        req.session.chatContext += `Bot: ${botMessage}\n`;
+        req.session.chatContext = req.session.chatContext.concat({user: 'Bot', message: `${botMessage}`});
 
         // Limitar el tamaño del contexto
-        const mensajes = req.session.chatContext.split('\n');
-        if (mensajes.length > 20) { // Mantener los últimos 20 mensajes
-            req.session.chatContext = mensajes.slice(-20).join('\n');
+        if (req.session.chatContext.length > 20) { // Mantener los últimos 20 mensajes
+            req.session.chatContext = req.session.chatContext.slice(-20);
         }
 
         res.status(200).json({ message : botMessage });
@@ -106,4 +107,9 @@ exports.handlePostMessage = async (req, res) => {
         req.session.chatContext = '';
         return  res.status(500).json({ message : botMessage });
     }
+}
+
+exports.handleClearMessageHistory = async (req, res) => {
+    req.session.chatContext = [];
+    res.status(200);
 }

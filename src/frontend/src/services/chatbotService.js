@@ -10,3 +10,7 @@ export async function setPais(pais) {
     const response = await axios.post(`${url}/pais`, { pais : pais }, { withCredentials: true })
     return response.data.message;
 }
+
+export async function clearChatSession() {
+    await axios.post(`${url}/clear`, {}, {withCredentials: true});
+}

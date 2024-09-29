@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Chatbot from 'react-chatbot-kit';
 import config from './config';
 import MessageParser from './MessageParser';
 import ActionProvider from './ActionProvider';
 import theme from 'theme';
 import './styles.css';
+import { clearChatSession } from 'services/chatbotService';
 
 const ChatbotComponent = () => {
+  useEffect(() => {
+    clearChatSession();
+  }, []);
+
   const validator = (message) => {
     if (!message || message.length < 3 ) {
           return false;

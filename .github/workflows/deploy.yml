@@ -25,10 +25,11 @@ jobs:
             export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v22.6.0/bin
             cd /home/ubuntu/hubber/src/backend
             pm2 stop app.js
-            pm2 stop cronIngestor.mjs
+#           pm2 stop cronIngestor.mjs
             cd /home/ubuntu/hubber/
             git pull origin main
             cd /home/ubuntu/hubber/src/backend
             npm install
             pm2 start app.js
-            pm2 start cronIngestor.mjs
+#           pm2 start cronIngestor.mjs
+          

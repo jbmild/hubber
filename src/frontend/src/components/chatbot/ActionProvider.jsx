@@ -72,7 +72,9 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
     setState((prev) => ({ ...prev, messages: [...prev.messages, loadingMsg], }))
 
     if(optionsState.normativasBasicas || optionsState.paisSeleccionado){
-      sendMessage(message).then((response) => {
+      const chatKey = optionsState.normativasBasicas ? 'basicas' : optionsState.paisSeleccionado;
+
+      sendMessage(message, chatKey).then((response) => {
         setLoading(false);
   
   
@@ -85,7 +87,6 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
         })
       });
     }else {
-      debugger;
       if(message.toLowerCase().includes('ayuda') || message.toLowerCase().includes('mas opciones')){
           getPaises().then((response) => {
             setLoading(false);

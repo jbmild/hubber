@@ -27,7 +27,7 @@ function ArbolPosiciones(){
       };
 
     return (
-    <Grid><p>
+    <Grid marginLeft={'0.5em'}><p>
         <Button   
         sx={{textTransform: 'none',
             '&:hover': {

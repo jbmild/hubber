@@ -21,14 +21,13 @@ const ProductClassifier = () => {
           }}>
             <Paper style={{transition: 'all 0.3s ease'}}
             sx={{
-                    padding: { xs: '4em', sm: '2.5em', md: '1em' },
                     maxWidth: '80vw',
                     width: '100%',
                     display: 'flex',
                     flexDirection: 'column'
             }}>
                 <Grid container spacing={2} alignItems="center">
-                    <ClasificaProducto />
+                        <ClasificaProducto />
                     <Grid item xs={12} sm={10} md={10}>
                         <ArbolPosiciones />
                     </Grid>

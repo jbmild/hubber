@@ -36,7 +36,7 @@ function ClasificaProducto({}){
     };
 
 return(
-    <Grid container spacing={2} alignItems={'center'} margin={'0.5em'}>
+    <Grid container spacing={2} alignItems={'center'} margin={'2em'} marginBottom={"0em"}>
         <Grid item xs={12} sm={9} md={10}>
             <Input
                 fullWidth placeholder='Ingrese el nombre del producto'
@@ -90,7 +90,7 @@ return(
                     <TableRow>
                     <Box 
                         sx={{
-                        margin: '2em',
+                        marginTop: '2em',
                         height: '1.5em',
                         fontSize: 10,
                         fontWeight: 'light',

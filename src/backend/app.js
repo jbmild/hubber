@@ -9,6 +9,7 @@ var bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
 const mongoose = require('mongoose');
 mongoose.set('debug', true);
+const {exec} = require('child_process');
 
 const app = express();
 const port = process.env.PORT || 3000; // default port is 3000
@@ -47,6 +48,39 @@ app.use('/auth', authRoutes);
 
 require('./routes')(app);
 
+exec('pm2 start -f cronIngestor.mjs', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error al ejecutar el comando: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+  });
+
+
 app.listen(port, async () => {
     console.log(`Server running on port ${port}`);
 });
+
+
+const shutdown = () => {
+    console.log('Deteniendo servidor y procesos de pm2...');
+  
+    // Detener el proceso con pm2
+    exec('pm2 stop cronIngestor.mjs', (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error al detener pm2: ${error.message}`);
+        process.exit(1);
+      } else {
+        console.log('Proceso de pm2 detenido.');
+        process.exit(0);
+      }
+    });
+  };
+  
+  // Manejar señales del sistema para detener pm2 al salir
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);

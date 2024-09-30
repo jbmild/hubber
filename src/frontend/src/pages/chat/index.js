@@ -1,10 +1,30 @@
 import { Box } from '@mui/material';
 import ChatbotComponent from 'components/chatbot';
 import * as React from 'react';
+import { useEffect } from 'react';
 import theme from 'theme';
 import { Paper } from '@mui/material';
+import { useLocation } from 'react-router-dom';
+import { isAuthenticated } from 'services/authService';
+import { clearChatSession } from 'services/chatbotService';
 
 function Chat() {
+/*    const location = useLocation();
+
+    useEffect(() => {
+      const clearSession = async () => {
+        isAuthenticated().then((auth) => {
+            debugger;
+            if(auth){
+                clearChatSession();
+            }
+        });
+      }
+  
+      clearSession();
+    }, [location.pathname]);
+  */
+
     return (
         <Box 
             sx={{

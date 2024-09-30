@@ -7,7 +7,7 @@ const { VectorStoreIndex, Document } = require('llamaindex');
 const { traerNormativasPorPais } = require('./normativasHandler');
 const express = require('express');
 
-const INDEX_EXPIRATION_TIME = 12 * 60 * 60 * 1000; // 30 minutos de expiración
+const INDEX_EXPIRATION_TIME =  12 * 60 * 60 * 1000; // 12 hopas de expiración
 
 const Normativa = require('../models/normativas');
 let indexes = {};
@@ -27,7 +27,7 @@ const crearIndexPorPais = async (pais) => {
 
     if(indexes[pais]){
         indexes[pais].timestamp = Date.now();
-        return true;
+        return indexes[pais];
     }        
 
     try{
@@ -39,9 +39,9 @@ const crearIndexPorPais = async (pais) => {
 
         indexes[pais] = { index: index, timestamp: Date.now() };
 
-        return true;
+        return indexes[pais];
     }catch(e){
-        return false;
+        return null;
     }
 }
 
@@ -50,10 +50,10 @@ const query =  async (key, pregunta, context) => {
     try{
         limpiarIndicesExpirados();
 
-        const index = indexes[key].index;
+        let index = indexes[key]?.index;
     
         if(!index){
-            throw Error('Se acabo el tiempo de la session, vuelve a iniciar el chat para seguir con la conversación');
+           index = (await crearIndexPorPais(key)).index; 
         }
     
         const queryEngine = index.asQueryEngine();
@@ -63,6 +63,9 @@ const query =  async (key, pregunta, context) => {
         return response.toString();
     }catch(e){
         console.log(e);
+        res.status(500).send({
+            message: 'Ocurrio un error!'
+        });
     }
 }
 
@@ -72,13 +75,13 @@ exports.handleSetPais = async (req, res) => {
     if(await crearIndexPorPais(req.body.pais))
         res.json({ message: `Quieres exportar a ${req.body.pais}, en que podemos guiarle?`})
     else
-        res.status(400).send({
+        res.status(500).send({
             message: 'Ocurrio un error!'
         });
 }
 
 exports.handlePostMessage = async (req, res) => {
-    const pregunta = `${req.body.message}`.replace();
+    const pregunta = `${req.body.message}`;
     
     req.session.chatContext = req.session.chatContext.concat({user: 'Usuario', message: `${pregunta}`});
 

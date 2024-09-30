@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Navigate,
+  useNavigate,
+  useLocation,
   Outlet
 } from "react-router-dom";
 import { isAuthenticated } from '../../services/authService';
@@ -8,11 +9,25 @@ import { isAuthenticated } from '../../services/authService';
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
 function PrivateRoute() {
-  const [auth, setAuth] = useState(isAuthenticated());
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [auth, setAuth] = useState(true);
 
-  return auth ?
-    <Outlet /> :
-    <Navigate to='/login' />;
+  useEffect(() => {
+    const checkAuth = async () => {
+      const auth = await isAuthenticated();
+      setAuth(auth);
+    };
+    checkAuth();
+  }, [location]);
+
+  useEffect(() => {
+    if(!auth){
+      navigate('/login');
+    }
+  }, [auth]);
+
+  return (<Outlet />) 
 }
 
 export default PrivateRoute;

@@ -7,6 +7,10 @@ import exportaSimpleBanner from './exporta-simple.jpg';
 import cargaGeneralBanner from './carga-general.jpg';
 import tablaRegimenes from './tabla.png';
 
+import {
+  Box,
+  
+} from '@mui/material';
 
 const ExportRegimes = () => {
   const [showPopup, setShowPopup] = useState(false); // Estado para manejar el popup
@@ -87,6 +91,25 @@ const ExportRegimes = () => {
       <p>
         Elegir el régimen de exportación adecuado puede marcar una gran diferencia en la eficiencia y rentabilidad de tus operaciones internacionales. Evalúa tus necesidades específicas, el tamaño de tus envíos y el tipo de productos que ofreces para tomar la mejor decisión.
       </p>
+	  
+	   <Box
+        sx={{
+          height: '1.5em',
+          fontSize: 10,
+          fontWeight: 'light',
+          fontStyle: 'oblique',
+          flexDirection: 'column',
+        }}
+      >
+        <p>
+          Fuente: Ventanilla Única de Comercio Exterior:{' '}
+          <a target="_blank" rel="noopener noreferrer" href="https://www.vuce.gob.ar/">
+            https://www.vuce.gob.ar/
+          </a>
+          .
+        </p>
+      </Box>
+	  
     </div>
   );
 };

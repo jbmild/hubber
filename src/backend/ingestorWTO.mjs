@@ -88,11 +88,11 @@ const parseNormativa = (tds, language, tipoDoc, producto) => {
 
     let etiquetas;
     if (producto === 0) {
-        etiquetas = ["alfajor", "alfajores"];
+        etiquetas = ["Alfajor", "Alfajores"];
     } else if (producto === 1) {
-        etiquetas = ["vino", "vinos"];
+        etiquetas = ["Vino", "Vinos"];
     } else if (producto === 2) {
-        etiquetas = ["miel"];
+        etiquetas = ["Miel"];
     }
 
     const normativaObj = {

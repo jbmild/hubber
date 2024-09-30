@@ -74,5 +74,15 @@ module.exports = function (app) {
         }
     });
 
-
+    app.get('/users/me', ensureAuthenticated, async (req, res) => {
+        try {
+            const user = await User.findById(req.user._id);
+            if (!user) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+            res.json(user.username);
+        } catch (error) {
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    });
 }

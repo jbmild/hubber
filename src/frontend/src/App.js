@@ -12,7 +12,9 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import MisNormativas from 'components/misNormativas';
-import { isAuthenticated, logOut } from './services/authService';
+import { isAuthenticated, logOut, getUserName } from './services/authService';
+
+import BackgroundLetterAvatars from './components/avatarColor';
 
 import { Routes, Route, Outlet, useLocation, useNavigate } from "react-router-dom";
 
@@ -27,6 +29,8 @@ import PrivateRoute from './components/privateRoute';
 import { Grid } from '@mui/material';
 import Browser from 'pages/browser';
 import Markets from 'pages/markets';
+import MisIntereses from 'pages/misIntereses';
+import MisAlertas from 'pages/misAlertas';
 import ProductClassifier from 'pages/clasificarProductos';
 
 import ExportProcess from './pages/exportar/ExportProcess';
@@ -65,6 +69,8 @@ function App() {
             <Route path='/exportar/costos' element={<ExportCosts />} />
             <Route path='/exportar/tu-producto' element={<YourProduct />} />
             <Route path='/misNormativas' element={<MisNormativas />} />
+            <Route path='/misIntereses' element={<MisIntereses />} />
+            <Route path='/misAlertas' element={<MisAlertas />} />
           </Route>
         </Route>
       </Routes>
@@ -75,16 +81,22 @@ function App() {
 
 function Layout() {
   const [authenticated, setAuthenticated] = useState(false);
+  const [myUsername, setUsername] = useState('Natalia Natalia');
   let location = useLocation();
   const navigate = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElExport, setAnchorElExport] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
   useEffect(() => {
     const checkAuth = async () => {
       const auth = await isAuthenticated();
       setAuthenticated(auth);
+      const nombre = await getUserName();
+      if(auth){
+        setUsername(nombre);
+      }
     };
     checkAuth();
   }, [location.pathname]);
@@ -114,6 +126,16 @@ function Layout() {
     navigate('/');
   };
 
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = (to) => {
+    setAnchorElUser(null);
+    if (to) navigate(to);
+  };
+
+
   const exportMenuItems = [
     { label: 'Proceso de una exportación', path: '/exportar/proceso' },
     { label: 'Regímenes vigentes', path: '/exportar/regimenes' },
@@ -122,6 +144,12 @@ function Layout() {
     { label: 'Cobros y reintegros', path: '/exportar/cobros' },
     { label: 'Costos', path: '/exportar/costos' },
     { label: 'Tu Producto', path: '/exportar/tu-producto' },
+  ];
+
+  const userMenuItems = [
+    { label: 'Mis Normativas', path: '/misNormativas' },
+    { label: 'Mis Intereses', path: '/misIntereses' },
+    { label: 'Notificaciones', path: '/misAlertas' }
   ];
 
   return (
@@ -200,15 +228,6 @@ function Layout() {
                 >
                   Clasifica tu Producto
                 </Button>
-                {authenticated && (
-                  <Button
-                    key={'btn-mis-normativas'}
-                    onClick={() => { handleCloseNavMenu('/misNormativas') }}
-                    sx={{ my: 2, color: 'black', display: 'block' }}
-                  >
-                    Mis Normativas
-                  </Button>
-                )}
                 {!authenticated && (
                   <Button
                     key={'btn-login-menu'}
@@ -219,13 +238,38 @@ function Layout() {
                   </Button>
                 )}
                 {authenticated && (
-                  <Button
+                  <>
+                <Button
+                  key={'btn-user-menu'}
+                  onClick={handleOpenUserMenu}
+                  sx={{    my: 2, color: 'black', display: 'flex', borderRadius: '100%',
+                    '&:hover': {
+                        background: 'none',
+                    },
+                } }
+                >
+                  <BackgroundLetterAvatars name = {myUsername} />
+                </Button>
+                <Menu
+                  anchorEl={anchorElUser}
+                  open={Boolean(anchorElUser)}
+                  onClose={() => handleCloseUserMenu()}
+                >
+                  {userMenuItems.map((item) => (
+                    <MenuItem key={item.path} onClick={() => handleCloseUserMenu(item.path)}>
+                      {item.label}
+                    </MenuItem>
+                  ))}
+                      <MenuItem
                     key={'btn-register-menu'}
                     onClick={handleLogoutClick}
-                    sx={{ my: 2, color: 'black', display: 'block', backgroundColor: 'rgb(206 206 206)' }}
+                    sx={{ color: 'black', display: 'block', backgroundColor: 'rgb(206 206 206)' }}
                   >
                     Salir
-                  </Button>
+                  </MenuItem>
+                </Menu>
+
+                  </>
                 )}
               </Box>
 

@@ -41,9 +41,12 @@ const MisNormativas = ({setHasAlerts}) => {
         setOpenModal(false);  
       };
     
-    const marcarLeida = async (id) => {
-       const notif = await cambiarEstado(id, "Leida");
-        setNewData(notif);
+    const marcarLeida = async (alert) => {
+        if(alert.estado === "Nueva"){
+            const notif = await cambiarEstado(alert._id, "Leida");
+            setNewData(notif);
+        }
+
       };
 
     const elminiarAlerta = async (id) => {
@@ -103,21 +106,25 @@ const MisNormativas = ({setHasAlerts}) => {
                         <TableBody>
                             {userData
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((reg) => (
-                                    <TableRow key={reg._id} hover onClick={() => marcarLeida(reg._id)} title="Marcar notificacion como leida">
+                                .map((alert) => (
+                                    <TableRow key={alert._id} hover={alert.estado === 'Nueva'} onClick={() => marcarLeida(alert)} title="Marcar notificacion como leida"
+                                    sx={{
+                                        backgroundColor: alert.estado === 'Leida' && 'rgb(206 206 206)'
+                                    }}
+                                    >
                                         <TableCell>
-                                            { reg.estado === "Nueva" &&                     
+                                            { alert.estado === "Nueva" &&                     
                                             (<Badge color="error" variant="dot"              
                                              style={{ marginRight: '8px'}}></Badge>)}
-                                             {reg.estado}
+                                             {alert.estado}
                                         </TableCell>
-                                        <TableCell>{reg.motivo}</TableCell>
-                                        <TableCell>{reg.interes}</TableCell>
-                                        <TableCell>{new Date(reg.fecha).toLocaleDateString()}</TableCell>
+                                        <TableCell>{alert.motivo}</TableCell>
+                                        <TableCell>{alert.interes}</TableCell>
+                                        <TableCell>{new Date(alert.fecha).toLocaleDateString()}</TableCell>
                                         <TableCell>
                                         <ButtonGroup variant="string" aria-label="Basic button group">
-                                            <Button onClick={(event) => {event.stopPropagation(); verNormativa(reg.normativa)}} title='Ver normativa'><VisibilityOutlinedIcon /></Button>
-                                            <Button onClick={(event) => {event.stopPropagation(); elminiarAlerta(reg._id)}} title='Eliminar notificacion'><DeleteForeverOutlinedIcon /></Button>
+                                            <Button onClick={(event) => {event.stopPropagation(); verNormativa(alert.normativa)}} title='Ver normativa'><VisibilityOutlinedIcon /></Button>
+                                            <Button onClick={(event) => {event.stopPropagation(); elminiarAlerta(alert._id)}} title='Eliminar notificacion'><DeleteForeverOutlinedIcon /></Button>
                                         </ButtonGroup>
 
                                         </TableCell>

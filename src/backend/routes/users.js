@@ -89,7 +89,8 @@ module.exports = function (app) {
 
     app.get('/users/notificaciones-usuario', ensureAuthenticated, async (req, res) => {
         try {
-            const notificaciones = await Notificacion.find({$and: [{email : req.user.email}, {estado: { $ne : "Eliminada"}}]});
+            const notificaciones = await Notificacion.find({$and: [{email : req.user.email}, {estado: { $ne : "Eliminada"}}]})
+            .sort({estado: -1});
             res.json(notificaciones);
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });

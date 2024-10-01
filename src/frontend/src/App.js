@@ -25,7 +25,6 @@ import { Routes, Route, Outlet, useLocation, useNavigate } from "react-router-do
 import Home from './pages/home/index';
 import Chat from './pages/chat';
 import Login from './pages/login';
-import Register from './pages/register';
 import Exportar from './pages/exportar';
 import Profile from './pages/profile';
 import PrivateRoute from './components/privateRoute';
@@ -57,7 +56,6 @@ function App() {
         <Route path="/" element={<Layout hasAlerts={hasAlerts} setHasAlerts={setHasAlerts}/>} >
           <Route index element={<Home />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
           <Route path='/profile' element={<Profile />} />
           <Route element={<PrivateRoute />}>
             <Route path='/buscador' element={<Browser />} />

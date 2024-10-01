@@ -1,7 +1,6 @@
 require('dotenv').config();
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const LocalStrategy = require('passport-local').Strategy;
 const express = require('express');
 const router = express.Router();
 const User = require('./models/users');
@@ -30,21 +29,6 @@ passport.use(new GoogleStrategy({
   } catch (err) {
     return done(err, null);
   }
-}));
-
-passport.use(new LocalStrategy(async (username, password, cb) => {
-  const user = await User.findOne({ username })
-  if (!user) {
-    return cb(null, false)
-  }
-
-  console.log("reviso pass")
-  if(!user.comparePassword(password)){
-    console.log("no coincide pass")
-    return cb(null, false)
-  }
-  console.log("todo ok")
-  return cb(null, user);
 }));
 
 // Passport serialization
@@ -86,7 +70,5 @@ router.get('/logout', (req, res) => {
     res.redirect('/');
   });
 });
-
-router.post('/login', passport.authenticate('local', { failureRedirect: `${process.env.CLIENT_URL}/login`, successRedirect: `${process.env.CLIENT_URL}/` }));
 
 module.exports = router;

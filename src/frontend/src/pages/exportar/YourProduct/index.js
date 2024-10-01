@@ -24,8 +24,8 @@ const CodigoArancelario = () => {
     // El cuestionario de vinos se maneja por pasos, no se define aquí
     vinos: [],
     miel: [
-      { name: 'isExtraVirgin', label: '¿Es aceite de oliva extra virgen?' },
-      { name: 'isFlavored', label: '¿Es aceite de oliva saborizado?' }
+      { name: 'isEnvased25', label: '¿El contenido neto del envase es menor o igual a 2,5 kg?' },
+      { name: 'isGranel', label: '¿Es miel a granel?' }
     ],
   };
 
@@ -131,12 +131,12 @@ const CodigoArancelario = () => {
           };
           break;
         case 'miel':
-          codigo = formData.isExtraVirgin === 'si' ? '1509.10.00.100P' : '1509.90.10.100V';
+          codigo = formData.isEnvased25 === 'si' ? '0409.00.001' : (formData.isGranel === 'si' ? '0409.00.0091' : '0409.00.009');
           info = {
-            arancelComun: '12%',
-            derechoExportacion: '3%',
-            reintegroFueraMercosur: '3,5%',
-            reintegroDentroMercosur: '3%',
+            arancelComun: '10%',
+            derechoExportacion: '0%',
+            reintegroFueraMercosur: '5%',
+            reintegroDentroMercosur: '5%',
           };
           break;
         default:
@@ -369,7 +369,7 @@ const CodigoArancelario = () => {
     return (
       <div style={styles.popup}>
         <div style={styles.popupContent}>
-          <h2>Selecciona un producto regional:</h2>
+          <h2>Selecciona tu producto:</h2>
           <div>
             {products.map((product) => (
               <button 

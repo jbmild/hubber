@@ -8,12 +8,12 @@ const CodigoArancelario = () => {
   const [formData, setFormData] = useState({});
   const [codigoArancelario, setCodigoArancelario] = useState(null);
   const [arancelInfo, setArancelInfo] = useState(null);
+  const [currentStep, setCurrentStep] = useState(1); // Para manejar los pasos en vinos
 
   const products = [
     { name: 'Alfajores', code: 'alfajores' },
-    { name: 'Mate', code: 'mate' },
-    { name: 'Aceite de oliva', code: 'aceite' },
-    { name: 'Vinos', code: 'vinos' }
+    { name: 'Vinos', code: 'vinos' },
+    { name: 'Miel', code: 'miel' },
   ];
 
   const productForms = {
@@ -21,18 +21,12 @@ const CodigoArancelario = () => {
       { name: 'hasFilling', label: '¿Tu alfajor tiene relleno?' },
       { name: 'isWheatFlourOnly', label: '¿Tu alfajor está elaborado exclusivamente con harina de trigo?' }
     ],
-    mate: [
-      { name: 'isFlavored', label: '¿Es mate saborizado?' },
-      { name: 'isOrganic', label: '¿Es mate orgánico?' }
-    ],
-    aceite: [
+    // El cuestionario de vinos se maneja por pasos, no se define aquí
+    vinos: [],
+    miel: [
       { name: 'isExtraVirgin', label: '¿Es aceite de oliva extra virgen?' },
       { name: 'isFlavored', label: '¿Es aceite de oliva saborizado?' }
     ],
-    vinos: [
-      { name: 'type', label: '¿Qué tipo de vino es?', options: ['Tinto', 'Blanco', 'Rosado'] },
-      { name: 'isOrganic', label: '¿Es vino orgánico?' }
-    ]
   };
 
   const handleFormToggle = () => {
@@ -49,103 +43,302 @@ const CodigoArancelario = () => {
     setFormData({});
     setCodigoArancelario(null);
     setArancelInfo(null);
+    setCurrentStep(1); // Resetear el paso al cerrar el formulario
   };
 
   const handleProductSelect = (product) => {
     setSelectedProduct(product);
     setFormData({});
+    setCodigoArancelario(null);
+    setArancelInfo(null);
     setShowProductPopup(false);
+    setCurrentStep(1); // Iniciar en el paso 1 para vinos
   };
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const calculateCodigoArancelario = () => {
-    // Simulated calculation based on product and form data
-    let codigo, info;
-    switch (selectedProduct) {
-      case 'alfajores':
-        codigo = formData.hasFilling === 'si' ? '1905.90.90.490B' : '1905.90.90.490A';
-        info = {
-          arancelComun: '18%',
-          derechoExportacion: '4,5%',
-          reintegroFueraMercosur: '1,25%',
-          reintegroDentroMercosur: '1,25%',
-        };
-        break;
-      case 'mate':
-        codigo = formData.isFlavored === 'si' ? '0903.00.90.000B' : '0903.00.10.000N';
-        info = {
-          arancelComun: '10%',
-          derechoExportacion: '5%',
-          reintegroFueraMercosur: '2,5%',
-          reintegroDentroMercosur: '2%',
-        };
-        break;
-      case 'aceite':
-        codigo = formData.isExtraVirgin === 'si' ? '1509.10.00.100P' : '1509.90.10.100V';
-        info = {
-          arancelComun: '12%',
-          derechoExportacion: '3%',
-          reintegroFueraMercosur: '3,5%',
-          reintegroDentroMercosur: '3%',
-        };
-        break;
-      case 'vinos':
-        codigo = '2204.21.00.200W';
-        info = {
-          arancelComun: '20%',
-          derechoExportacion: '2,5%',
-          reintegroFueraMercosur: '4%',
-          reintegroDentroMercosur: '3,5%',
-        };
-        break;
-      default:
-        codigo = 'N/A';
-        info = {
-          arancelComun: 'N/A',
-          derechoExportacion: 'N/A',
-          reintegroFueraMercosur: 'N/A',
-          reintegroDentroMercosur: 'N/A',
-        };
+  const handleNextStep = () => {
+    if (selectedProduct === 'vinos') {
+      if (currentStep === 1 && formData.isSparkling === 'si') {
+        // Vino espumoso, calcular código inmediatamente
+        calculateCodigoArancelario();
+        setCurrentStep(currentStep + 1); // Avanzar para mostrar resultados
+      } else if (currentStep === 3 && formData.isMistela === 'no') {
+        // Si no es mistela, avanzar al paso 4 para preguntar si es varietal
+        setCurrentStep(currentStep + 1);
+      } else {
+        setCurrentStep(currentStep + 1);
+      }
+    } else {
+      setCurrentStep(currentStep + 1);
     }
+  };
+
+  const calculateCodigoArancelario = () => {
+    let codigo, info;
+
+    if (selectedProduct === 'vinos') {
+      // Lógica para vinos basada en los pasos
+      const { isSparkling, containerType, isMistela, isVarietal } = formData;
+
+      if (isSparkling === 'si') {
+        codigo = '2204.10';
+      } else {
+        if (containerType === 'menor_igual_2') {
+          if (isMistela === 'si') {
+            codigo = '2204.21.00.100';
+          } else if (isVarietal === 'si') {
+            codigo = '2204.21.00.200';
+          } else {
+            codigo = '2204.21.00.900';
+          }
+        } else if (containerType === '2_a_10') {
+          if (isVarietal === 'si') {
+            codigo = '2204.22.11.100';
+          } else {
+            codigo = '2204.22.11.900';
+          }
+        } else if (containerType === 'mayor_10') {
+          if (isVarietal === 'si') {
+            codigo = '2204.29.10.100';
+          } else {
+            codigo = '2204.29.10.900';
+          }
+        } else {
+          codigo = 'N/A';
+        }
+      }
+
+      // Información arancelaria ficticia para vinos
+      info = {
+        arancelComun: '20%',
+        derechoExportacion: '0%',
+        reintegroFueraMercosur: '7%',
+        reintegroDentroMercosur: '7%',
+      };
+    } else {
+      // Lógica existente para otros productos
+      switch (selectedProduct) {
+        case 'alfajores':
+          codigo = formData.hasFilling === 'si' ? '1905.90.90.490B' : '1905.90.90.490A';
+          info = {
+            arancelComun: '18%',
+            derechoExportacion: '4,5%',
+            reintegroFueraMercosur: '1,25%',
+            reintegroDentroMercosur: '1,25%',
+          };
+          break;
+        case 'miel':
+          codigo = formData.isExtraVirgin === 'si' ? '1509.10.00.100P' : '1509.90.10.100V';
+          info = {
+            arancelComun: '12%',
+            derechoExportacion: '3%',
+            reintegroFueraMercosur: '3,5%',
+            reintegroDentroMercosur: '3%',
+          };
+          break;
+        default:
+          codigo = 'N/A';
+          info = {
+            arancelComun: 'N/A',
+            derechoExportacion: 'N/A',
+            reintegroFueraMercosur: 'N/A',
+            reintegroDentroMercosur: 'N/A',
+          };
+      }
+    }
+
     setCodigoArancelario(codigo);
     setArancelInfo(info);
   };
 
-  const renderProductForm = () => {
-    if (!selectedProduct) return null;
-    return (
-      <div style={styles.formContainer}>
-        <h2>Preguntas para determinar el Código Arancelario de {products.find(p => p.code === selectedProduct).name}</h2>
-        {productForms[selectedProduct].map((field) => (
-          <label key={field.name}>
-            {field.label}
-            {field.options ? (
+  const renderVinosForm = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <div style={styles.formContainer}>
+            <h2>Cuestionario para Determinar el Código Arancelario del Vino</h2>
+            <label style={styles.label}>
+              ¿Tu vino es espumoso?
               <select
-                name={field.name}
+                name="isSparkling"
                 onChange={handleInputChange}
                 style={styles.select}
-                value={formData[field.name] || ''}
-              >
-                <option value="" disabled>Selecciona una opción</option>
-                {field.options.map(option => (
-                  <option key={option} value={option.toLowerCase()}>{option}</option>
-                ))}
-              </select>
-            ) : (
-              <select
-                name={field.name}
-                onChange={handleInputChange}
-                style={styles.select}
-                value={formData[field.name] || ''}
+                value={formData.isSparkling || ''}
               >
                 <option value="" disabled>Selecciona una opción</option>
                 <option value="si">Sí</option>
                 <option value="no">No</option>
               </select>
-            )}
+            </label>
+            <button
+              style={styles.button}
+              onClick={handleNextStep}
+              disabled={!formData.isSparkling}
+            >
+              Siguiente
+            </button>
+          </div>
+        );
+      case 2:
+        if (formData.isSparkling === 'si') {
+          // Vino espumoso, ya se determinó el código
+          return (
+            <div style={styles.formContainer}>
+              <p style={styles.text}>
+                El código arancelario para tu vino espumoso es <strong>2204.10</strong>.
+              </p>
+              <button
+                style={styles.button}
+                onClick={() => setCurrentStep(currentStep + 1)}
+              >
+                Finalizar
+              </button>
+            </div>
+          );
+        }
+        return (
+          <div style={styles.formContainer}>
+            <label style={styles.label}>
+              ¿En qué tipo de envase se encuentra tu vino?
+              <select
+                name="containerType"
+                onChange={handleInputChange}
+                style={styles.select}
+                value={formData.containerType || ''}
+              >
+                <option value="" disabled>Selecciona una opción</option>
+                <option value="menor_igual_2">Menor o igual a 2 litros</option>
+                <option value="2_a_10">Superior a 2 litros pero menor o igual a 10 litros</option>
+                <option value="mayor_10">Superior a 10 litros</option>
+              </select>
+            </label>
+            <button
+              style={styles.button}
+              onClick={handleNextStep}
+              disabled={!formData.containerType}
+            >
+              Siguiente
+            </button>
+          </div>
+        );
+      case 3:
+        if (formData.containerType === 'menor_igual_2') {
+          return (
+            <div style={styles.formContainer}>
+              <label style={styles.label}>
+                ¿Es una mistela?
+                <select
+                  name="isMistela"
+                  onChange={handleInputChange}
+                  style={styles.select}
+                  value={formData.isMistela || ''}
+                >
+                  <option value="" disabled>Selecciona una opción</option>
+                  <option value="si">Sí</option>
+                  <option value="no">No</option>
+                </select>
+              </label>
+              <button
+                style={styles.button}
+                onClick={handleNextStep}
+                disabled={!formData.isMistela}
+              >
+                Siguiente
+              </button>
+            </div>
+          );
+        } else {
+          // Para envases de 2 a 10 litros y mayor a 10 litros
+          return (
+            <div style={styles.formContainer}>
+              <label style={styles.label}>
+                ¿Es un vino varietal o de calidad preferente?
+                <select
+                  name="isVarietal"
+                  onChange={handleInputChange}
+                  style={styles.select}
+                  value={formData.isVarietal || ''}
+                >
+                  <option value="" disabled>Selecciona una opción</option>
+                  <option value="si">Sí</option>
+                  <option value="no">No</option>
+                </select>
+              </label>
+              <button
+                style={styles.button}
+                onClick={() => {
+                  calculateCodigoArancelario();
+                  setCurrentStep(currentStep + 1);
+                }}
+                disabled={!formData.isVarietal}
+              >
+                Calcular Código Arancelario
+              </button>
+            </div>
+          );
+        }
+      case 4:
+        if (formData.containerType === 'menor_igual_2' && formData.isMistela === 'no') {
+          return (
+            <div style={styles.formContainer}>
+              <label style={styles.label}>
+                ¿Es un vino varietal o de calidad preferente?
+                <select
+                  name="isVarietal"
+                  onChange={handleInputChange}
+                  style={styles.select}
+                  value={formData.isVarietal || ''}
+                >
+                  <option value="" disabled>Selecciona una opción</option>
+                  <option value="si">Sí</option>
+                  <option value="no">No</option>
+                </select>
+              </label>
+              <button
+                style={styles.button}
+                onClick={() => {
+                  calculateCodigoArancelario();
+                  setCurrentStep(currentStep + 1);
+                }}
+                disabled={!formData.isVarietal}
+              >
+                Calcular Código Arancelario
+              </button>
+            </div>
+          );
+        }
+        return null; // Otros casos ya han calculado el código
+      default:
+        return null;
+    }
+  };
+
+  const renderProductForm = () => {
+    if (!selectedProduct) return null;
+
+    if (selectedProduct === 'vinos') {
+      return renderVinosForm();
+    }
+
+    return (
+      <div style={styles.formContainer}>
+        <h2>Preguntas para determinar el Código Arancelario de {products.find(p => p.code === selectedProduct).name}</h2>
+        {productForms[selectedProduct].map((field) => (
+          <label key={field.name} style={styles.label}>
+            {field.label}
+            <select
+              name={field.name}
+              onChange={handleInputChange}
+              style={styles.select}
+              value={formData[field.name] || ''}
+            >
+              <option value="" disabled>Selecciona una opción</option>
+              <option value="si">Sí</option>
+              <option value="no">No</option>
+            </select>
           </label>
         ))}
         <button style={styles.button} onClick={calculateCodigoArancelario}>
@@ -156,11 +349,11 @@ const CodigoArancelario = () => {
   };
 
   const renderRecommendations = () => {
-    if (!selectedProduct) return null;
+    if (!selectedProduct || !codigoArancelario) return null; // Mostrar recomendaciones solo si se ha calculado el código
+
     const recommendations = {
       alfajores: "Para exportar alfajores, es crucial contar con un empaque resistente que proteja el producto durante el transporte internacional. Considera incluir información sobre la historia y tradición de los alfajores en Argentina en el empaque o en material promocional adjunto. Asegúrate de cumplir con las regulaciones de etiquetado del país de destino, incluyendo la lista de ingredientes en el idioma local si es necesario. Para mercados no familiarizados con los alfajores, podrías incluir sugerencias de consumo o maridaje.",
-      mate: "Al exportar mate, es fundamental verificar las regulaciones fitosanitarias del país de destino, ya que algunos países tienen restricciones específicas para productos herbales. Incluye instrucciones detalladas de preparación y consumo, especialmente para mercados no familiarizados con la bebida. Considera ofrecer kits de iniciación que incluyan yerba mate, bombilla y mate (recipiente) para facilitar la adopción en nuevos mercados. Resalta los beneficios para la salud y las propiedades energizantes naturales del mate en tu material promocional.",
-      aceite: "Para la exportación de aceite de oliva, utiliza botellas oscuras o envasados que protejan el producto de la luz para mantener su calidad. Considera obtener certificaciones de calidad internacional, como la denominación de origen, que pueden agregar valor a tu producto. Proporciona información sobre la región de producción y los métodos de cosecha y prensado. Incluye sugerencias de uso culinario y resalta los beneficios para la salud del aceite de oliva en el etiquetado o material promocional. Asegúrate de cumplir con las regulaciones de etiquetado específicas para aceites comestibles en el país de destino.",
+      miel: "Para exportar miel, es fundamental garantizar que el producto cumpla con las normativas fitosanitarias del país de destino. Utiliza envases herméticos y resistentes para preservar la calidad y evitar derrames durante el transporte. Considera obtener certificaciones orgánicas o de origen que puedan agregar valor a tu producto en mercados internacionales. Incluye etiquetas claras con la lista de ingredientes y las indicaciones de uso en el idioma local si es necesario. Promociona las propiedades naturales y beneficios para la salud de la miel en tu material de marketing.",
       vinos: "Al exportar vinos, es crucial cumplir con las regulaciones de etiquetado de bebidas alcohólicas del país de destino, incluyendo advertencias de salud y contenido alcohólico. Considera participar en ferias y concursos internacionales de vinos para ganar reconocimiento y promocionar tu producto. Proporciona información detallada sobre la región vinícola, las variedades de uva utilizadas y el proceso de vinificación. Incluye notas de cata y sugerencias de maridaje en el etiquetado o en material promocional adjunto. Para vinos premium, considera opciones de empaque especiales que realcen la presentación del producto."
     };
     return (
@@ -176,7 +369,7 @@ const CodigoArancelario = () => {
     return (
       <div style={styles.popup}>
         <div style={styles.popupContent}>
-          <h2>Selecciona tu producto:</h2>
+          <h2>Selecciona un producto regional:</h2>
           <div>
             {products.map((product) => (
               <button 
@@ -187,7 +380,11 @@ const CodigoArancelario = () => {
                 {product.name}
               </button>
             ))}
+			<p><em>¿Tu producto no aparece en esta lista? </em> <a href="http://localhost:3000/clasificarProductos"> Clasifica tu producto aquí</a></p>
           </div>
+          <button style={styles.closeButton} onClick={() => setShowProductPopup(false)}>
+            Cerrar
+          </button>
         </div>
       </div>
     );
@@ -210,19 +407,19 @@ const CodigoArancelario = () => {
           <li>Permite una comunicación clara entre aduanas, exportadores e importadores sobre la naturaleza de los productos.</li>
           <li>Es esencial para completar correctamente la documentación aduanera y de exportación.</li>
         </ul>
-		  <img 
-		  src={imagen} 
-		  alt="Banner sobre logística internacional" 
-		  style={{ 
-			width: '100%', 
-			height: '60%', 
-			marginTop: '20px', 
-			display: 'block', 
-			marginLeft: 'auto', 
-			marginRight: 'auto',
-			boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' // Sombra suave
-		  }} 
-		/>
+        <img 
+          src={imagen} 
+          alt="Banner sobre logística internacional" 
+          style={{ 
+            width: '100%', 
+            height: '60%', 
+            marginTop: '20px', 
+            display: 'block', 
+            marginLeft: 'auto', 
+            marginRight: 'auto',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' // Sombra suave
+          }} 
+        />
         <p style={styles.text}>
           El código arancelario suele constar de 6 a 10 dígitos, donde los primeros 6 son estándar internacionalmente, y los siguientes pueden variar según las especificaciones de cada país o región comercial.
         </p>
@@ -267,6 +464,8 @@ const styles = {
     margin: '0 auto',
     padding: '20px',
     fontFamily: 'Arial, sans-serif',
+    position: 'relative', // Asegura que los elementos hijos posicionados se basen en este contenedor
+    zIndex: 1, // Define una capa base
   },
   title: {
     fontSize: '2em',
@@ -296,6 +495,11 @@ const styles = {
     padding: '20px',
     border: '1px solid #ccc',
     borderRadius: '8px',
+  },
+  label: {
+    display: 'block',
+    marginBottom: '10px',
+    fontWeight: 'bold',
   },
   select: {
     display: 'block',
@@ -335,14 +539,17 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 1000, // Asegura que el popup esté por encima de otros elementos, incluido el footer
   },
   popupContent: {
     backgroundColor: '#fff',
     padding: '30px',
     borderRadius: '10px',
     maxWidth: '500px',
-	    margin: '20px',
+    width: '90%', // Asegura que el contenido sea responsivo
+    margin: '20px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    position: 'relative',
   },
   productButton: {
     display: 'block',
@@ -357,7 +564,17 @@ const styles = {
     cursor: 'pointer',
     transition: 'background-color 0.3s ease',
   },
-  
+  closeButton: {
+    backgroundColor: '#e74c3c',
+    color: '#fff',
+    border: 'none',
+    padding: '10px 20px',
+    fontSize: '1em',
+    cursor: 'pointer',
+    borderRadius: '5px',
+    transition: 'background-color 0.3s ease',
+    marginTop: '20px',
+  },
   introduction: {
     marginBottom: '30px',
   },

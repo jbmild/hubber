@@ -10,7 +10,7 @@ import DialogDetalles from 'components/paginatedTable/detallesDialog'
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
-const MisNormativas = () => {
+const MisNormativas = ({setHasAlerts}) => {
     const [userData, setUserData] = useState([]);
     const [newData, setNewData] = useState();
     const [loading, setLoading] = useState(true);
@@ -26,6 +26,7 @@ const MisNormativas = () => {
                 const response = await getNotificaciones();
                 console.log(response);
                 setUserData(response); // Directly set the array here
+                setHasAlerts(response.some(notif => notif.estado === "Nueva"));
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching user notificaciones:', error);

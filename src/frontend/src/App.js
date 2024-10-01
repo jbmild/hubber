@@ -48,11 +48,13 @@ import YourProduct from './pages/exportar/YourProduct';
 
 function App() {
 
+  const [hasAlerts, setHasAlerts] = useState(false);
+
   return (
     <>
       <ToastContainer />
       <Routes>
-        <Route path="/" element={<Layout />} >
+        <Route path="/" element={<Layout hasAlerts={hasAlerts} setHasAlerts={setHasAlerts}/>} >
           <Route index element={<Home />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
@@ -73,7 +75,7 @@ function App() {
             <Route path='/exportar/tu-producto' element={<YourProduct />} />
             <Route path='/misNormativas' element={<MisNormativas />} />
             <Route path='/misIntereses' element={<MisIntereses />} />
-            <Route path='/misAlertas' element={<MisAlertas />} />
+            <Route path='/misAlertas' element={<MisAlertas setHasAlerts={setHasAlerts}/>} />
           </Route>
         </Route>
       </Routes>
@@ -82,10 +84,10 @@ function App() {
   );
 }
 
-function Layout() {
+function Layout({hasAlerts, setHasAlerts}) {
   const [authenticated, setAuthenticated] = useState(false);
   const [myUsername, setUsername] = useState('Natalia Natalia');
-  const [hasAlerts, setHasAlerts] = useState(false);
+
   let location = useLocation();
   const navigate = useNavigate();
 

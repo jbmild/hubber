@@ -181,7 +181,7 @@ const notificar = async (listaNormativas) => {
                     "motivo": "Nueva normativa en un país de tu interés",
                     "normativa": ids[i],
                     "email": usuario.email,
-                    "usuario": usuario.username
+                    "interes": listaNormativas[i].pais
                 };
                 await notificacionesCollection.insertOne(notificacionPais);
                 notificaciones.push({ ...notificacionPais });
@@ -195,7 +195,7 @@ const notificar = async (listaNormativas) => {
                     "motivo": "Nueva normativa en un producto de tu interés",
                     "normativa": ids[i],
                     "email": user.email,
-                    "usuario": user.username
+                    "interes": listaNormativas[i].etiquetas.join('/')
                 };
                 await notificacionesCollection.insertOne(notificacionProducto);
                 notificaciones.push({ ...notificacionProducto });

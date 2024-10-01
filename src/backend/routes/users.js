@@ -2,6 +2,7 @@ const { validate } = require('../middleware/validationMiddleware')
 const { createValidator } = require("../validators/users")
 const { createUserHandler } = require("../handlers/users")
 const User = require('../models/users');
+const Notificacion = require('../models/notificaciones');
 
 module.exports = function (app) {
     app.post(
@@ -81,6 +82,15 @@ module.exports = function (app) {
                 return res.status(404).json({ error: 'User not found' });
             }
             res.json(user.username);
+        } catch (error) {
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    });
+
+    app.get('/users/notificaciones-usuario', ensureAuthenticated, async (req, res) => {
+        try {
+            const notificaciones = await Notificacion.find({$and: [{email : req.user.email}, {estado: { $ne : "Eliminada"}}]});
+            res.json(notificaciones);
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
         }

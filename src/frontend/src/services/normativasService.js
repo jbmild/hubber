@@ -13,3 +13,9 @@ export async function getNormativas(page, limit, filters) {
     console.log(response);
     return response.data;
 }
+
+export async function getNormativa(idNormativa) {
+    const response =  await axios.get(`${url}/${idNormativa}`);
+    console.log(response);
+    return response.data;
+}

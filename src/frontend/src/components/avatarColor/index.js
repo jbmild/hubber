@@ -1,4 +1,6 @@
-import Avatar from '@mui/material/Avatar';
+import { Avatar, Badge } from '@mui/material';
+
+
 
 function stringToColor(string) {
     let hash = 0;
@@ -29,8 +31,22 @@ function stringToColor(string) {
     };
   }
 
-export default function BackgroundLetterAvatars({name}) {
+export default function BackgroundLetterAvatars({name, hasAlerts}) {
     return (
+      <>
         <Avatar {...stringAvatar(name)} />
-    );
-  }
+        {hasAlerts && (
+          <Badge
+              color="error"
+              variant="dot"
+              overlap="circular"
+              anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+              }}
+          >
+          </Badge>
+    )}    
+    </>
+  )
+}

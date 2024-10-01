@@ -11,8 +11,11 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
+import Badge from '@mui/material/Badge';
 import MisNormativas from 'components/misNormativas';
 import { isAuthenticated, logOut, getUserName } from './services/authService';
+import {tieneNuevasNotificaciones} from 'services/notificacionesService';
+import NotificationsActiveRoundedIcon from '@mui/icons-material/NotificationsActiveRounded';
 
 import BackgroundLetterAvatars from './components/avatarColor';
 
@@ -82,6 +85,7 @@ function App() {
 function Layout() {
   const [authenticated, setAuthenticated] = useState(false);
   const [myUsername, setUsername] = useState('Natalia Natalia');
+  const [hasAlerts, setHasAlerts] = useState(false);
   let location = useLocation();
   const navigate = useNavigate();
 
@@ -93,13 +97,26 @@ function Layout() {
     const checkAuth = async () => {
       const auth = await isAuthenticated();
       setAuthenticated(auth);
-      const nombre = await getUserName();
       if(auth){
+        const nombre = await getUserName();
+        const notificaciones = await tieneNuevasNotificaciones();
+        setHasAlerts(notificaciones);
+        console.log(notificaciones);
         setUsername(nombre);
       }
     };
     checkAuth();
   }, [location.pathname]);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const nombre = await getUserName();
+      if(authenticated){
+        setUsername(nombre);
+      }
+    };
+    checkUser();
+  }, []);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -144,12 +161,6 @@ function Layout() {
     { label: 'Cobros y reintegros', path: '/exportar/cobros' },
     { label: 'Costos', path: '/exportar/costos' },
     { label: 'Tu Producto', path: '/exportar/tu-producto' },
-  ];
-
-  const userMenuItems = [
-    { label: 'Mis Normativas', path: '/misNormativas' },
-    { label: 'Mis Intereses', path: '/misIntereses' },
-    { label: 'Notificaciones', path: '/misAlertas' }
   ];
 
   return (
@@ -242,25 +253,35 @@ function Layout() {
                 <Button
                   key={'btn-user-menu'}
                   onClick={handleOpenUserMenu}
+                  disableRipple= {true}
                   sx={{    my: 2, color: 'black', display: 'flex', borderRadius: '100%',
                     '&:hover': {
                         background: 'none',
                     },
                 } }
                 >
-                  <BackgroundLetterAvatars name = {myUsername} />
+                  <BackgroundLetterAvatars onClick={handleOpenUserMenu} name = {myUsername} hasAlerts = {hasAlerts}/>
                 </Button>
-                <Menu
-                  anchorEl={anchorElUser}
-                  open={Boolean(anchorElUser)}
-                  onClose={() => handleCloseUserMenu()}
-                >
-                  {userMenuItems.map((item) => (
-                    <MenuItem key={item.path} onClick={() => handleCloseUserMenu(item.path)}>
-                      {item.label}
-                    </MenuItem>
-                  ))}
-                      <MenuItem
+              <Menu
+                anchorEl={anchorElUser}
+                open={Boolean(anchorElUser)}
+                onClose={() => handleCloseUserMenu()}
+              >
+                 <MenuItem key={'/misNormativas'} onClick={() => handleCloseUserMenu('/misNormativas')}>
+                    Mis Normativas
+                  </MenuItem>
+                  <MenuItem key={'/misIntereses'} onClick={() => handleCloseUserMenu('/misIntereses')}>
+                    Mis Intereses
+                  </MenuItem>
+                  <MenuItem key={'/misAlertas'} onClick={() => handleCloseUserMenu('/misAlertas')}>
+                    Notificaciones
+                      {hasAlerts && (
+                        <Badge color="error" variant="dot"              
+                       style={{ marginLeft: '8px'}}>
+                            <NotificationsActiveRoundedIcon  fontSize="small" />
+                        </Badge>)}
+                  </MenuItem>
+                  <MenuItem
                     key={'btn-register-menu'}
                     onClick={handleLogoutClick}
                     sx={{ color: 'black', display: 'block', backgroundColor: 'rgb(206 206 206)' }}
@@ -268,9 +289,7 @@ function Layout() {
                     Salir
                   </MenuItem>
                 </Menu>
-
-                  </>
-                )}
+                </>)}
               </Box>
 
               <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none', lg: 'none' } }}>
@@ -351,6 +370,7 @@ function Layout() {
                     </Typography>
                   </MenuItem>
                   {authenticated && (
+                    <>
                     <MenuItem
                       key={'btn-mis-normativas'}
                       onClick={() => { handleCloseNavMenu('/misNormativas') }}
@@ -359,6 +379,23 @@ function Layout() {
                         Mis Normativas
                       </Typography>
                     </MenuItem>
+                    <MenuItem
+                      key={'btn-mis-intereses'}
+                      onClick={() => { handleCloseNavMenu('/misIntereses') }}
+                    >
+                      <Typography textAlign="center">
+                        Mis Intereses
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem
+                      key={'btn-mis-alertas'}
+                      onClick={() => { handleCloseNavMenu('/misAlertas') }}
+                    >
+                      <Typography textAlign="center">
+                        Notificaciones
+                      </Typography>
+                    </MenuItem>
+                    </>
                   )}
                   <Divider sx={{ my: 0.5 }} />
                   {!authenticated && (

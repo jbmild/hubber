@@ -81,7 +81,7 @@ module.exports = function (app) {
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
-            res.json(user.username);
+            res.json(user);
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
         }

@@ -23,12 +23,19 @@ function stringToColor(string) {
   }
   
   function stringAvatar(name) {
-    return {
-      sx: {
-        bgcolor: stringToColor(name),
-      },
-      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
-    };
+
+    try {
+      const children = name.split(' ')[0][0]+''+name.split(' ')[1][0];
+      const color = stringToColor(name);
+      return {
+        sx: {
+          bgcolor: color,
+        },
+        children: children,
+      };
+    } catch {
+      return  <Avatar />
+    }
   }
 
 export default function BackgroundLetterAvatars({name, hasAlerts}) {

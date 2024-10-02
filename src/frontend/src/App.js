@@ -13,7 +13,7 @@ import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import Badge from '@mui/material/Badge';
 import MisNormativas from 'components/misNormativas';
-import { isAuthenticated, logOut, getUserName } from './services/authService';
+import { isAuthenticated, logOut, getUser } from './services/authService';
 import {tieneNuevasNotificaciones} from 'services/notificacionesService';
 import NotificationsActiveRoundedIcon from '@mui/icons-material/NotificationsActiveRounded';
 
@@ -84,7 +84,7 @@ function App() {
 
 function Layout({hasAlerts, setHasAlerts}) {
   const [authenticated, setAuthenticated] = useState(false);
-  const [myUsername, setUsername] = useState('Natalia Natalia');
+  const [myUsername, setUsername] = useState('');
 
   let location = useLocation();
   const navigate = useNavigate();
@@ -98,11 +98,10 @@ function Layout({hasAlerts, setHasAlerts}) {
       const auth = await isAuthenticated();
       setAuthenticated(auth);
       if(auth){
-        const nombre = await getUserName();
+        const nombre = await getUser();
         const notificaciones = await tieneNuevasNotificaciones();
         setHasAlerts(notificaciones);
-        console.log(notificaciones);
-        setUsername(nombre);
+        setUsername(nombre.username);
       }
     };
     checkAuth();
@@ -110,7 +109,7 @@ function Layout({hasAlerts, setHasAlerts}) {
 
   useEffect(() => {
     const checkUser = async () => {
-      const nombre = await getUserName();
+      const nombre = await getUser();
       if(authenticated){
         setUsername(nombre);
       }

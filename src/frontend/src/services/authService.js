@@ -17,7 +17,7 @@ export async function isAuthenticated() {
     return false; // If no session or the session is invalid, return false
 }
 
-export async function getUserName() {
+export async function getUser() {
     try {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/me`, {
             method: 'GET',

@@ -41,8 +41,8 @@ function stringToColor(string) {
 export default function BackgroundLetterAvatars({name, hasAlerts}) {
     return (
       <>
-        <Avatar {...stringAvatar(name)} />
-        {hasAlerts && (
+        
+        {hasAlerts ? (
           <Badge
               color="error"
               variant="dot"
@@ -52,8 +52,10 @@ export default function BackgroundLetterAvatars({name, hasAlerts}) {
                   horizontal: 'right',
               }}
           >
+            <Avatar {...stringAvatar(name)} />
           </Badge>
-    )}    
+    ):
+    <Avatar {...stringAvatar(name)} />}    
     </>
   )
 }

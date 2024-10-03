@@ -9,7 +9,9 @@ const UserSchema = new mongoose.Schema({
             fechaAprobacion: { type: Date, default: Date.now },
             status: { type: String, enum: ['Pendiente', 'Aprobado'] }
         }
-    ]
+    ],
+    paises_interes: [String],
+    productos_interes: [String]
 }, {
     collection: 'usuarios'
 }

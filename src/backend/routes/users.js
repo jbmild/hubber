@@ -13,6 +13,7 @@ module.exports = function (app) {
 
 
     const ensureAuthenticated = (req, res, next) => {
+        console.log(req.isAuthenticated());
         if (req.isAuthenticated()) {
             return next();
         }
@@ -94,6 +95,44 @@ module.exports = function (app) {
             res.json(notificaciones);
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
+        }
+    });
+
+    app.post('/users/interesPais', ensureAuthenticated, async (req, res) => {
+        console.log(req.body);
+        try {
+        const { interes } = req.body;
+        const userAct = await User.findByIdAndUpdate(
+            req.user._id,
+            { $set: { paises_interes: interes } },
+            { new: true }
+        );
+    
+        if (!userAct) {
+            return res.status(404).json({ message: 'Usuario no encontrada' });
+        }
+    
+        res.json(userAct);
+        } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar los intereses', error });
+        }
+    });
+
+    app.post('/users/interesProducto', ensureAuthenticated, async (req, res) => {
+        try {
+        const { interes } = req.body;
+        const userAct = await User.findByIdAndUpdate(
+            req.user._id,
+            { $set: { productos_interes: interes } }
+        );
+    
+        if (!userAct) {
+            return res.status(404).json({ message: 'Usuario no encontrada' });
+        }
+    
+        res.json(userAct);
+        } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar los intereses', error });
         }
     });
 }

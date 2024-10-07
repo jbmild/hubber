@@ -448,6 +448,9 @@ const CodigoArancelario = () => {
               <p style={styles.arancelSmall}>
                 <strong>Reintegro dentro del Mercosur:</strong> {arancelInfo.reintegroDentroMercosur}
               </p>
+              <p style={styles.arancelSmall}>
+                Los porcentajes de retenciones y reintegros se aplican al valor FOB (Free On Board) de la mercancía exportada. El valor FOB representa el valor de la mercancía en el puerto de embarque, excluyendo los costos de transporte y seguros después del puerto.
+              </p>
             </div>
           )}
           {renderRecommendations()}

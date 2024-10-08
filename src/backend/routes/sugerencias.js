@@ -1,4 +1,4 @@
-const { getSugerenciasHandler } = require("../handlers/sugerencias")
+const { getSugerenciasHandler, getSugerenciaHandler } = require("../handlers/sugerencias")
 
 module.exports = function (app) {
     const ensureAuthenticated = (req, res, next) => {
@@ -8,7 +8,11 @@ module.exports = function (app) {
         res.status(401).json({ error: 'Not authenticated' });
     };
 
-    app.get('/sugerencias', async (req, res) => {
+    app.get('/sugerencias', ensureAuthenticated, async (req, res) => {
         return await getSugerenciasHandler(req, res)
+    });
+
+    app.get('/sugerencia', ensureAuthenticated, async (req, res) => {
+        return await getSugerenciaHandler(req, res)
     });
 }

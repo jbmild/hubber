@@ -15,19 +15,17 @@ const obtenerNormativasEquivalentes = async (idNormativas) => {
 
 exports.getSugerenciasHandler = async (req, res) => {
     try {
-        //const userId = req.user._id;
-        const userId = "66e39ceaf68cb7be8e03df38";
+        const userId = req.user._id;
         const usuario = await User.findById(userId);
         if (!usuario) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
 
         const productos = usuario.productos_interes || [];
-        console.log("productos", productos);
+
         //Obtengo los ids de todas las normativas y equivalencias del usuario
-        const idNormativas = usuario.normativasUsuario.map(n => n._id.toString());
-        const equivalenciasIds = await obtenerNormativasEquivalentes(idNormativas)
-        console.log("equivalenciasIds", equivalenciasIds);
+        const idNormativas = usuario.normativasUsuario?.map(n => n._id.toString()) || [];
+        const equivalenciasIds = await obtenerNormativasEquivalentes(idNormativas) || []
 
         //Obtener todos los paises disponibles
         const paises = await Normativa.aggregate([
@@ -57,6 +55,31 @@ exports.getSugerenciasHandler = async (req, res) => {
         }, {})
 
         res.status(200).send(JSON.stringify(resp));
+    } catch (err) {
+        res.status(400).send({ error: err.message });
+    }
+}
+
+exports.getSugerenciaHandler = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const usuario = await User.findById(userId);
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        const pais = req.query.pais;
+        const producto = req.query.producto;
+        if (!pais || !producto) {
+            return res.status(404).json({ error: 'Es necesario el pais y el producto para buscar una sugerencia en particular' });
+        }
+
+        const idNormativas = usuario.normativasUsuario?.map(n => n._id.toString()) || [];
+        const equivalenciasIds = await obtenerNormativasEquivalentes(idNormativas) || []
+
+        const normativas = await Normativa.find({ pais: pais, etiquetas: { $elemMatch: { $in: [producto] } }, _id: { $nin: equivalenciasIds } });
+
+        res.status(200).send(JSON.stringify(normativas));
     } catch (err) {
         res.status(400).send({ error: err.message });
     }

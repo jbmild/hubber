@@ -1,8 +1,11 @@
 import { createChatBotMessage } from 'react-chatbot-kit';
 import GeneralOptions from './OptionSelector/GeneralOptions';
 import PaisesOptions from './OptionSelector/PaisSelector';
+import { getUser } from 'services/authService';
+import BackgroundLetterAvatars from 'components/avatarColor';
 
 const botName = 'Hubber';
+const username = (await getUser()).username;
 
 const config = {
   initialMessages: [
@@ -31,6 +34,10 @@ const config = {
       mapStateToProps: ["messages"],
     },
   ]
+  /*,
+  customComponents:{
+    userAvatar: <BackgroundLetterAvatars name={username} hasAlerts={false} />
+  }*/
 };
 
 export default config;

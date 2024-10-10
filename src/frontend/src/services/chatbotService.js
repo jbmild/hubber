@@ -12,7 +12,7 @@ export async function setPais(pais) {
 }
 
 export async function setGuiaComoExportar() {
-    const response = await axios.post(`${url}/guia`);
+    const response = await axios.post(`${url}/guia`, {}, { withCredentials: true });
     return response.data.message;
 }
 

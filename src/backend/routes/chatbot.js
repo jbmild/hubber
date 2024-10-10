@@ -1,4 +1,4 @@
-const { handleSetPais, handlePostMessage, handleClearMessageHistory } = require("../handlers/chatbotHandler");
+const { handleSetPais, handlePostMessage, handleClearMessageHistory, handleSetComoExportar } = require("../handlers/chatbotHandler");
 const { initChatContext } = require('../middleware/chatbotMiddleware');
 const { isAuthenticated } = require('../middleware/authMiddleware');
 
@@ -8,6 +8,13 @@ module.exports = function (app) {
         isAuthenticated,
         handleSetPais
     );
+
+    app.post(
+        '/chatbot/guia',
+        isAuthenticated,
+        handleSetComoExportar
+    );
+
       
     app.post(
         '/chatbot/message',

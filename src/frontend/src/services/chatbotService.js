@@ -11,6 +11,11 @@ export async function setPais(pais) {
     return response.data.message;
 }
 
+export async function setGuiaComoExportar() {
+    const response = await axios.post(`${url}/guia`, {}, { withCredentials: true });
+    return response.data.message;
+}
+
 export async function clearChatSession() {
     await axios.post(`${url}/clear`, {}, {withCredentials: true});
 }

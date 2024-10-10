@@ -5,6 +5,7 @@
 const { OpenAI } = require('openai');
 const { VectorStoreIndex, Document } = require('llamaindex');
 const { traerNormativasPorPais } = require('./normativasHandler');
+const { traerGuiasDeExportacion } = require('./guiaExportacionHandler');
 const express = require('express');
 
 const INDEX_EXPIRATION_TIME =  12 * 60 * 60 * 1000; // 12 hopas de expiración
@@ -21,25 +22,39 @@ function limpiarIndicesExpirados() {
     }
 }
 
-// Crea índice
-const crearIndexPorPais = async (pais) => {
+
+const crearIndex = async (key, mappedData) => {
     limpiarIndicesExpirados();
 
-    if(indexes[pais]){
-        indexes[pais].timestamp = Date.now();
-        return indexes[pais];
+    if(indexes[key]){
+        indexes[key].timestamp = Date.now();
+        return indexes[key];
     }        
 
+    const documentos = mappedData.map(item => new Document({ text: JSON.stringify(item) }));
+        
+    const index = await VectorStoreIndex.fromDocuments(documentos);
+
+    indexes[key] = { index: index, timestamp: Date.now() };
+
+    return indexes[key];
+}
+
+const crearIndexPorPais = async (pais) => {
     try{
         const mappedData = await traerNormativasPorPais(pais);
     
-        const documentos = mappedData.map(item => new Document({ text: JSON.stringify(item) }));
-            
-        const index = await VectorStoreIndex.fromDocuments(documentos);
+        return await crearIndex(pais, mappedData);
+    }catch(e){
+        return null;
+    }
+}
 
-        indexes[pais] = { index: index, timestamp: Date.now() };
-
-        return indexes[pais];
+const crearIndexComoExportar = async () => {
+    try{
+        const mappedData = await traerGuiasDeExportacion();
+    
+        return await crearIndex('comoExportar', mappedData);
     }catch(e){
         return null;
     }
@@ -53,7 +68,11 @@ const query =  async (key, pregunta, context) => {
         let index = indexes[key]?.index;
     
         if(!index){
-           index = (await crearIndexPorPais(key)).index; 
+            if(key === 'comoExportar'){
+                index = (await crearIndexComoExportar()).index;
+            }else{
+                index = (await crearIndexPorPais(key)).index; 
+            }
         }
     
         const queryEngine = index.asQueryEngine();
@@ -71,9 +90,17 @@ const query =  async (key, pregunta, context) => {
 
 
 exports.handleSetPais = async (req, res) => {
-    console.log('set pais', req.body)
     if(await crearIndexPorPais(req.body.pais))
         res.json({ message: `Quieres exportar a ${req.body.pais}, en que podemos guiarle?`})
+    else
+        res.status(500).send({
+            message: 'Ocurrio un error!'
+        });
+}
+
+exports.handleSetComoExportar = async(req, res) => {
+    if(await crearIndexComoExportar())
+        res.json({ message: `Necesitas ayuda para empezar a exportar, en que podemos guiarle?`})
     else
         res.status(500).send({
             message: 'Ocurrio un error!'

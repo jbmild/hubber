@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { sendMessage, setPais } from 'services/chatbotService';
+import { sendMessage, setGuiaComoExportar, setPais } from 'services/chatbotService';
 import Loader from './loader';
 import { getPaises } from 'services/paisesService';
 
@@ -72,7 +72,7 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
     setState((prev) => ({ ...prev, messages: [...prev.messages, loadingMsg], }))
 
     if(optionsState.normativasBasicas || optionsState.paisSeleccionado){
-      const chatKey = optionsState.normativasBasicas ? 'basicas' : optionsState.paisSeleccionado;
+      const chatKey = optionsState.normativasBasicas ? 'comoExportar' : optionsState.paisSeleccionado;
 
       sendMessage(message, chatKey).then((response) => {
         setLoading(false);
@@ -90,13 +90,13 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
       if(message.toLowerCase().includes('ayuda') || message.toLowerCase().includes('mas opciones')){
           getPaises().then((response) => {
             setLoading(false);
-
+            const paises = response.map(p => (p.pais));
             setOptionsState((prev) => ({
               ...prev,
-              paisesAyuda: response
+              paisesAyuda: paises
             }));
         
-            const chatbotMessage = createChatBotMessage(`Estos son los paises disponibles actualmente en nuestra base de conocicmiento:\n${response.join(', ')}.\n Ingrese alguno para poder guiarlo.`, opcionesBasicasMessage
+            const chatbotMessage = createChatBotMessage(`Estos son los paises disponibles actualmente en nuestra base de conocicmiento:\n${paises.join(', ')}.\n Ingrese alguno para poder guiarlo.`, opcionesBasicasMessage
             );
       
             setState((prev) => {
@@ -105,8 +105,9 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
             })
         });
       }else if(optionsState.paisesAyuda.length > 0){
-        if(optionsState.paisesAyuda.some( p => (p == message))){
-          setPais(message).then((response => {
+        const pais = getPaisNormalizado(message, optionsState.paisesAyuda)
+        if(pais){
+          setPais(pais).then((response => {
             setLoading(false);
             
             const chatbotMessage = createChatBotMessage(response,
@@ -120,7 +121,7 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
         
             setOptionsState((prev) => ({
               ...prev,
-              paisSeleccionado: message,
+              paisSeleccionado: pais,
             }));
           }));
         }else{
@@ -152,7 +153,7 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
 
   
   const handlePais = (params) => {
-    const message = createChatBotMessage('Ingrese un país, aqui tiene algunas sugerencias',
+    const message = createChatBotMessage('Ingrese un país, aqui tiene algunas sugerencias, si necesitas más opciones puedes escribir "ayuda" en el chat',
       {        
         ...opcionesBasicasMessage,
         widget: 'paises'
@@ -192,15 +193,26 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
   }
 
   const handleNormativasBasicas = (params) => {
-    const message = createChatBotMessage('Se le guiara por normaticas basicas, en que podemos guiarle?',
-      opcionesBasicasMessage
-    );
+    setLoading(true);
+    const loadingMsg = createChatBotMessage(<Loader />)
+    setState((prev) => ({ ...prev, messages: [...prev.messages, loadingMsg], }))
 
-    addMessageToState(message);
-
-    setOptionsState((prev) => ({
-      ...prev,
-      normativasBasicas: true
+    setGuiaComoExportar().then((response => {
+      setLoading(false);
+      
+      const chatbotMessage = createChatBotMessage(response,
+        opcionesBasicasMessage
+      );
+  
+      setState((prev) => {
+        const newPrevMsg = prev.messages.slice(0, -1)
+        return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
+      })
+  
+      setOptionsState((prev) => ({
+        ...prev,
+        normativasBasicas: true
+      }));
     }));
   }
   
@@ -222,3 +234,20 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
 };
 
 export default ActionProvider;
+
+const normalizeString = (str) => {
+  return str
+    .normalize('NFD') // Descomponer caracteres acentuados
+    .replace(/[\u0300-\u036f]/g, "") // Eliminar acentos
+    .toLowerCase(); // Convertir a minúsculas
+};
+
+const getPaisNormalizado = (input, lista = []) => {
+  if(lista.length == 0)
+    return null;
+
+  const normalizedInput = normalizeString(input);
+  return lista.find(pais =>
+    normalizeString(pais).includes(normalizedInput)
+  );
+};

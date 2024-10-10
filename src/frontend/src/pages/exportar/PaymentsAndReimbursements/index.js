@@ -4,8 +4,13 @@ import React from 'react';
 import './style.css'; // Importar el CSS
 import exportationTimeline from './calculadora.jpg'; // Importar imágenes
 import exportationProcess from './dolares.jpg';
+import reint from './reint.png';
 
 import reintegroImage from './reintegro.jpg';
+import {
+  Box,
+} from '@mui/material';
+
 
 const PaymentsAndReimbursements = () => {
   return (
@@ -14,7 +19,10 @@ const PaymentsAndReimbursements = () => {
       <p>
         El proceso de cobrar una exportación en Argentina puede parecer complicado, pero con una buena planificación y entendiendo los pasos, cualquier PyME puede manejarlo sin problemas. A continuación, explicaremos en detalle cómo es este proceso y qué aspectos deben considerar las pequeñas y medianas empresas.
       </p>
-      
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+  <img src={reint} alt="Reintegros en Exportación" style={{ width: '750px', height: 'auto' }} />
+</div>
+
       <h2>Plazos para el Ingreso de Divisas</h2>
       <p>
         En Argentina, cuando se exporta un producto, existe un plazo máximo para que el dinero obtenido por la exportación ingrese al país. Este plazo varía según el producto exportado. Por ejemplo, en el caso de exportar vinos, el pago debe ingresar al país dentro de los 180 días desde la fecha del "cumplido del permiso de embarque". Este "cumplido" es un trámite que confirma que la mercadería ha salido del país.
@@ -111,7 +119,23 @@ const PaymentsAndReimbursements = () => {
         <li>El proceso de solicitud y obtención de reintegros puede llevar tiempo, por lo que es importante considerarlo en la planificación financiera de la operación de exportación.</li>
         <li>Es recomendable mantener una documentación clara y ordenada de todas las operaciones y gastos relacionados con la producción y exportación del bien, para facilitar el proceso de solicitud de reintegros.</li>
       </ul>
-
+ <Box
+        sx={{
+          height: '1.5em',
+          fontSize: 10,
+          fontWeight: 'light',
+          fontStyle: 'oblique',
+          flexDirection: 'column',
+        }}
+      >
+        <p>
+          Fuente: Comisión Nacional de Comercio Exterior Argentino:{' '}
+          <a target="_blank" rel="noopener noreferrer" href="https://www.argentina.gob.ar/cnce">
+            https://www.argentina.gob.ar/cnce
+          </a>
+          .
+        </p>
+      </Box>
       
     </div>
   );

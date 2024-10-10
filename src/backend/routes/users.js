@@ -2,6 +2,7 @@ const { validate } = require('../middleware/validationMiddleware')
 const { createValidator } = require("../validators/users")
 const { createUserHandler } = require("../handlers/users")
 const User = require('../models/users');
+const Notificacion = require('../models/notificaciones');
 
 module.exports = function (app) {
     app.post(
@@ -12,6 +13,7 @@ module.exports = function (app) {
 
 
     const ensureAuthenticated = (req, res, next) => {
+        console.log(req.isAuthenticated());
         if (req.isAuthenticated()) {
             return next();
         }
@@ -80,9 +82,57 @@ module.exports = function (app) {
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
-            res.json(user.username);
+            res.json(user);
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
+        }
+    });
+
+    app.get('/users/notificaciones-usuario', ensureAuthenticated, async (req, res) => {
+        try {
+            const notificaciones = await Notificacion.find({$and: [{email : req.user.email}, {estado: { $ne : "Eliminada"}}]})
+            .sort({estado: -1});
+            res.json(notificaciones);
+        } catch (error) {
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    });
+
+    app.post('/users/interesPais', ensureAuthenticated, async (req, res) => {
+        console.log(req.body);
+        try {
+        const { interes } = req.body;
+        const userAct = await User.findByIdAndUpdate(
+            req.user._id,
+            { $set: { paises_interes: interes } },
+            { new: true }
+        );
+    
+        if (!userAct) {
+            return res.status(404).json({ message: 'Usuario no encontrada' });
+        }
+    
+        res.json(userAct);
+        } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar los intereses', error });
+        }
+    });
+
+    app.post('/users/interesProducto', ensureAuthenticated, async (req, res) => {
+        try {
+        const { interes } = req.body;
+        const userAct = await User.findByIdAndUpdate(
+            req.user._id,
+            { $set: { productos_interes: interes } }
+        );
+    
+        if (!userAct) {
+            return res.status(404).json({ message: 'Usuario no encontrada' });
+        }
+    
+        res.json(userAct);
+        } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar los intereses', error });
         }
     });
 }

@@ -124,6 +124,7 @@ const PaginatedTable = () => {
       setData(res.items.map(p => ({
         id: p._id,
         titulo: p.titulo,
+        pais: p.pais,
         descripcion: p.descripcion,
         agencia: p.agencia,
         origen: p.normativaOrigen,

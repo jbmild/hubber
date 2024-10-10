@@ -3,7 +3,14 @@ import './index.css'
 import banner1 from './banner1.jpg';
 import banner2 from './banner2.jpg';
 
+import incoterms from './incoterms.png';
+import exwimagen from './exw.png';
+import fobimagen from './fob.png';
 
+import {
+  Box,
+  
+} from '@mui/material';
 
 const Incoterms = () => {
   return (
@@ -97,7 +104,18 @@ const Incoterms = () => {
           puede generar problemas si el transportista del importador no actúa conforme a los tiempos o estándares del exportador.
         </li>
       </ul>
-      
+    <img    
+src={exwimagen} 
+  alt="Banner sobre logística internacional" 
+  style={{ 
+    width: '65%', 
+    height: 'auto', 
+    marginTop: '20px', 
+    display: 'block', 
+    marginLeft: 'auto', 
+    marginRight: 'auto' 
+  }} 
+/>
 
       <h3 style={{ color: '#0a417a' }}>Free on Board (FOB)</h3>
       <p style={{ textAlign: 'justify' }}>
@@ -114,6 +132,18 @@ const Incoterms = () => {
           aseguradores. Sin embargo, este esfuerzo adicional puede traducirse en mayor control y menos imprevistos.
         </li>
       </ul>
+	   <img 
+	  src={fobimagen} 
+  alt="Banner sobre logística internacional" 
+  style={{ 
+    width: '65%', 
+    height: 'auto', 
+    marginTop: '20px', 
+    display: 'block', 
+    marginLeft: 'auto', 
+    marginRight: 'auto' 
+  }} 
+/>
       
 
       <h3 style={{ color: '#0a417a' }}>Otros Incoterms relevantes para exportaciones argentinas</h3>
@@ -129,18 +159,12 @@ const Incoterms = () => {
           asumir todo el riesgo, pero también es más costoso.
         </li>
       </ul>
-      <p style={{ 
-		  textAlign: 'justify', 
-		  fontWeight: 'bold',
-		  color: '#800000' // Color bordó
-		}}>
-        En la imagen a continuación, donde se señala el Incoterm, ocurre el traslado de la responsabilidad de la mercadería por parte de la PyME al cliente. Este detalle resalta cómo los Incoterms pueden afectar el control y la gestión de la carga durante el proceso de transporte.
-      </p>
+      <p> </p>
          <img 
-  src={banner2} 
+  src={incoterms} 
   alt="Banner sobre logística internacional" 
   style={{ 
-    width: '65%', 
+    width: '85%', 
     height: 'auto', 
     marginTop: '20px', 
     display: 'block', 
@@ -184,6 +208,26 @@ const Incoterms = () => {
         Para quienes desean profundizar en estos temas, recomendamos revisar las guías de exportación proporcionadas por cámaras de comercio y consultores expertos en 
         comercio exterior. Asegurarse de estar bien informado es el primer paso hacia el éxito en los mercados internacionales.
       </p>
+	  
+	   <Box
+        sx={{
+          height: '1.5em',
+          fontSize: 10,
+          fontWeight: 'light',
+          fontStyle: 'oblique',
+          flexDirection: 'column',
+        }}
+      >
+        <p>
+          Fuente: Ventanilla Única de Comercio Exterior:{' '}
+          <a target="_blank" rel="noopener noreferrer" href="https://www.vuce.gob.ar/">
+            https://www.vuce.gob.ar/
+          </a>
+          .
+        </p>
+      </Box>
+	  
+	  
     </div>
   );
 };

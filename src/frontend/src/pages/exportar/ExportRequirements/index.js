@@ -4,6 +4,12 @@ import './index.css'; // Importa el CSS
 // Importa las imágenes
 import imagen1 from './imagen1.jpg'; // Reemplaza con la ruta y nombre de tu imagen
 import imagen2 from './imagen2.jpg'; // Reemplaza con la ruta y nombre de tu imagen
+import docuclave from './docuclave.png';
+import roadmap from './roadmap.png';
+
+import {
+  Box,
+} from '@mui/material';
 
 const ExportacionPage = () => {
   return (
@@ -26,7 +32,7 @@ const ExportacionPage = () => {
           La exportación representa una oportunidad fundamental para el crecimiento de las empresas argentinas, ofreciendo acceso a nuevos mercados y diversificación de ingresos. Aunque el proceso puede parecer complejo, con la correcta planificación y conocimiento, cualquier empresa puede gestionar sus operaciones de exportación de manera eficiente. Esta guía busca proporcionar una explicación detallada de los requisitos, procedimientos y aspectos esenciales para exportar desde Argentina.
         </p>
       </section>
-     
+<img src={docuclave} alt="Imagen de afip" className="banner2" />
       <section>
         <h2>Cambios Recientes en la Normativa de Exportación</h2>
         <p>
@@ -52,7 +58,7 @@ const ExportacionPage = () => {
           El uso de sistemas de comunicación aduanera es otro de los pilares para la exportación. Es indispensable que las empresas estén dadas de alta en el SICNEA (Sistema Informático de Comunicación y Notificación Electrónica Aduanera) y en el SITA (Sistema Informático de Trámites Aduaneros). Estos sistemas son esenciales para la recepción de notificaciones y la realización de trámites electrónicos vinculados al comercio exterior.
         </p>
       </section>
-
+<img src={roadmap} alt="Imagen de afip" className="banner2" />
       <section>
         <h2>Documentación Esencial para Exportar</h2>
 		
@@ -84,7 +90,24 @@ const ExportacionPage = () => {
         </p>
       </section>
 
-      
+ <Box
+        sx={{
+          height: '1.5em',
+          fontSize: 10,
+          fontWeight: 'light',
+          fontStyle: 'oblique',
+          flexDirection: 'column',
+        }}
+      >
+        <p>
+          Fuente: Comisión Nacional de Comercio Exterior Argentino:{' '}
+          <a target="_blank" rel="noopener noreferrer" href="https://www.argentina.gob.ar/cnce">
+            https://www.argentina.gob.ar/cnce
+          </a>
+          .
+        </p>
+      </Box>
+
     </div>
   );
 };

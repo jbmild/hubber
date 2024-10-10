@@ -1,13 +1,11 @@
+// estoy en components/paginatedTable/detallesDialog/index.js
 import React, { useState, useEffect } from 'react';
 import {
   Button,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
+  Box,
   Dialog,
   DialogActions,
   DialogContent,
@@ -16,26 +14,59 @@ import {
   useTheme,
   Tabs,
   Tab,
-  Box
+  TableRow 
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import TabPanel, { a11yProps } from 'components/tabs/tabs';
-import './style.css';
-
+import OpenAI from 'openai';
 import axios from 'axios';
 
 const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
   const [tabSelected, setTabSelected] = useState(0);
-  const [currentStatus, setCurrentStatus] = useState(null); // Track the current status
-
+  const [currentStatus, setCurrentStatus] = useState(null);
+  const [respuesta, setRespuesta] = useState(''); // State for storing the OpenAI response
+  const [isLoading, setIsLoading] = useState(false); // New state for loading message
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+  // Initialize OpenAI client
+  /*
+  const openai = new OpenAI({
+    dangerouslyAllowBrowser: true,
+    apiKey: "XD", // Ensure your API key is set in environment variables
+  });*/
+   const openai = new OpenAI({
+    dangerouslyAllowBrowser: true,
+    apiKey: process.env.REACT_APP_OPENAI_API_KEY, // Usa la variable de entorno aquí
+  });
+
   useEffect(() => {
     if (data) {
-      setCurrentStatus(data.status || null); // Set the initial status from the normativa data
+      setCurrentStatus(data.status || null);
+      fetchOpenAIResponse(); // Fetch OpenAI response when data changes
     }
   }, [data]);
+
+  const fetchOpenAIResponse = async () => {
+    if (!data) return; // Ensure data is available before proceeding
+
+    // Formulate the question for OpenAI
+    const pregunta = `[Normativa:${data.titulo} Descripcion:${data.descripcion} Pais emisor de normativa:${data.pais} Pais origen exportacion: Argentina] Explica de forma facil como cumplir esta normativa. Si es un articulo o una ley, da mas informacion y a donde ir para el tramite. (maximo 500 caracteres).Importante: no escribas en negrita.`;
+	
+    try {
+      setIsLoading(true); // Activate loading state before making the request
+      const response = await openai.chat.completions.create({
+        model: "gpt-4",
+        messages: [{ role: "user", content: pregunta }],
+      });
+      setRespuesta(response.choices[0].message.content); // Set the response to state
+      setIsLoading(false); // Deactivate loading state after receiving the response
+    } catch (error) {
+      console.error('Error fetching OpenAI response:', error);
+      setRespuesta('Error fetching response from OpenAI.');
+      setIsLoading(false); // Deactivate loading state in case of error
+    }
+  };
 
   const handleTabChange = (event, newValue) => {
     setTabSelected(newValue);
@@ -45,7 +76,7 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/normativas-usuario/${data.id}/status`, { status }, { withCredentials: true });
       console.log('Status updated:', response.data);
-      setCurrentStatus(status); // Update the current status
+      setCurrentStatus(status);
     } catch (error) {
       console.error('Error updating status:', error);
     }
@@ -72,7 +103,7 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
         </Button>
       </DialogTitle>
       <DialogContent sx={{ height: 'auto', display: 'flex', flexDirection: 'column', overflowY: 'hidden' }}>
-        {data && (
+        {data ? (
           <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs
@@ -85,7 +116,7 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
               >
                 <Tab label="Información Basica" {...a11yProps(0)} />
                 <Tab label="Descripción" {...a11yProps(1)} />
-                <Tab label="Información de Certificación" {...a11yProps(2)} disabled />
+                <Tab label="Sugerencias" {...a11yProps(2)} />
               </Tabs>
             </Box>
             <TabPanel className={'tabPanel'} value={tabSelected} index={0}>
@@ -159,28 +190,23 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
               <p>{data.descripcion}</p>
             </TabPanel>
             <TabPanel className={'tabPanel'} value={tabSelected} index={2}>
-              WIP
+              {isLoading ? ( // Show loading message while fetching response
+                <p>Cargando...</p> 
+              ) : (
+                <p>{respuesta}</p> // Display the OpenAI response here
+              )}
             </TabPanel>
           </Box>
+        ) : (
+          <p>Loading data...</p> // Fallback content while loading
         )}
       </DialogContent>
       <DialogActions>
-        <Button
-          variant="contained"
-          color={currentStatus === 'Aprobado' ? 'grey' : 'success'}
-          sx={{ width: '50%' }}
-          onClick={() => handleStatusChange('Aprobado')}
-          disabled={currentStatus === 'Aprobado'} // Disable if already 'Aprobado'
-        >
+        {/* Action buttons */}
+        <Button variant="contained" color="success" onClick={() => handleStatusChange('Aprobado')}>
           Normativa Cumplida
         </Button>
-        <Button
-          variant="contained"
-          color={currentStatus === 'Pendiente' ? 'grey' : 'warning'}
-          sx={{ width: '50%' }}
-          onClick={() => handleStatusChange('Pendiente')}
-          disabled={currentStatus === 'Pendiente'} // Disable if already 'Pendiente'
-        >
+        <Button variant="contained" color="warning" onClick={() => handleStatusChange('Pendiente')}>
           Seguir Normativa
         </Button>
       </DialogActions>
@@ -189,3 +215,4 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
 };
 
 export default DialogDetalles;
+

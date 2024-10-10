@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { sendMessage, setPais } from 'services/chatbotService';
+import { sendMessage, setGuiaComoExportar, setPais } from 'services/chatbotService';
 import Loader from './loader';
 import { getPaises } from 'services/paisesService';
 
@@ -72,7 +72,7 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
     setState((prev) => ({ ...prev, messages: [...prev.messages, loadingMsg], }))
 
     if(optionsState.normativasBasicas || optionsState.paisSeleccionado){
-      const chatKey = optionsState.normativasBasicas ? 'basicas' : optionsState.paisSeleccionado;
+      const chatKey = optionsState.normativasBasicas ? 'comoExportar' : optionsState.paisSeleccionado;
 
       sendMessage(message, chatKey).then((response) => {
         setLoading(false);
@@ -192,15 +192,26 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
   }
 
   const handleNormativasBasicas = (params) => {
-    const message = createChatBotMessage('Se le guiara por normaticas basicas, en que podemos guiarle?',
-      opcionesBasicasMessage
-    );
+    setLoading(true);
+    const loadingMsg = createChatBotMessage(<Loader />)
+    setState((prev) => ({ ...prev, messages: [...prev.messages, loadingMsg], }))
 
-    addMessageToState(message);
-
-    setOptionsState((prev) => ({
-      ...prev,
-      normativasBasicas: true
+    setGuiaComoExportar().then((response => {
+      setLoading(false);
+      
+      const chatbotMessage = createChatBotMessage(response,
+        opcionesBasicasMessage
+      );
+  
+      setState((prev) => {
+        const newPrevMsg = prev.messages.slice(0, -1)
+        return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
+      })
+  
+      setOptionsState((prev) => ({
+        ...prev,
+        normativasBasicas: true
+      }));
     }));
   }
   

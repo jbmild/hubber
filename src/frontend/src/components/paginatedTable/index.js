@@ -24,6 +24,7 @@ import { getNormativas } from 'services/normativasService';
 import TabPanel, {a11yProps} from 'components/tabs/tabs';
 import TableRowsLoader from './loader';
 import DialogDetalles from './detallesDialog';
+import { getPosiciones } from 'services/marketsService';
 
 //esto deberia venir de la base, pero ahora no existe esa info
 const today = new Date();
@@ -39,6 +40,8 @@ const PaginatedTable = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [posicionesArancelarias, setPosicionesArancelarias] = useState([]);
+  const [posicionSeleccionada, setPosicionSeleccionada] = useState(''); // Nuevo estado para la posición seleccionada
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -56,8 +59,30 @@ const PaginatedTable = () => {
     fetchPaises();
   }, []);
 
+  const fetchPosiciones = async (value) => {
+    const response = await getPosiciones(value, 0);
+    if(response.posiciones){
+      const posiciones = response.posiciones.map(p => {
+        const separar = p.posicion.split(' - ');
+        return {
+          codigo: separar[0],
+          descripcion: separar[1] ?? ''
+        }
+      });
+
+      setPosicionesArancelarias(posiciones);
+    }
+  };
+
   const handleSearchChange = (event) => {
-    setSearch(event.target.value);
+    const value = event.target.value;
+    setSearch(value);
+
+    if (value) {
+      fetchPosiciones(value);
+    } else {
+      setPosicionesArancelarias([]); // Limpiar posicionesArancelarias si el input está vacío
+    }
   };
 
   const handleCountryChange = (event, value) => {
@@ -65,12 +90,8 @@ const PaginatedTable = () => {
   };
 
   const handleSearchClick = () => {
-    if(!paisSeleccionado){
-      return;
-    }
-
     searchInfo(page, rowsPerPage, {
-      producto: search,
+      producto: posicionSeleccionada,
       pais: paisSeleccionado
     });
   };
@@ -78,12 +99,8 @@ const PaginatedTable = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
 
-    if(!paisSeleccionado){
-      return;
-    }
-
     searchInfo(newPage, rowsPerPage, {
-      producto: search,
+      producto: posicionSeleccionada,
       pais: paisSeleccionado
     });
   };
@@ -93,12 +110,8 @@ const PaginatedTable = () => {
     setRowsPerPage(newRowPerPage);
     setPage(0);
 
-    if(!paisSeleccionado){
-      return;
-    }
-
     searchInfo(0, newRowPerPage, {
-      producto: search,
+      producto: posicionSeleccionada,
       pais: paisSeleccionado
     });
   };
@@ -108,16 +121,14 @@ const PaginatedTable = () => {
     setOpenModal(true);
   };
 
-  const searchInfo = (pageTo, limit, filters) =>{   
-
-    setLoading(true);
-
-    if(!filters.producto || filters.producto === ''){
-      setLoading(false);
+  const searchInfo = (pageTo, limit, filters) =>{
+    if(!filters.producto || filters.producto === '' || !filters.pais || filters.pais === ''){
       setData([]);
       setTotalItems(0);
       return;
     }
+
+    setLoading(true);
 
     getNormativas(pageTo, limit, filters).then(res =>{
       setLoading(false);
@@ -161,38 +172,70 @@ const PaginatedTable = () => {
       >
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={7} md={7}>
-            <TextField
-              label="Buscar"
-              variant="outlined"
-              fullWidth
-              margin="none"
-              onChange={handleSearchChange}
-              value={search}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
+            <Autocomplete
+              freeSolo
+              options={posicionesArancelarias}
+              getOptionLabel={(option) => `${option.codigo} - ${option.descripcion}`}
+              onChange={(_, value) => {
+                setSearch(value ? `${value.codigo} - ${value.descripcion}` : '');
+                setPosicionSeleccionada(value ? value.codigo : '');
+              }} 
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Buscar"
+                  variant="outlined"
+                  fullWidth
+                  margin="none"
+                  value={search}
+                  onChange={handleSearchChange}
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <SearchIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      padding: '0.5em',
+                    },
+                    '& .MuiInputBase-input': {
+                      paddingTop: '0.5em',
+                      paddingBottom: '0.5em',
+                      textAlign: 'left',
+                    },
+                    '& .MuiFormLabel-root': {
+                      top: '1em',
+                      left: '1em',
+                      transform: 'translateY(0)',
+                      fontSize: '1em',
+                    },
+                    '& .MuiInputLabel-shrink': {
+                      transform: 'translateY(-1.25em)',
+                    },
+                  }}
+                />
+              )}
+              renderOption={(props, option) => (
+                <li {...props} key={option.codigo}> {/* Asegúrate de tener un código único */}
+                  {`${option.codigo} - ${option.descripcion}`} {/* Formato en la lista */}
+                </li>
+              )}
               sx={{
-                '& .MuiInputBase-root': {
+                '& .MuiAutocomplete-popupIndicator': {
+                  display: 'none',
+                },
+                '& .MuiAutocomplete-option': {
                   padding: '0.5em',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
                 },
-                '& .MuiInputBase-input': {
-                  paddingTop: '0.5em',
-                  paddingBottom: '0.5em',
-                  textAlign: 'left'
+                '& .MuiAutocomplete-options': {
+                  maxHeight: '15em',
+                  overflowY: 'auto',
                 },
-                '& .MuiFormLabel-root': {
-                  top: '1em', // Ajusta verticalmente la posición del label
-                  left: '1em', // Ajusta horizontalmente la posición del label
-                  transform: 'translateY(0)', // Asegura que el label no se mueva
-                  fontSize: '1em'
-                },
-                '& .MuiInputLabel-shrink': {
-                  transform: 'translateY(-1.25em)' // Ajusta la posición cuando el label está reducido
-                }
               }}
             />
           </Grid>

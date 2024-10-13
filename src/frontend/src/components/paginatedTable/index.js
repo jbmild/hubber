@@ -41,8 +41,9 @@ const PaginatedTable = () => {
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [posicionesArancelarias, setPosicionesArancelarias] = useState([]);
-  const [posicionSeleccionada, setPosicionSeleccionada] = useState(''); // Nuevo estado para la posición seleccionada
-
+  const [posicionSeleccionada, setPosicionSeleccionada] = useState('');
+  const [autocompletePage, setAutocompletePage] = useState(0);
+  const [loadingAutocomplete, setLoadingAutocomplete] = useState(false);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -59,8 +60,10 @@ const PaginatedTable = () => {
     fetchPaises();
   }, []);
 
-  const fetchPosiciones = async (value) => {
-    const response = await getPosiciones(value, 0);
+  const fetchPosiciones = async (value, page) => {
+    setLoadingAutocomplete(true);
+
+    const response = await getPosiciones(value, page);
     if(response.posiciones){
       const posiciones = response.posiciones.map(p => {
         const separar = p.posicion.split(' - ');
@@ -70,18 +73,28 @@ const PaginatedTable = () => {
         }
       });
 
-      setPosicionesArancelarias(posiciones);
+      setPosicionesArancelarias(p => (p.concat(posiciones)));
     }
+    setLoadingAutocomplete(false);
   };
 
   const handleSearchChange = (event) => {
     const value = event.target.value;
     setSearch(value);
+    setPosicionesArancelarias([]);
 
     if (value) {
-      fetchPosiciones(value);
-    } else {
-      setPosicionesArancelarias([]); // Limpiar posicionesArancelarias si el input está vacío
+      fetchPosiciones(value, 0);
+      setAutocompletePage(0);
+    }
+  };
+
+  const handleScroll = (event) => {
+    const bottom = event.target.scrollHeight === event.target.scrollTop + event.target.clientHeight;
+    if (bottom && !loadingAutocomplete) {
+      const nextPage = autocompletePage + 1;
+      setAutocompletePage(nextPage);
+      fetchPosiciones(search, nextPage);
     }
   };
 
@@ -140,6 +153,8 @@ const PaginatedTable = () => {
         agencia: p.agencia,
         origen: p.normativaOrigen,
         fechaImplementacion: p.fechaImplementacion.split('T')[0],
+        fechaAprobacion: p.fechaAprobacion?.split('T').at(0) ?? null,
+        status: p.status
       })));
       setTotalItems(res.totalItems);
     });
@@ -213,7 +228,7 @@ const PaginatedTable = () => {
                       fontSize: '1em',
                     },
                     '& .MuiInputLabel-shrink': {
-                      transform: 'translateY(-1.25em)',
+                      transform: 'translate(-0.5em,-1.7em)',
                     },
                   }}
                 />
@@ -233,6 +248,13 @@ const PaginatedTable = () => {
                   textOverflow: 'ellipsis',
                 },
                 '& .MuiAutocomplete-options': {
+                  maxHeight: '15em',
+                  overflowY: 'auto',
+                },
+              }}
+              ListboxProps={{
+                onScroll: handleScroll,
+                sx: {
                   maxHeight: '15em',
                   overflowY: 'auto',
                 },
@@ -267,7 +289,7 @@ const PaginatedTable = () => {
                       fontSize: '1em'
                     },
                     '& .MuiInputLabel-shrink': {
-                      transform: 'translateY(-1.25em)' // Ajusta la posición cuando el label está reducido
+                      transform: 'translate(-0.5em,-1.7em)' // Ajusta la posición cuando el label está reducido
                     }
                   }}
                 />

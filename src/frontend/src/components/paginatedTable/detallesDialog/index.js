@@ -202,13 +202,28 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
         )}
       </DialogContent>
       <DialogActions>
-        {/* Action buttons */}
-        <Button variant="contained" color="success" onClick={() => handleStatusChange('Aprobado')}>
-          Normativa Cumplida
-        </Button>
-        <Button variant="contained" color="warning" onClick={() => handleStatusChange('Pendiente')}>
-          Seguir Normativa
-        </Button>
+        {
+          (!currentStatus || currentStatus == 'Pendiente') ?
+            <Button variant="contained" color="success" onClick={() => (handleStatusChange('Aprobado'))}>
+              Normativa Cumplida
+            </Button>
+          :
+            <Button variant="contained" color="error" onClick={() => (handleStatusChange('Pendiente'))}>
+              Normativa No Cumplida
+            </Button>
+        }
+        {
+          !currentStatus ? 
+            <Button variant="contained" color="warning" onClick={() => (handleStatusChange('Pendiente'))}>
+              Seguir
+            </Button>
+          :
+            <Button variant="contained" color="warning" onClick={() => (handleStatusChange(null))}>
+              Dejar de Seguir
+            </Button>
+        }
+
+
       </DialogActions>
     </Dialog>
   );

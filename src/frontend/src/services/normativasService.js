@@ -9,7 +9,7 @@ export async function getNormativas(page, limit, filters) {
         ...filters
     });
 
-    const response =  await axios.get(`${url}?${queryParams.toString()}`);
+    const response =  await axios.get(`${url}?${queryParams.toString()}`, { withCredentials: true });
     console.log(response);
     return response.data;
 }

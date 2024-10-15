@@ -21,11 +21,22 @@ exports.handleTraerPaises = async (req, res) => {
   res.status(200).json(paises);
 }
 
+exports.handleTraerProductos = async (req, res) => {
+  const productos = ['Alfajor', 'Vino', 'Miel'];
+
+  const result = productos.filter(p => (p.toLowerCase().includes(req.query.search.toLowerCase())));
+
+  res.status(200).json(result.length > 0 ? result : productos);
+}
+
 exports.handleTraerNormativas = async (req, res) => {
   try{
     const filters = {
       $and:[
-        { codigos: { $in:  req.query.producto } },
+        {$or: [
+          { codigos: { $in:  req.query.producto } },
+          { etiquetas: { $in: req.query.producto } }
+        ]},
         { pais: req.query.pais }
       ] 
     }

@@ -1,4 +1,4 @@
-const { handleTraerNormativas } = require("../handlers/normativasHandler");
+const { handleTraerNormativas, handleTraerProductos } = require("../handlers/normativasHandler");
 const Normativa = require("../models/normativas");
 
 module.exports = function (app){
@@ -19,6 +19,5 @@ module.exports = function (app){
         } catch (error) {
           res.status(500).json({ message: 'Error al obtener la normativa', error });
         }
-      });
-      
+      });  
 }

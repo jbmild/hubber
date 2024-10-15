@@ -15,12 +15,15 @@ import {
   useMediaQuery,
   useTheme,
   InputAdornment,
-  Box
+  Box,
+  ToggleButtonGroup,
+  ToggleButton
 } from '@mui/material';
 import { Close as CloseIcon, Search as SearchIcon } from '@mui/icons-material';
 import { getPaises } from 'services/paisesService'; // Importa la función getPaises
 import './style.css'; // Importa el archivo de estilos CSS
 import { getNormativas } from 'services/normativasService';
+import { getProductos } from 'services/productosService';
 import TabPanel, {a11yProps} from 'components/tabs/tabs';
 import TableRowsLoader from './loader';
 import DialogDetalles from './detallesDialog';
@@ -41,9 +44,10 @@ const PaginatedTable = () => {
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [posicionesArancelarias, setPosicionesArancelarias] = useState([]);
-  const [posicionSeleccionada, setPosicionSeleccionada] = useState('');
+  const [busquedaSeleccionada, setBusquedaSeleccionada] = useState('');
   const [autocompletePage, setAutocompletePage] = useState(0);
   const [loadingAutocomplete, setLoadingAutocomplete] = useState(false);
+  const [buscarPor, setBuscarPor] = useState('Producto')
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -65,18 +69,22 @@ const PaginatedTable = () => {
 
     const response = await getPosiciones(value, page);
     if(response.posiciones){
-      const posiciones = response.posiciones.map(p => {
-        const separar = p.posicion.split(' - ');
-        return {
-          codigo: separar[0],
-          descripcion: separar[1] ?? ''
-        }
-      });
-
-      setPosicionesArancelarias(p => (p.concat(posiciones)));
+      setPosicionesArancelarias(p => (p.concat(response.posiciones.map(p => p.posicion))));
     }
     setLoadingAutocomplete(false);
   };
+
+  const fetchProductos = async (value, page) => {
+    setLoadingAutocomplete(true);
+    
+    const response = await getProductos(value, page);
+
+    if(response){
+      setPosicionesArancelarias(p => (p.concat(response)));
+    }
+
+    setLoadingAutocomplete(false);
+  }
 
   const handleSearchChange = (event) => {
     const value = event.target.value;
@@ -84,7 +92,12 @@ const PaginatedTable = () => {
     setPosicionesArancelarias([]);
 
     if (value) {
-      fetchPosiciones(value, 0);
+      switch(buscarPor){
+        default:
+        case 'Producto': {fetchProductos(value, 0);break;}
+        case 'Codigo': {fetchPosiciones(value, 0);break;}
+      }
+
       setAutocompletePage(0);
     }
   };
@@ -94,7 +107,11 @@ const PaginatedTable = () => {
     if (bottom && !loadingAutocomplete) {
       const nextPage = autocompletePage + 1;
       setAutocompletePage(nextPage);
-      fetchPosiciones(search, nextPage);
+      switch(buscarPor){
+        default:
+        case 'Producto': {fetchProductos(search, nextPage);break;}
+        case 'Codigo': {fetchPosiciones(search, nextPage);break;}
+      }
     }
   };
 
@@ -104,7 +121,7 @@ const PaginatedTable = () => {
 
   const handleSearchClick = () => {
     searchInfo(page, rowsPerPage, {
-      producto: posicionSeleccionada,
+      producto: busquedaSeleccionada,
       pais: paisSeleccionado
     });
   };
@@ -113,7 +130,7 @@ const PaginatedTable = () => {
     setPage(newPage);
 
     searchInfo(newPage, rowsPerPage, {
-      producto: posicionSeleccionada,
+      producto: busquedaSeleccionada,
       pais: paisSeleccionado
     });
   };
@@ -124,7 +141,7 @@ const PaginatedTable = () => {
     setPage(0);
 
     searchInfo(0, newRowPerPage, {
-      producto: posicionSeleccionada,
+      producto: busquedaSeleccionada,
       pais: paisSeleccionado
     });
   };
@@ -165,6 +182,14 @@ const PaginatedTable = () => {
     setOpenModal(false);  
   });
 
+  const handleBuscarPorChange = (event, newValue) => {
+    if(newValue){
+      setBuscarPor(newValue);
+      setPosicionesArancelarias([]);
+      setAutocompletePage(0);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -186,15 +211,30 @@ const PaginatedTable = () => {
         }}
       >
         <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={7} md={7} sx={{display: 'inline-flex', justifyContent: 'flex-end', marginBottom: { xs: '1em', sm: 0 }}}>
+            <ToggleButtonGroup
+              color="primary"
+              value={buscarPor}
+              exclusive
+              onChange={handleBuscarPorChange}
+              aria-label="Buscar por"
+              sx={{ width: { xs: '100%', sm: 'unset' }}}
+            >
+              <ToggleButton value="Producto" sx={{ width: { xs: '40%', sm: 'unset'  }}}>Producto</ToggleButton>
+              <ToggleButton value="Codigo" sx={{ width: { xs: '60%', sm: 'unset'  }}}>Codigo Arancelario</ToggleButton>
+            </ToggleButtonGroup>
+          </Grid>          
+        </Grid>
+        <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={7} md={7}>
             <Autocomplete
-              freeSolo
               options={posicionesArancelarias}
-              getOptionLabel={(option) => `${option.codigo} - ${option.descripcion}`}
+              getOptionLabel={(option) => option}
               onChange={(_, value) => {
-                setSearch(value ? `${value.codigo} - ${value.descripcion}` : '');
-                setPosicionSeleccionada(value ? value.codigo : '');
-              }} 
+                setSearch(value ? value : '');
+                setBusquedaSeleccionada(value ? (buscarPor == 'Producto'? value : value.split(' - ')[0]) : '');
+              }}
+              
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -204,14 +244,6 @@ const PaginatedTable = () => {
                   margin="none"
                   value={search}
                   onChange={handleSearchChange}
-                  InputProps={{
-                    ...params.InputProps,
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <SearchIcon />
-                      </InputAdornment>
-                    ),
-                  }}
                   sx={{
                     '& .MuiInputBase-root': {
                       padding: '0.5em',
@@ -234,8 +266,8 @@ const PaginatedTable = () => {
                 />
               )}
               renderOption={(props, option) => (
-                <li {...props} key={option.codigo}> {/* Asegúrate de tener un código único */}
-                  {`${option.codigo} - ${option.descripcion}`} {/* Formato en la lista */}
+                <li {...props} key={option}>
+                  {option} {/* Formato en la lista */}
                 </li>
               )}
               sx={{
@@ -263,8 +295,7 @@ const PaginatedTable = () => {
           </Grid>
           <Grid item xs={12} sm={3} md={3}>
             <Autocomplete
-              freeSolo
-              options={paises} // Muestra todos los países para el Autocomplete
+              options={paises}
               onChange={handleCountryChange}
               renderInput={(params) => (
                 <TextField

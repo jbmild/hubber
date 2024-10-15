@@ -26,6 +26,7 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
   const [currentStatus, setCurrentStatus] = useState(null);
   const [respuesta, setRespuesta] = useState(''); // State for storing the OpenAI response
   const [isLoading, setIsLoading] = useState(false); // New state for loading message
+  const [normativasUsuario, setNormativasUsuario] = useState([]); // New state for loading message
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -41,10 +42,26 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
   });
 
   useEffect(() => {
-    if (data) {
-      setCurrentStatus(data.status || null);
-      fetchOpenAIResponse(); // Fetch OpenAI response when data changes
+
+    const fetchNormativasUsuario = async () => {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/normativas-usuario`, { withCredentials: true });
+      return response.data;
     }
+
+    fetchNormativasUsuario().then(normativas => {
+      if (data && normativas) {
+        setNormativasUsuario(normativas);
+        //filtrar data._id (si existe) en response.data[x].idNormativa, si existe me traigo el status
+        const normativaUsuario = normativas.find(normativa => normativa.idNormativa._id === data._id);
+        if(normativaUsuario){
+          setCurrentStatus(normativaUsuario.status || null);
+          fetchOpenAIResponse();
+        } else {
+          setCurrentStatus('');
+        }
+       } // Fetch OpenAI response when data changes
+    });
+  
   }, [data]);
 
   const fetchOpenAIResponse = async () => {
@@ -203,12 +220,19 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
       </DialogContent>
       <DialogActions>
         {/* Action buttons */}
-        <Button variant="contained" color="success" onClick={() => handleStatusChange('Aprobado')}>
-          Normativa Cumplida
-        </Button>
-        <Button variant="contained" color="warning" onClick={() => handleStatusChange('Pendiente')}>
-          Seguir Normativa
-        </Button>
+        <div title={currentStatus === "Aprobado" ? "Normativa ya aprobada" : undefined}>
+          <Button
+            variant="contained" disabled={currentStatus === "Aprobado"}
+            color="success" onClick={() => handleStatusChange('Aprobado')}>
+            Normativa Cumplida
+          </Button>
+        </div>
+        <div title={currentStatus === "Pendiente" ? "Normativa en seguimiento" : undefined}> 
+          <Button variant="contained" disabled={currentStatus === "Pendiente"}
+          color="warning" onClick={() => handleStatusChange('Pendiente')}>
+            Seguir Normativa
+          </Button>
+        </div>
       </DialogActions>
     </Dialog>
   );

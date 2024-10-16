@@ -1,6 +1,7 @@
 const express = require('express');
 
 const Normativa = require('../models/normativas');
+const Users = require('../models/users');
 
 exports.handleTraerPaises = async (req, res) => {
   const paises = await Normativa.aggregate([
@@ -22,20 +23,17 @@ exports.handleTraerPaises = async (req, res) => {
 
 exports.handleTraerNormativas = async (req, res) => {
   try{
-    console.log(req.query);
     const filters = {
       $and:[
-        { 
-          $or: [
-            { codigos: { $in:  req.query.producto } },
-            { etiquetas: { $in:  req.query.producto } }
-          ]
-        },
+        {$or: [
+          { codigos: { $in:  req.query.producto } },
+          { etiquetas: { $in: req.query.producto } }
+        ]},
         { pais: req.query.pais }
       ] 
     }
 
-    const result = await traerNormativasPaginado(req.query.page, req.query.limit, filters);
+    const result = await traerNormativasPaginado(req.query.page, req.query.limit, filters, req.user._id);
 
     res.status(200).json(result);
 
@@ -45,8 +43,9 @@ exports.handleTraerNormativas = async (req, res) => {
   }
 }
 
-async function traerNormativasPaginado(page, limit, filters) {
+async function traerNormativasPaginado(page, limit, filters, idUsuario) {
   const skip = page * limit;
+
   const normativas = await Normativa.find(filters, { etiquetas: 0, codigos: 0}).
     skip(skip).limit(limit).exec();
 

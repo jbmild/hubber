@@ -52,7 +52,7 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
       if (data && normativas) {
         setNormativasUsuario(normativas);
         //filtrar data._id (si existe) en response.data[x].idNormativa, si existe me traigo el status
-        const normativaUsuario = normativas.find(normativa => normativa.idNormativa._id === data._id);
+        const normativaUsuario = normativas.find(normativa => normativa.idNormativa._id === data.id);
         if(normativaUsuario){
           setCurrentStatus(normativaUsuario.status || null);
           fetchOpenAIResponse();
@@ -219,20 +219,28 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
         )}
       </DialogContent>
       <DialogActions>
-        {/* Action buttons */}
-        <div title={currentStatus === "Aprobado" ? "Normativa ya aprobada" : undefined}>
-          <Button
-            variant="contained" disabled={currentStatus === "Aprobado"}
-            color="success" onClick={() => handleStatusChange('Aprobado')}>
-            Normativa Cumplida
-          </Button>
-        </div>
-        <div title={currentStatus === "Pendiente" ? "Normativa en seguimiento" : undefined}> 
-          <Button variant="contained" disabled={currentStatus === "Pendiente"}
-          color="warning" onClick={() => handleStatusChange('Pendiente')}>
-            Seguir Normativa
-          </Button>
-        </div>
+        {
+          (!currentStatus || currentStatus == 'Pendiente') ?
+            <Button variant="contained" color="success" onClick={() => (handleStatusChange('Aprobado'))}>
+              Normativa Cumplida
+            </Button>
+          :
+            <Button variant="contained" color="error" onClick={() => (handleStatusChange('Pendiente'))}>
+              Normativa No Cumplida
+            </Button>
+        }
+        {
+          !currentStatus ? 
+            <Button variant="contained" color="warning" onClick={() => (handleStatusChange('Pendiente'))}>
+              Seguir
+            </Button>
+          :
+            <Button variant="contained" color="warning" onClick={() => (handleStatusChange(null))}>
+              Dejar de Seguir
+            </Button>
+        }
+
+
       </DialogActions>
     </Dialog>
   );

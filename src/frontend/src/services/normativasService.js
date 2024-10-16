@@ -9,13 +9,12 @@ export async function getNormativas(page, limit, filters) {
         ...filters
     });
 
-    const response =  await axios.get(`${url}?${queryParams.toString()}`);
-    console.log(response);
+    const response =  await axios.get(`${url}?${queryParams.toString()}`, { withCredentials: true });
     return response.data;
 }
 
 export async function getNormativa(idNormativa) {
     const response =  await axios.get(`${url}/${idNormativa}`);
-    console.log(response);
     return response.data;
 }
+

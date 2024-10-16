@@ -25,7 +25,7 @@ function stringToColor(string) {
   function stringAvatar(name) {
 
     try {
-      const children = name.split(' ')[0][0]+''+name.split(' ')[1][0];
+      const children = name.split(' ')[0][0]+''+(name.split(' ')[1]?.at(0) ?? '');
       const color = stringToColor(name);
       return {
         sx: {

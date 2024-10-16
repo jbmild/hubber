@@ -15,15 +15,19 @@ import {
   useMediaQuery,
   useTheme,
   InputAdornment,
-  Box
+  Box,
+  ToggleButtonGroup,
+  ToggleButton
 } from '@mui/material';
 import { Close as CloseIcon, Search as SearchIcon } from '@mui/icons-material';
 import { getPaises } from 'services/paisesService'; // Importa la función getPaises
 import './style.css'; // Importa el archivo de estilos CSS
 import { getNormativas } from 'services/normativasService';
+import { getProductos } from 'services/productosService';
 import TabPanel, {a11yProps} from 'components/tabs/tabs';
 import TableRowsLoader from './loader';
 import DialogDetalles from './detallesDialog';
+import { getPosiciones } from 'services/marketsService';
 
 //esto deberia venir de la base, pero ahora no existe esa info
 const today = new Date();
@@ -39,7 +43,11 @@ const PaginatedTable = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-
+  const [posicionesArancelarias, setPosicionesArancelarias] = useState([]);
+  const [busquedaSeleccionada, setBusquedaSeleccionada] = useState('');
+  const [autocompletePage, setAutocompletePage] = useState(0);
+  const [loadingAutocomplete, setLoadingAutocomplete] = useState(false);
+  const [buscarPor, setBuscarPor] = useState('Producto')
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -56,21 +64,74 @@ const PaginatedTable = () => {
     fetchPaises();
   }, []);
 
-  const handleSearchChange = (event) => {
-    setSearch(event.target.value);
+  const fetchPosiciones = async (value, page) => {
+    setLoadingAutocomplete(true);
+
+    const response = await getPosiciones(value, page);
+    if(response.posiciones){
+      setPosicionesArancelarias(p => (p.concat(response.posiciones.map(p => p.posicion))));
+    }
+    setLoadingAutocomplete(false);
   };
+
+  const fetchProductos = async (value, page) => {
+    setLoadingAutocomplete(true);
+    
+    const response = await getProductos(value, page);
+
+    if(response){
+      setPosicionesArancelarias(p => (p.concat(response)));
+    }
+
+    setLoadingAutocomplete(false);
+  }
+
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearch(value);
+    setPosicionesArancelarias([]);
+
+    if (value) {
+      switch(buscarPor){
+        default:
+        case 'Producto': {fetchProductos(value, 0);break;}
+        case 'Codigo': {fetchPosiciones(value, 0);break;}
+      }
+
+      setAutocompletePage(0);
+    }
+  };
+
+  const handleScroll = (event) => {
+    const bottom = event.target.scrollHeight === event.target.scrollTop + event.target.clientHeight;
+    if (bottom && !loadingAutocomplete) {
+      const nextPage = autocompletePage + 1;
+      setAutocompletePage(nextPage);
+      switch(buscarPor){
+        default:
+        case 'Producto': {fetchProductos(search, nextPage);break;}
+        case 'Codigo': {fetchPosiciones(search, nextPage);break;}
+      }
+    }
+  };
+
+  const handleOpen = () => {
+    switch(buscarPor){
+      default:
+      case 'Producto': {fetchProductos(search, 0);break;}
+      case 'Codigo': {fetchPosiciones(search, 0);break;}
+    }
+
+    setAutocompletePage(0);
+  }
 
   const handleCountryChange = (event, value) => {
     setPaisSeleccionado(value || '');
   };
 
   const handleSearchClick = () => {
-    if(!paisSeleccionado){
-      return;
-    }
-
     searchInfo(page, rowsPerPage, {
-      producto: search,
+      producto: busquedaSeleccionada,
       pais: paisSeleccionado
     });
   };
@@ -78,12 +139,8 @@ const PaginatedTable = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
 
-    if(!paisSeleccionado){
-      return;
-    }
-
     searchInfo(newPage, rowsPerPage, {
-      producto: search,
+      producto: busquedaSeleccionada,
       pais: paisSeleccionado
     });
   };
@@ -93,12 +150,8 @@ const PaginatedTable = () => {
     setRowsPerPage(newRowPerPage);
     setPage(0);
 
-    if(!paisSeleccionado){
-      return;
-    }
-
     searchInfo(0, newRowPerPage, {
-      producto: search,
+      producto: busquedaSeleccionada,
       pais: paisSeleccionado
     });
   };
@@ -108,16 +161,14 @@ const PaginatedTable = () => {
     setOpenModal(true);
   };
 
-  const searchInfo = (pageTo, limit, filters) =>{   
-
-    setLoading(true);
-
-    if(!filters.producto || filters.producto === ''){
-      setLoading(false);
+  const searchInfo = (pageTo, limit, filters) =>{
+    if(!filters.producto || filters.producto === '' || !filters.pais || filters.pais === ''){
       setData([]);
       setTotalItems(0);
       return;
     }
+
+    setLoading(true);
 
     getNormativas(pageTo, limit, filters).then(res =>{
       setLoading(false);
@@ -129,6 +180,8 @@ const PaginatedTable = () => {
         agencia: p.agencia,
         origen: p.normativaOrigen,
         fechaImplementacion: p.fechaImplementacion.split('T')[0],
+        fechaAprobacion: p.fechaAprobacion?.split('T').at(0) ?? null,
+        status: p.status
       })));
       setTotalItems(res.totalItems);
     });
@@ -138,6 +191,16 @@ const PaginatedTable = () => {
   const handleCloseModal = useCallback(() => {
     setOpenModal(false);  
   });
+
+  const handleBuscarPorChange = (event, newValue) => {
+    if(newValue){
+      setBuscarPor(newValue);
+      setPosicionesArancelarias([]);
+      setAutocompletePage(0);
+      setSearch('');
+      setBusquedaSeleccionada('');
+    }
+  };
 
   return (
     <Box
@@ -160,46 +223,92 @@ const PaginatedTable = () => {
         }}
       >
         <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={7} md={7} sx={{display: 'inline-flex', justifyContent: 'flex-end', marginBottom: { xs: '1em', sm: 0 }}}>
+            <ToggleButtonGroup
+              color="primary"
+              value={buscarPor}
+              exclusive
+              onChange={handleBuscarPorChange}
+              aria-label="Buscar por"
+              sx={{ width: { xs: '100%', sm: 'unset' }}}
+            >
+              <ToggleButton value="Producto" sx={{ width: { xs: '40%', sm: 'unset'  }}}>Producto</ToggleButton>
+              <ToggleButton value="Codigo" sx={{ width: { xs: '60%', sm: 'unset'  }}}>Codigo Arancelario</ToggleButton>
+            </ToggleButtonGroup>
+          </Grid>          
+        </Grid>
+        <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={7} md={7}>
-            <TextField
-              label="Buscar"
-              variant="outlined"
-              fullWidth
-              margin="none"
-              onChange={handleSearchChange}
-              value={search}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
+            <Autocomplete
+              onOpen={handleOpen}
+              options={posicionesArancelarias}
+              getOptionLabel={(option) => option}
+              onChange={(_, value) => {
+                setSearch(value ? value : '');
+                setBusquedaSeleccionada(value ? (buscarPor == 'Producto'? value : value.split(' - ')[0]) : '');
               }}
+              
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Buscar"
+                  variant="outlined"
+                  fullWidth
+                  margin="none"
+                  value={search}
+                  onChange={handleSearchChange}
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      padding: '0.5em',
+                    },
+                    '& .MuiInputBase-input': {
+                      paddingTop: '0.5em',
+                      paddingBottom: '0.5em',
+                      textAlign: 'left',
+                    },
+                    '& .MuiFormLabel-root': {
+                      top: '1em',
+                      left: '1em',
+                      transform: 'translateY(0)',
+                      fontSize: '1em',
+                    },
+                    '& .MuiInputLabel-shrink': {
+                      transform: 'translate(-0.5em,-1.7em)',
+                    },
+                  }}
+                />
+              )}
+              renderOption={(props, option) => (
+                <li {...props} key={option}>
+                  {option} {/* Formato en la lista */}
+                </li>
+              )}
               sx={{
-                '& .MuiInputBase-root': {
+                '& .MuiAutocomplete-popupIndicator': {
+                  display: 'none',
+                },
+                '& .MuiAutocomplete-option': {
                   padding: '0.5em',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
                 },
-                '& .MuiInputBase-input': {
-                  paddingTop: '0.5em',
-                  paddingBottom: '0.5em',
-                  textAlign: 'left'
+                '& .MuiAutocomplete-options': {
+                  maxHeight: '15em',
+                  overflowY: 'auto',
                 },
-                '& .MuiFormLabel-root': {
-                  top: '1em', // Ajusta verticalmente la posición del label
-                  left: '1em', // Ajusta horizontalmente la posición del label
-                  transform: 'translateY(0)', // Asegura que el label no se mueva
-                  fontSize: '1em'
+              }}
+              ListboxProps={{
+                onScroll: handleScroll,
+                sx: {
+                  maxHeight: '15em',
+                  overflowY: 'auto',
                 },
-                '& .MuiInputLabel-shrink': {
-                  transform: 'translateY(-1.25em)' // Ajusta la posición cuando el label está reducido
-                }
               }}
             />
           </Grid>
           <Grid item xs={12} sm={3} md={3}>
             <Autocomplete
-              freeSolo
-              options={paises} // Muestra todos los países para el Autocomplete
+              options={paises}
               onChange={handleCountryChange}
               renderInput={(params) => (
                 <TextField
@@ -224,7 +333,7 @@ const PaginatedTable = () => {
                       fontSize: '1em'
                     },
                     '& .MuiInputLabel-shrink': {
-                      transform: 'translateY(-1.25em)' // Ajusta la posición cuando el label está reducido
+                      transform: 'translate(-0.5em,-1.7em)' // Ajusta la posición cuando el label está reducido
                     }
                   }}
                 />

@@ -115,6 +115,16 @@ const PaginatedTable = () => {
     }
   };
 
+  const handleOpen = () => {
+    switch(buscarPor){
+      default:
+      case 'Producto': {fetchProductos(search, 0);break;}
+      case 'Codigo': {fetchPosiciones(search, 0);break;}
+    }
+
+    setAutocompletePage(0);
+  }
+
   const handleCountryChange = (event, value) => {
     setPaisSeleccionado(value || '');
   };
@@ -187,6 +197,8 @@ const PaginatedTable = () => {
       setBuscarPor(newValue);
       setPosicionesArancelarias([]);
       setAutocompletePage(0);
+      setSearch('');
+      setBusquedaSeleccionada('');
     }
   };
 
@@ -228,6 +240,7 @@ const PaginatedTable = () => {
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={7} md={7}>
             <Autocomplete
+              onOpen={handleOpen}
               options={posicionesArancelarias}
               getOptionLabel={(option) => option}
               onChange={(_, value) => {

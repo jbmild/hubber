@@ -45,26 +45,14 @@ exports.handleTraerNormativas = async (req, res) => {
 
 async function traerNormativasPaginado(page, limit, filters, idUsuario) {
   const skip = page * limit;
-  
-  const userInfo = await Users.findById(idUsuario).populate('normativasUsuario.idNormativa');
 
   const normativas = await Normativa.find(filters, { etiquetas: 0, codigos: 0}).
     skip(skip).limit(limit).exec();
 
   const totalItems = await Normativa.countDocuments(filters).exec();
 
-  const normativasConInfoUsuario = normativas.map(normativa => {
-    const info = userInfo ? userInfo.normativasUsuario.find(n => n.idNormativa._id.equals(normativa._id)) : null;
-
-    return {
-      ...normativa.toObject(), // Convertir a objeto simple
-      fechaAprobacion: info ? info.fechaAprobacion : null,
-      status: info ? info.status : null
-    };
-  });
-
   return {
-    items: normativasConInfoUsuario,
+    items: normativas,
     page,
     limit,
     totalItems

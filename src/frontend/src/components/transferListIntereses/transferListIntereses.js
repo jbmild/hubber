@@ -6,7 +6,7 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import {Box, Button, Checkbox, Paper} from '@mui/material';
+import {Box, Button, Checkbox, Paper, Typography} from '@mui/material';
 
 
 function not(a, b) {
@@ -17,7 +17,7 @@ function intersection(a, b) {
   return a.filter((value) => b.includes(value));
 }
 
-export default function TransferListIntereses({general, usuario, height, funcion}){
+export default function TransferListIntereses({general, usuario, height, funcion, titulo}){
     
     const izquierda =  not(general, usuario)
         
@@ -68,13 +68,25 @@ export default function TransferListIntereses({general, usuario, height, funcion
     };
 
     const customList = (items) => (
-        <Paper sx={{ width: {xs: '20vw', sm: '25vw', md: '30vw'}, height: height, overflow: 'auto' }}>
-        <List dense component="div" role="list">
+        <Paper sx={{ width: {xs: '20vw', sm: '25vw', md: '30vw'}, 
+        height: height, 
+        overflow: 'auto',
+        '&::-webkit-scrollbar': {
+              width: '0.5em',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'rgba(0, 0, 0, 0.2)',
+              borderRadius: '0.25em',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: 'rgba(0, 0, 0, 0.1)',
+            } }}>
+        <List dense disablePadding component="div" role="list">
             {items.map((value) => {
             const labelId = `transfer-list-item-${value}-label`;
 
             return (
-                <ListItemButton
+                <ListItemButton dense={true} sx={{paddingY:"0em"}}
                 key={value}
                 role="listitem"
                 onClick={handleToggle(value)}
@@ -99,16 +111,19 @@ export default function TransferListIntereses({general, usuario, height, funcion
 
     return (
         <Box padding={'0.5em'}>
+            <Typography variant='subtitle1' align='center' color={'#161D6F'}>{titulo}</Typography>
             <Grid
             container
             spacing={2}
             sx={{ justifyContent: 'center', alignItems: 'center' }}
             >
-            <Grid item>{customList(left)}</Grid>
             <Grid item>
-                <Grid container direction="column" sx={{ alignItems: 'center' }}>
+                <Typography sx={{margin:"1em"}} variant={"caption"}>Opciones</Typography>
+                {customList(left)}</Grid>
+            <Grid item>
+                <Grid container direction="column" sx={{ alignItems: 'center', marginTop:'1em' }}>
                 <Button
-                    sx={{ my: 0.5 }}
+                    sx={{ my: 0.3 }}
                     variant="outlined"
                     size="small"
                     onClick={handleAllRight}
@@ -118,7 +133,7 @@ export default function TransferListIntereses({general, usuario, height, funcion
                     ≫
                 </Button>
                 <Button
-                    sx={{ my: 0.5 }}
+                    sx={{ my: 0.3 }}
                     variant="outlined"
                     size="small"
                     onClick={handleCheckedRight}
@@ -128,7 +143,7 @@ export default function TransferListIntereses({general, usuario, height, funcion
                     &gt;
                 </Button>
                 <Button
-                    sx={{ my: 0.5 }}
+                    sx={{ my: 0.3 }}
                     variant="outlined"
                     size="small"
                     onClick={handleCheckedLeft}
@@ -138,7 +153,7 @@ export default function TransferListIntereses({general, usuario, height, funcion
                     &lt;
                 </Button>
                 <Button
-                    sx={{ my: 0.5 }}
+                    sx={{ my: 0.3 }}
                     variant="outlined"
                     size="small"
                     onClick={handleAllLeft}
@@ -150,6 +165,7 @@ export default function TransferListIntereses({general, usuario, height, funcion
                 </Grid>
             </Grid>
             <Grid item>
+                <Typography sx={{margin:"1em"}} variant={"caption"}>Mi selección</Typography>
                 {customList(right)}
             </Grid>
             </Grid>     

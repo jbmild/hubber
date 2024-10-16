@@ -1,5 +1,5 @@
 import TransferListIntereses from "components/transferListIntereses/transferListIntereses";
-import {Box, Button, Divider, Grid} from '@mui/material';
+import {Box, Button, Divider, Grid, Typography} from '@mui/material';
 import { getPaises } from "services/paisesService";
 import { useEffect, useState } from "react";
 import { getUser } from "services/authService";
@@ -68,10 +68,14 @@ const  MisIntereses = () => {
                     flexDirection: 'column',
                     padding: '1em'
                 }}>
-            <TransferListIntereses general = {paises} usuario={paisesUsuario} height={250} funcion={setNuevosPaisesUsuario}/>
-            <Divider/>
-            <TransferListIntereses general = {productos} usuario={productosUsuario} height={170} funcion={setNuevosProductosUsuario}/>
-            <Box display="flex" justifyContent="flex-end" marginRight={'10em'}><Button onClick={handleGuardar}> Guardar </Button></Box>        
+                    <Box sx={{justifyContent: 'center',
+                    alignItems: 'center',flexDirection: 'column'}}>
+                        <Typography variant={"h6"} color={"#161D6F"} sx={{textAlign:"center"}}>Seleccione los productos y países de su interés para recibir actualizaciones sobre normativas que afecten a los mismos</Typography>
+                    </Box>
+            <TransferListIntereses general = {paises} usuario={paisesUsuario} height={200} funcion={setNuevosPaisesUsuario} titulo={"Países"}/>
+            <Divider />
+            <TransferListIntereses general = {productos} usuario={productosUsuario} height={135} funcion={setNuevosProductosUsuario} titulo={"Productos"}/>
+            <Box display="flex" justifyContent="flex-end" marginRight={'10em'}><Button onClick={handleGuardar}> Guardar Intereses </Button></Box>        
         </Box>)
         }</>
     );

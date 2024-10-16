@@ -12,8 +12,8 @@ const TableRowsLoader = ({ rowsNum, cellsNum }) => {
                 rows.map((row, index) => (
                     <TableRow key={`row-loader-${index}`}>
                         {
-                            cells.map((cell, index) => (
-                                <TableCell>
+                            cells.map((cell, indexCell) => (
+                                <TableCell key={`cell-loader-${index}-${indexCell}`}>
                                     <Skeleton animation="wave" variant="text" />
                                 </TableCell>
                             ))

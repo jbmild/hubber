@@ -15,7 +15,13 @@ exports.handleTraerPaises = async (req, res) => {
           _id: 0,
           pais: "$_id"
       }
+    },
+    {
+      $match: {
+        pais: { $ne: "Argentina" }
+      }
     }
+    
   ])
 
   res.status(200).json(paises);

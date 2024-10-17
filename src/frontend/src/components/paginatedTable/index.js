@@ -116,6 +116,8 @@ const PaginatedTable = () => {
   };
 
   const handleOpen = () => {
+    setPosicionesArancelarias([]);
+
     switch(buscarPor){
       default:
       case 'Producto': {fetchProductos(search, 0);break;}
@@ -194,8 +196,8 @@ const PaginatedTable = () => {
 
   const handleBuscarPorChange = (event, newValue) => {
     if(newValue){
-      setBuscarPor(newValue);
       setPosicionesArancelarias([]);
+      setBuscarPor(newValue);
       setAutocompletePage(0);
       setSearch('');
       setBusquedaSeleccionada('');

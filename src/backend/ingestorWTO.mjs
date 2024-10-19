@@ -3,6 +3,7 @@ import * as cheerio from 'cheerio';
 import { MongoClient } from 'mongodb';
 import  fs from 'fs';
 import  path from 'path';
+const enviarMail = require('./mailer');
 
 const LOG_FILE = path.join('./logs/', 'log.txt');
 
@@ -60,6 +61,15 @@ function tituloSPS(titulo) {
 
     final = final.replace('[X]', '').trim();
     return final;
+}
+
+function eliminarUsuariosComunes(usuariosProd, usuariosPais) {
+    return usuariosProd.filter(prodUsuario => {
+        // Verifica si el usuario con el mismo _id existe en usuariosPais
+        const existeEnPais = usuariosPais.some(paisUsuario => paisUsuario._id.toString() === prodUsuario._id.toString());
+        // Si existe en usuariosPais, lo elimina, si no lo mantiene en usuariosProd
+        return !existeEnPais;
+    });
 }
 
 const parseNormativa = (tds, language, tipoDoc, producto) => {
@@ -160,7 +170,7 @@ const notificar = async (listaNormativas) => {
         const usuariosCollection = db.collection('usuarios');
         const notificacionesCollection = db.collection('notificaciones');
 
-            //Inserto nuevas normativas
+        //Inserto nuevas normativas
         const resultado = await barrerasCollection.insertMany(listaNormativas);
 
         await escribirLog(`${new Date().toISOString()} Se agregaron las siguientes normativas: ${JSON.stringify(listaNormativas, null, 2)}`);
@@ -172,10 +182,12 @@ const notificar = async (listaNormativas) => {
         for (let i = 0; i < listaNormativas.length; i++) {
             const usuariosPais = await usuariosCollection.find({ paises_interes: listaNormativas[i].pais }).toArray();
             const usuariosProd = await usuariosCollection.find({ productos_interes: { $in: listaNormativas[i].etiquetas } }).toArray();
+            //Filtro usuarios que estan en ambas listas, le doy prioridad a la lista de paises
+            const usuariosProdFiltrados = eliminarUsuariosComunes(usuariosProd, usuariosPais);
 
             // Inserto en la colección notificaciones la notificación para cada usuario interesado por país
             for (let usuario of usuariosPais) {
-                const notificacionPais = {
+                let notificacionPais = {
                     "fecha": new Date(),
                     "estado": "Nueva",
                     "motivo": "Nueva normativa en un país de tu interés",
@@ -184,12 +196,17 @@ const notificar = async (listaNormativas) => {
                     "interes": listaNormativas[i].pais
                 };
                 await notificacionesCollection.insertOne(notificacionPais);
+                //agrego campo de la normativa para el detalle en el mail
+                notificacionPais = {
+                    ...notificacionPais,
+                    normativa: listaNormativas[i],
+                  };
                 notificaciones.push({ ...notificacionPais });
             }
 
             // Inserto en la colección notificaciones la notificación para cada usuario interesado por producto
-            for (let user of usuariosProd) {
-                const notificacionProducto = {
+            for (let user of usuariosProdFiltrados) {
+                let notificacionProducto = {
                     "fecha": new Date(),
                     "estado": "Nueva",
                     "motivo": "Nueva normativa en un producto de tu interés",
@@ -198,9 +215,16 @@ const notificar = async (listaNormativas) => {
                     "interes": listaNormativas[i].etiquetas.join('/')
                 };
                 await notificacionesCollection.insertOne(notificacionProducto);
+                //agrego campo de la normativa para el detalle en el mail
+                notificacionProducto = {
+                    ...notificacionProducto,
+                    normativa: listaNormativas[i],
+                  };
                 notificaciones.push({ ...notificacionProducto });
             }
         }
+        //Llamo funcion que envia mails
+        enviarMail(notificaciones);
         await escribirLog(`${new Date().toISOString()} Se realizaron las siguientes notificaciones: ${JSON.stringify(notificaciones, null, 2)}`);
     
     }   catch (err) {
@@ -322,25 +346,4 @@ export default async function ingestarNormativas(){
     }
 }
 
-/*
-const listaNormativas = [];
-const normativa1 = {
-    pais: "prueba",
-    titulo: "test",
-    descripcion: "prueba notificaciones",
-    agencia: "n/a",
-    normativaOrigen: "n/a",
-    fechaImplementacion: new Date(),
-    etiquetas: ["prueba", "miel"]
-};
-const normativa2 = {
-    pais: "prueba pais 2",
-    titulo: "test",
-    descripcion: "prueba notificaciones",
-    agencia: "n/a",
-    normativaOrigen: "n/a",
-    fechaImplementacion: new Date(),
-    etiquetas: ["vino", "miel"]
-};
-listaNormativas.push(normativa1, normativa2);
-await notificar(listaNormativas);*/
+module.exports = notificar;

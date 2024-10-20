@@ -66,7 +66,7 @@ async function traerNormativasPaginado(page, limit, filters, idUsuario) {
 }
 
 async function traerNormativasPorPais(pais) {
-  return normativas = await Normativa.find({ pais: pais}, { _id: 0 }).exec();
+  return normativas = await Normativa.find({ pais: pais}, { _id: 0, codigos: 0 }).exec();
 }
 
 exports.traerNormativasPorPais = traerNormativasPorPais;

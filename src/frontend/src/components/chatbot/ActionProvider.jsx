@@ -76,8 +76,6 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
 
       sendMessage(message, chatKey).then((response) => {
         setLoading(false);
-  
-  
         const chatbotMessage = createChatBotMessage(response, opcionesBasicasMessage
         );
   
@@ -87,24 +85,16 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
         })
       });
     }else {
+     
       if(message.toLowerCase().includes('ayuda') || message.toLowerCase().includes('mas opciones')){
-          getPaises().then((response) => {
-            setLoading(false);
-            const paises = response.map(p => (p.pais));
-            setOptionsState((prev) => ({
-              ...prev,
-              paisesAyuda: paises
-            }));
-        
-            const chatbotMessage = createChatBotMessage(`Estos son los paises disponibles actualmente en nuestra base de conocicmiento:\n${paises.join(', ')}.\n Ingrese alguno para poder guiarlo.`, opcionesBasicasMessage
-            );
-      
-            setState((prev) => {
-              const newPrevMsg = prev.messages.slice(0, -1)
-              return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
-            })
-        });
-      }else if(optionsState.paisesAyuda.length > 0){
+        setLoading(false);
+        const chatbotMessage = createChatBotMessage(`Estos son los paises disponibles actualmente en nuestra base de conocicmiento:\n${optionsState.paisesAyuda.join(', ')}.\n Ingrese alguno para poder guiarlo.`, opcionesBasicasMessage);
+
+        setState((prev) => {
+          const newPrevMsg = prev.messages.slice(0, -1)
+          return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
+        })
+      }else{
         const pais = getPaisNormalizado(message, optionsState.paisesAyuda)
         if(pais){
           setPais(pais).then((response => {
@@ -136,29 +126,28 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
             return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
           })
         }
-      }else{
-        setLoading(false);
-      
-        const chatbotMessage = createChatBotMessage('Por favor ingrese un país valido',
-          opcionesBasicasMessage
-        );
-
-        setState((prev) => {
-          const newPrevMsg = prev.messages.slice(0, -1)
-          return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
-        })
       }
     }    
   }
 
   
   const handlePais = (params) => {
-    const message = createChatBotMessage('Ingrese un país, aqui tiene algunas sugerencias, si necesitas más opciones puedes escribir "ayuda" en el chat',
+    const message = createChatBotMessage('A que país deseas exportar?, si necesitas más opciones puedes escribir "ayuda" en el chat',
       {        
         ...opcionesBasicasMessage,
         widget: 'paises'
       }
     );
+
+    if(optionsState.paisesAyuda.length == 0){
+      getPaises().then((response => {
+        const paises = response.map(p => (p.pais));
+        setOptionsState((prev) => ({
+          ...prev,
+          paisesAyuda: paises
+        }));
+      })) ;
+    }
 
     addMessageToState(message);
 
@@ -169,11 +158,13 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
   }
 
   const handlePaisSeleccionado = (params) => {
+    const pais = getPaisNombreCompleto(params.pais);
+
     setLoading(true);
     const loadingMsg = createChatBotMessage(<Loader />)
     setState((prev) => ({ ...prev, messages: [...prev.messages, loadingMsg], }))
 
-    setPais(params.pais).then((response => {
+    setPais(pais).then((response => {
       setLoading(false);
       
       const chatbotMessage = createChatBotMessage(response,
@@ -190,6 +181,29 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
         paisSeleccionado: params.pais,
       }));
     }));
+  }
+
+  const handleMasOpcionesPais = (params) => {
+    setLoading(true);
+    const loadingMsg = createChatBotMessage(<Loader />)
+    setState((prev) => ({ ...prev, messages: [...prev.messages, loadingMsg], }))
+
+    getPaises().then((response) => {
+      setLoading(false);
+      const paises = response.map(p => (p.pais));
+      setOptionsState((prev) => ({
+        ...prev,
+        paisesAyuda: paises
+      }));
+  
+      const chatbotMessage = createChatBotMessage(`Estos son los paises disponibles actualmente en nuestra base de conocicmiento:\n${paises.join(', ')}.\n Ingrese alguno para poder guiarlo.`, opcionesBasicasMessage
+      );
+
+      setState((prev) => {
+        const newPrevMsg = prev.messages.slice(0, -1)
+        return { ...prev, messages: [...newPrevMsg, chatbotMessage], }
+      })
+    });
   }
 
   const handleNormativasBasicas = (params) => {
@@ -225,7 +239,8 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
             handleSubmit,
             handlePais,
             handleNormativasBasicas,
-            handlePaisSeleccionado
+            handlePaisSeleccionado,
+            handleMasOpcionesPais
           },
         });
       })}
@@ -242,12 +257,24 @@ const normalizeString = (str) => {
     .toLowerCase(); // Convertir a minúsculas
 };
 
-const getPaisNormalizado = (input, lista = []) => {
-  if(lista.length == 0)
+const getPaisNormalizado = (input, lista) => {
+  if(lista.length == 0){
     return null;
+  }
 
-  const normalizedInput = normalizeString(input);
+  const normalizedInput = normalizeString(getPaisNombreCompleto(input));
   return lista.find(pais =>
     normalizeString(pais).includes(normalizedInput)
   );
 };
+
+const getPaisNombreCompleto = (input) => {
+  switch(input){
+    case 'Estados Unidos':
+    case 'estados unidos':
+    case 'EEUU': {return 'Estados Unidos de América'; break;}
+    case 'Venezuela':
+    case 'República Bolivariana de Venezuela': {return 'Venezuela (República Bolivariana de Venezuela)'; break;}
+    default: return input;
+  }
+}

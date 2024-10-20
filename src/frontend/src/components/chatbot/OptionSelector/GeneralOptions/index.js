@@ -5,12 +5,12 @@ const GeneralOptions = (props) => {
 
     const options = [
         {
-            name: "Por país a exportar",
+            name: "Exportar tu producto",
             handler: props.actionProvider.handlePais,
             id: 1
         },
         { 
-            name: "Como exportar?", 
+            name: "Infomación basica para exportar desde Argentina", 
             handler: props.actionProvider.handleNormativasBasicas, 
             id: 2 
         }

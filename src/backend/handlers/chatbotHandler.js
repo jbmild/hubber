@@ -31,7 +31,7 @@ const crearIndex = async (key, mappedData) => {
         return indexes[key];
     }        
 
-    const documentos = mappedData.map(item => new Document({ text: JSON.stringify(item) }));
+    const documentos = mappedData.map(item => (new Document({ text: JSON.stringify(item) })));
         
     const index = await VectorStoreIndex.fromDocuments(documentos);
 
@@ -52,7 +52,8 @@ const crearIndexPorPais = async (pais) => {
 
 const crearIndexComoExportar = async () => {
     try{
-        const mappedData = await traerGuiasDeExportacion();
+        let mappedData = await traerGuiasDeExportacion();
+        mappedData = mappedData.concat(await traerNormativasPorPais('Argentina'));
     
         return await crearIndex('comoExportar', mappedData);
     }catch(e){

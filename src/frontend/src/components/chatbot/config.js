@@ -1,16 +1,14 @@
 import { createChatBotMessage } from 'react-chatbot-kit';
 import GeneralOptions from './OptionSelector/GeneralOptions';
 import PaisesOptions from './OptionSelector/PaisSelector';
-import { getUser } from 'services/authService';
-import BackgroundLetterAvatars from 'components/avatarColor';
+import IconoUsuario from './Components/UserIcon';
 
-const botName = 'Hubber';
-const username = (await getUser()).username;
+const botName = 'HubberBot';
 
 const config = {
   initialMessages: [
     createChatBotMessage(`Hola soy ${botName}, ¿cómo puedo ayudarte hoy?`),
-    createChatBotMessage('Acá hay posibles opciones de conversación.',
+    createChatBotMessage('Seleccione una opcion para saber en que podemos guiarlo.',
       {
         widget: "options",
         delay: 500,
@@ -33,11 +31,10 @@ const config = {
       widgetFunc: (props) => <PaisesOptions {...props} />,     
       mapStateToProps: ["messages"],
     },
-  ]
-  /*,
+  ],
   customComponents:{
-    userAvatar: <BackgroundLetterAvatars name={username} hasAlerts={false} />
-  }*/
+    userAvatar: (props) => <IconoUsuario />
+  }
 };
 
 export default config;

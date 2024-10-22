@@ -34,6 +34,7 @@ import Markets from 'pages/markets';
 import MisIntereses from 'pages/misIntereses';
 import MisAlertas from 'pages/misAlertas';
 import ProductClassifier from 'pages/clasificarProductos';
+import Sugerencias from 'pages/sugerencias';
 
 import ExportProcess from './pages/exportar/ExportProcess';
 import ExportRegimes from './pages/exportar/ExportRegimes';
@@ -63,6 +64,7 @@ function App() {
             <Route path='/clasificarProductos' element={<ProductClassifier />} />
             <Route path='/exportar' element={<Exportar />} />
             <Route path='/mercados' element={<Markets />} />
+            <Route path='/sugerencias' element={<Sugerencias />} />
             <Route path='/exportar/proceso' element={<ExportProcess />} />
             <Route path='/exportar/regimenes' element={<ExportRegimes />} />
             <Route path='/exportar/requisitos' element={<ExportRequirements />} />

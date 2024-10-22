@@ -237,7 +237,8 @@ const Markets = () => {
       alignItems: 'center',
       minHeight: { xs: '25vh', sm: '25vh', md: '30vh' },
       flexDirection: 'column',
-      padding: '1em'
+      paddingBottom: '2em',
+      paddingTop: '1em'
     }}
     >
       <Paper 

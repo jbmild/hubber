@@ -6,17 +6,23 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { getNormativa } from 'services/normativasService';
-import DialogDetalles from 'components/paginatedTable/detallesDialog'
+import DialogDetalles from 'components/paginatedTable/detallesDialog';
 
 const MisNormativas = () => {
     const [userData, setUserData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
+    const [statusData, setStatusData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [selectedRow, setSelectedRow] = useState(null);
     const [openModal, setOpenModal] = useState(false);
+    const [changes, setChanges] = useState(false);
 
     const [selectedStatus, setSelectedStatus] = useState('Todos');
+    const [selectedPais, setSelectedPais] = useState('Todos');
+    const [selectedProducto, setSelectedProducto] = useState('Todos');
+ 
 
     useEffect(() => {
         const fetchNormativasUsuario = async () => {
@@ -33,7 +39,38 @@ const MisNormativas = () => {
         };
 
         fetchNormativasUsuario();
-    }, []);
+    }, [changes]);
+
+
+    useEffect(() => {
+        // Si la página actual es mayor que el número máximo de páginas disponibles, ajusta la página
+        const movePage = async () => {
+            const statusData = userData.filter((row) => {
+                if (selectedStatus === 'Todos') return true; // Mostrar todas las filas
+                return row.status === selectedStatus; // Mostrar solo las que coinciden
+            })
+            setStatusData(statusData);
+
+            const statusPais = statusData.filter((normativa) => {
+                if (selectedPais === 'Todos') return true; // Mostrar todas las filas
+                return normativa.idNormativa.pais === selectedPais; // Mostrar solo las que coinciden
+            })
+            
+            const filteredData = statusPais.filter((norm)=>{
+                if (selectedProducto === 'Todos') return true;
+                return norm.idNormativa.etiquetas.includes(selectedProducto);
+            });
+
+            setFilteredData(filteredData);
+
+            const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+            if (page >= totalPages && page != 0) {
+                setPage(page - 1);
+            }
+        }
+        movePage();
+      }, [userData, rowsPerPage, page, selectedStatus, selectedPais, selectedProducto]);
+
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -53,8 +90,10 @@ const MisNormativas = () => {
       };
 
     
-      const handleCloseModal = () => {
-        setOpenModal(false);  
+      const handleCloseModal = (cambios) => { 
+        if(cambios)
+            setChanges(!changes);
+        setOpenModal(false); 
       };
 
     if (loading) {
@@ -71,12 +110,13 @@ const MisNormativas = () => {
     const handleStatusChange = (e) => {
       setSelectedStatus(e.target.value);
     };
-  
-    // Filtrar las filas de la tabla en función del valor seleccionado
-    const filteredData = userData.filter((row) => {
-      if (selectedStatus === 'Todos') return true; // Mostrar todas las filas
-      return row.status === selectedStatus; // Mostrar solo las que coinciden
-    });
+    const handleStatusChangePais = (e) => {
+        setSelectedPais(e.target.value);
+      };
+      const handleStatusChangeProducto = (e) => {
+        setSelectedProducto(e.target.value);
+      };
+    
 
     return (
         <Box
@@ -100,16 +140,49 @@ const MisNormativas = () => {
               transition: 'all 0.3s ease'
             }}
           >
-              <Box textAlign={'right'} paddingRight={'3em'}>
-                  <InputLabel htmlFor="filter" >
-                    Filtrar Normativas
-                              </InputLabel>
-                      <NativeSelect  id='filter'
-                      value={selectedStatus} onChange={handleStatusChange}>
-                        <option value="Todos"> Todas</option>
-                        <option value="Aprobado"> Aprobadas</option>
-                        <option value="Pendiente"> Pendientes</option>
-                    </NativeSelect>
+              <Box display="flex" paddingRight="5em" textAlign="right" gap="5em" justifyContent="flex-end">
+                  <Box>
+                      <InputLabel htmlFor="filterStatus" >
+                        Filtrar por Estado
+                                  </InputLabel>
+                          <NativeSelect  id='filterStatus'
+                          value={selectedStatus} onChange={handleStatusChange}>
+                            <option value="Todos"> Todas</option>
+                            <option value="Aprobado"> Aprobadas</option>
+                            <option value="Pendiente"> Pendientes</option>
+                        </NativeSelect>
+                  </Box>
+                    <Box>
+                        <InputLabel htmlFor="filterPais" >
+                        Filtrar por Pais
+                                  </InputLabel>
+                          <NativeSelect  id='filterPais'
+                          value={selectedPais} onChange={handleStatusChangePais}>
+                            <option value="Todos"> Todos</option>
+                            {
+                                [...new Set(statusData.map((norm) => norm.idNormativa.pais))]
+                                    .map((pais) =>
+                                        <option key={pais} value={pais}> {pais} </option>
+                                    )
+                            }
+                        </NativeSelect>
+                    </Box>
+                    <Box>
+                        <InputLabel htmlFor="filterProducto" >
+                        Filtrar por Producto
+                                  </InputLabel>
+                          <NativeSelect  id='filterProducto'
+                          value={selectedProducto} onChange={handleStatusChangeProducto}>
+                            <option value="Todos"> Todos</option>
+                            {
+                                [...new Set(statusData.flatMap((norm) =>
+                                    norm.idNormativa.etiquetas
+                                ))].map((prod) =>
+                                        <option key={prod} value={prod}> {prod} </option>
+                                    )
+                            }
+                        </NativeSelect>
+                    </Box>
               </Box>
                 <TableContainer>
                     <Table>

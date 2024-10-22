@@ -466,7 +466,8 @@ const Markets = () => {
           fontStyle: 'oblique',
           flexDirection: 'column',
         }}>
-          <p>Fuente: Agencia Argentina de Inversiones y Comercio Internacional. Calculadora de Índice de Mercados Atractivos: <a target="_blank" href='https://exportargentina.org.ar/mercados'> https://exportargentina.org.ar/mercados</a>. Método de cálculo: 
+          <p>Fuente: Agencia Argentina de Inversiones y Comercio Internacional. Calculadora de Índice de Mercados Atractivos: <a target="_blank" href='https://exportargentina.org.ar/mercados'> https://exportargentina.org.ar/mercados</a>. 
+          <br/>Todos los valores mostrados representan un puntaje que oscila entre 0 y 10. Para más detalles sobre cómo se calcula cada dimensión, consulte el siguiente enlace: 
            <a target="_blank" href='https://www.inversionycomercio.ar/pdf/Informe_IMA_2023.pdf'> https://www.inversionycomercio.ar/pdf/Informe_IMA_2023.pdf </a></p>
         </Box>
     </Box>  

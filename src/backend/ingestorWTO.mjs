@@ -98,9 +98,9 @@ const parseNormativa = (tds, language, tipoDoc, producto) => {
 
     let etiquetas;
     if (producto === 0) {
-        etiquetas = ["Alfajor", "Alfajores"];
+        etiquetas = ["Alfajor"];
     } else if (producto === 1) {
-        etiquetas = ["Vino", "Vinos"];
+        etiquetas = ["Vino"];
     } else if (producto === 2) {
         etiquetas = ["Miel"];
     }

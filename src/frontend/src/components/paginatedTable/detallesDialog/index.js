@@ -24,6 +24,7 @@ import axios from 'axios';
 const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
   const [tabSelected, setTabSelected] = useState(0);
   const [currentStatus, setCurrentStatus] = useState(null);
+  const [changes, setChanges] = useState(false);
   const [respuesta, setRespuesta] = useState(''); // State for storing the OpenAI response
   const [isLoading, setIsLoading] = useState(false); // New state for loading message
   const [normativasUsuario, setNormativasUsuario] = useState([]); // New state for loading message
@@ -93,6 +94,7 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/normativas-usuario/${data.id}/status`, { status }, { withCredentials: true });
       console.log('Status updated:', response.data);
+      setChanges(true);
       setCurrentStatus(status);
     } catch (error) {
       console.error('Error updating status:', error);
@@ -102,7 +104,7 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
   return (
     <Dialog
       open={openModal}
-      onClose={handleCloseModal}
+      onClose={() => handleCloseModal(changes)}
       sx={{
         '& .MuiDialog-paper': {
           width: { xs: '90vw', md: '50vw' },
@@ -115,7 +117,7 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
     >
       <DialogTitle>
         Normativa
-        <Button onClick={handleCloseModal} sx={{ position: 'absolute', right: 0, top: 0, paddingBlock: '1em' }}>
+        <Button onClick={() => handleCloseModal(changes)} sx={{ position: 'absolute', right: 0, top: 0, paddingBlock: '1em' }}>
           <CloseIcon />
         </Button>
       </DialogTitle>

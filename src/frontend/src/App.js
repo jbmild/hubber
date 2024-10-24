@@ -282,6 +282,9 @@ function Layout({hasAlerts, setHasAlerts}) {
                             <NotificationsActiveRoundedIcon  fontSize="small" />
                         </Badge>)}
                   </MenuItem>
+                  <MenuItem key={'/sugerencias'} onClick={() => handleCloseUserMenu('/sugerencias')}>
+                    Sugerencias
+                  </MenuItem>
                   <MenuItem
                     key={'btn-register-menu'}
                     onClick={handleLogoutClick}
@@ -394,6 +397,14 @@ function Layout({hasAlerts, setHasAlerts}) {
                     >
                       <Typography textAlign="center">
                         Notificaciones
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem
+                      key={'btn-mis-sugerencias'}
+                      onClick={() => { handleCloseNavMenu('/sugerencias') }}
+                    >
+                      <Typography textAlign="center">
+                        Sugerencias
                       </Typography>
                     </MenuItem>
                     </>

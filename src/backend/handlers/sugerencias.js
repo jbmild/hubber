@@ -47,10 +47,11 @@ exports.getSugerenciasHandler = async (req, res) => {
         ])
 
         const resp = paises.reduce((acc, curr) => {
-            if (!acc[curr._id.etiqueta]) acc[curr._id.etiqueta] = {};
+            if (productos.includes(curr._id.etiqueta)) {
+                if (!acc[curr._id.etiqueta]) acc[curr._id.etiqueta] = {};
 
-            acc[curr._id.etiqueta][curr._id.pais] = curr.count
-
+                acc[curr._id.etiqueta][curr._id.pais] = curr.count
+            }
             return acc
         }, {})
 

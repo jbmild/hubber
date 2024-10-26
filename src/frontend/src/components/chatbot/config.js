@@ -2,6 +2,7 @@ import { createChatBotMessage } from 'react-chatbot-kit';
 import GeneralOptions from './OptionSelector/GeneralOptions';
 import PaisesOptions from './OptionSelector/PaisSelector';
 import IconoUsuario from './Components/UserIcon';
+import IconoBot from './Components/BotIcon';
 
 const botName = 'HubberBot';
 
@@ -33,7 +34,8 @@ const config = {
     },
   ],
   customComponents:{
-    userAvatar: (props) => <IconoUsuario />
+    userAvatar: (props) => <IconoUsuario />,
+    botAvatar: (props) => <IconoBot />
   }
 };
 

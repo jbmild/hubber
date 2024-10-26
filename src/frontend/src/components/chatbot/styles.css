@@ -203,14 +203,17 @@
     justify-content: center;
     height: 3em;
     width: 3em;
+    background-color: #003366;
+  }
+
+  .react-chatbot-kit-chat-btn-send svg path {
+    fill: #fff;
+  }
+
+  .react-chatbot-kit-chat-btn-send:hover{
+    background-color: #024e9a;
   }
 
 
 
-  .react-chatbot-kit-chat-header{
-    background-color: #000;
-    color: #fff;
-    padding: 1em;
-  }
-  
  

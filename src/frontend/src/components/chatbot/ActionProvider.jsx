@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { sendMessage, setGuiaComoExportar, setPais } from 'services/chatbotService';
 import Loader from './loader';
 import { getPaises } from 'services/paisesService';
+import {useChat} from './ChatContext';
 
 const ActionProvider = ({ createChatBotMessage, setState, children}) => {
+  const { reset, triggerReset } = useChat();
 
   const [optionsState, setOptionsState] = useState({
     normativasBasicas: null,
@@ -52,6 +54,12 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
     }
   }, [loading])
 
+  useEffect(() => {
+    if (reset) {
+      resetChat();
+    }
+  }, [reset]);
+
   const opcionesBasicasMessage = {
     withAvatar: true,
     loading: true,
@@ -66,6 +74,11 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
   };
 
   const handleSubmit = (message) => {
+
+    if(message.toLowerCase() == 'reset' || message.toLowerCase() == 'refrescar' || message.toLowerCase() == 'reiniciar'){
+      resetChat();
+      return;
+    }
 
     setLoading(true);
     const loadingMsg = createChatBotMessage(<Loader />)
@@ -127,7 +140,7 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
           })
         }
       }
-    }    
+    }
   }
 
   
@@ -230,6 +243,26 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
     }));
   }
   
+  const resetChat = () => {
+    const initialMessage = createChatBotMessage('Seleccione una opcion para saber en que podemos guiarlo.',
+      {
+        widget: "options",
+        delay: 500,
+        withAvatar: true,
+      }
+    );
+
+    setOptionsState(prev => ({
+      ...prev,
+      normativasBasicas: null,
+      paisSeleccionado: null
+    }));
+    
+    setState(prev => ({
+      ...prev,
+      messages: [...prev.messages, initialMessage]
+    }))
+  };
 
   return (
     <div>
@@ -240,7 +273,8 @@ const ActionProvider = ({ createChatBotMessage, setState, children}) => {
             handlePais,
             handleNormativasBasicas,
             handlePaisSeleccionado,
-            handleMasOpcionesPais
+            handleMasOpcionesPais,
+            resetChat
           },
         });
       })}

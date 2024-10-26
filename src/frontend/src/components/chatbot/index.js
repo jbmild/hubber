@@ -5,7 +5,8 @@ import MessageParser from './MessageParser';
 import ActionProvider from './ActionProvider';
 import theme from 'theme';
 import './styles.css';
-
+import ChatbotHeader from './Components/Header';
+import ChatProvider from './ChatContext';
 const ChatbotComponent = () => {
 
   const validator = (message) => {
@@ -15,15 +16,18 @@ const ChatbotComponent = () => {
     return true;
   }
 
-  return (    
-    <Chatbot
+  return (
+    <ChatProvider>
+      <ChatbotHeader />
+      <Chatbot
         config={config}
         messageParser={MessageParser}
         actionProvider={ActionProvider}
         headerText='En que podemos ayudarle?'
         placeholderText='Escriba su mensaje...'
         validator={validator}
-    />    
+      />  
+    </ChatProvider>  
   );
 };
 

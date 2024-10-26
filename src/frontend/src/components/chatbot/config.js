@@ -3,8 +3,10 @@ import GeneralOptions from './OptionSelector/GeneralOptions';
 import PaisesOptions from './OptionSelector/PaisSelector';
 import IconoUsuario from './Components/UserIcon';
 import IconoBot from './Components/BotIcon';
+import {ChatbotHeaderVacio} from './Components/Header';
 
-const botName = 'HubberBot';
+export const botName = 'HubberBot';
+
 
 const config = {
   initialMessages: [
@@ -34,6 +36,7 @@ const config = {
     },
   ],
   customComponents:{
+    header: () => <ChatbotHeaderVacio />,
     userAvatar: (props) => <IconoUsuario />,
     botAvatar: (props) => <IconoBot />
   }

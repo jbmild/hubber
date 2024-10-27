@@ -14,14 +14,15 @@ import {
   useTheme,
   Tabs,
   Tab,
-  TableRow 
+  TableRow,
+  CircularProgress 
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import TabPanel, { a11yProps } from 'components/tabs/tabs';
 import OpenAI from 'openai';
 import axios from 'axios';
 
-const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
+const DialogDetalles = ({ data, producto, openModal, handleCloseModal }) => {
   const [tabSelected, setTabSelected] = useState(0);
   const [currentStatus, setCurrentStatus] = useState(null);
   const [changes, setChanges] = useState(false);
@@ -48,15 +49,16 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
       const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/normativas-usuario`, { withCredentials: true });
       return response.data;
     }
-
+	
     fetchNormativasUsuario().then(normativas => {
       if (data && normativas) {
         setNormativasUsuario(normativas);
+		fetchOpenAIResponse();
         //filtrar data._id (si existe) en response.data[x].idNormativa, si existe me traigo el status
         const normativaUsuario = normativas.find(normativa => normativa.idNormativa._id === data.id);
         if(normativaUsuario){
           setCurrentStatus(normativaUsuario.status || null);
-          fetchOpenAIResponse();
+          
         } else {
           setCurrentStatus('');
         }
@@ -69,7 +71,7 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
     if (!data) return; // Ensure data is available before proceeding
 
     // Formulate the question for OpenAI
-    const pregunta = `[Normativa:${data.titulo} Descripcion:${data.descripcion} Pais emisor de normativa:${data.pais} Pais origen exportacion: Argentina] Explica de forma facil como cumplir esta normativa. Si es un articulo o una ley, da mas informacion y a donde ir para el tramite. (maximo 500 caracteres).Importante: no escribas en negrita.`;
+    const pregunta = `[Normativa:${data.titulo} ,Descripcion:${data.descripcion} ,Pais emisor de normativa:${data.pais} ,Pais origen exportacion: Argentina, Producto:${producto}] Explica facil y detalladamente que sabes sobre la normativa/ley especifica, y a donde ir a realizar el tramite. La explicacion debe ser acorde al producto (cantidad max caracteres:1500).Importante: no escribas en negrita y nunca digas que no puedes hacer algo. Actua como un buscador experto`;
 	
     try {
       setIsLoading(true); // Activate loading state before making the request
@@ -102,18 +104,18 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
   };
 
   return (
-    <Dialog
-      open={openModal}
-      onClose={() => handleCloseModal(changes)}
-      sx={{
-        '& .MuiDialog-paper': {
-          width: { xs: '90vw', md: '50vw' },
-          height: { xs: '90vh', md: 'auto' },
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-        },
-      }}
+   <Dialog
+  open={openModal}
+  onClose={() => handleCloseModal(changes)}
+  sx={{
+    '& .MuiDialog-paper': {
+      width: { xs: '90vw', md: '50vw' },
+      maxHeight: '90vh', // Establece una altura máxima
+      // overflow: 'hidden', // Elimina esta línea
+      display: 'flex',
+      flexDirection: 'column',
+    },
+  }}
     >
       <DialogTitle>
         Normativa
@@ -121,7 +123,8 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
           <CloseIcon />
         </Button>
       </DialogTitle>
-      <DialogContent sx={{ height: 'auto', display: 'flex', flexDirection: 'column', overflowY: 'hidden' }}>
+    <DialogContent sx={{ height: 'auto', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+
         {data ? (
           <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -209,11 +212,23 @@ const DialogDetalles = ({ data, openModal, handleCloseModal }) => {
               <p>{data.descripcion}</p>
             </TabPanel>
             <TabPanel className={'tabPanel'} value={tabSelected} index={2}>
-              {isLoading ? ( // Show loading message while fetching response
-                <p>Cargando...</p> 
-              ) : (
-                <p>{respuesta}</p> // Display the OpenAI response here
-              )}
+              {isLoading ? (
+				  <Box
+					sx={{
+					  display: 'flex',
+					  flexDirection: 'column',
+					  alignItems: 'center',
+					  justifyContent: 'center',
+					  minHeight: '200px', // Puedes ajustar la altura mínima si es necesario
+					}}
+				  >
+					<CircularProgress />
+					<p style={{ marginTop: '1em' }}>Hubbber está pensando...</p>
+				  </Box>
+				) : (
+				  <p>{respuesta}</p>
+				)}
+
             </TabPanel>
           </Box>
         ) : (

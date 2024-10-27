@@ -45,6 +45,7 @@ const PaginatedTable = () => {
   const [openModal, setOpenModal] = useState(false);
   const [posicionesArancelarias, setPosicionesArancelarias] = useState([]);
   const [busquedaSeleccionada, setBusquedaSeleccionada] = useState('');
+  const [busquedaSeleccionadaCompleta, setBusquedaSeleccionadaCompleta] = useState('');
   const [autocompletePage, setAutocompletePage] = useState(0);
   const [loadingAutocomplete, setLoadingAutocomplete] = useState(false);
   const [buscarPor, setBuscarPor] = useState('Producto')
@@ -248,6 +249,7 @@ const PaginatedTable = () => {
               onChange={(_, value) => {
                 setSearch(value ? value : '');
                 setBusquedaSeleccionada(value ? (buscarPor == 'Producto'? value : value.split(' - ')[0]) : '');
+				setBusquedaSeleccionadaCompleta(value ? (buscarPor === 'Producto' ? value : value.split(' - ')[1]) : '');
               }}
               
               renderInput={(params) => (
@@ -439,7 +441,7 @@ const PaginatedTable = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
           sx={{ flexShrink: 0 }}
         />    
-        <DialogDetalles data={selectedRow} openModal={openModal} handleCloseModal={handleCloseModal} />    
+        <DialogDetalles data={selectedRow} openModal={openModal} producto={busquedaSeleccionadaCompleta} handleCloseModal={handleCloseModal} />    
       </Paper>
     </Box>
   );

@@ -7,6 +7,10 @@ import { useNavigate } from "react-router-dom";
 
 function Home() {
     const navigate = useNavigate();
+	const featuresRef = React.useRef(null);
+	 const scrollToFeatures = () => {
+        featuresRef.current.scrollIntoView({ behavior: 'smooth' });
+    };
 
     return (
         <>
@@ -22,8 +26,10 @@ function Home() {
                                 </p>
                             </header>
                             <div className="_6c87fcd2">
-                                <button id="btn_xqm3sgxmge" className="_8bff3155 btn" onClick={()=>navigate('/register')}><span>Únete a nosotros hoy</span></button>
-                                <button id="btn_dgh9dpr5i1" className="_8bff3155 btn"><span>Vea cómo funciona</span></button>
+                                <button id="btn_xqm3sgxmge" className="_8bff3155 btn" onClick={()=>navigate('/login')}><span>Únete a nosotros hoy</span></button>
+                                <button id="btn_dgh9dpr5i1" className="_8bff3155 btn" onClick={scrollToFeatures}>
+                                    <span>Vea cómo funciona</span>
+                                </button>
                             </div>
                         </div>
                         <div className="_b6f1be9a">
@@ -73,8 +79,7 @@ function Home() {
                                             Exportar de forma segura
                                         </span>
                                         <span
-                                            className="_bd5edd4d">Asegure su
-                                            tratos con contactos examinados y operaciones simplificadas en nuestro Módulo de Exportación.
+                                            className="_bd5edd4d">Aprenda el paso a paso y la documentación necesaria para exportar un producto desde Argentina.
                                         </span>
                                     </div>
                                 </li>
@@ -90,7 +95,7 @@ function Home() {
                                             Descubra compradores
                                         </span>
                                         <span className="_bd5edd4d">
-                                            Utilice nuestros módulos de búsqueda y directorio para conectarse con una red de compradores confiables en
+                                            Utilice nuestros módulos de intereses y recomendación de mercados para encontrar nuevas oportunidades para sus productos en
                                             todo el mundo.
                                         </span>
                                     </div>
@@ -110,29 +115,28 @@ function Home() {
                 <div className="wr">
                     <div className="_391d4a2b">
                         <header className="_85151876">
-                            <h2 className="_dcfc28df">Estadísticas impresionantes</h2>
-                            <p className="_9e97a860">Nuestro impacto en cifras - sea testigo de la influencia de Hubber en el comercio
-                                internacional.
+                            <h2 className="_dcfc28df">Estadísticas de la plataforma</h2>
+                            <p className="_9e97a860">Nuestro impacto en cifras. Sea testigo de la influencia de Hubber en el comercio internacional.
                             </p>
                         </header>
                         <div className="_e169a136">
                             <div className="_36ee58b3">
                                 <div className="_bbf320fc">
-                                    <span data-value="1000" className="countup">
-                                        1000
+                                    <span data-value="2000" className="countup">
+                                        +2000
                                     </span>
                                 </div>
-                                <span className="_85dc032f">Oportunidades encontradas</span>
+                                <span className="_85dc032f">Mercados potenciales</span>
                             </div>
                             <div className="_36ee58b3">
                                 <div className="_bbf320fc">
-                                    <span data-value="300" className="countup">300</span>
+                                    <span data-value="35" className="countup">+35</span>
                                 </div>
                                 <span className="_85dc032f">Países alcanzados</span>
                             </div>
                             <div className="_36ee58b3">
                                 <div className="_bbf320fc">
-                                    <span data-value="500K" className="countup">500K</span>
+                                    <span data-value="10k" className="countup">+10K</span>
                                 </div>
                                 <span className="_85dc032f">Productos listados</span>
                             </div>
@@ -140,7 +144,7 @@ function Home() {
                     </div>
                 </div>
             </section>
-            <section className="_dd888f26">
+             <section ref={featuresRef} className="_dd888f26">
                 <div className="wr">
                     <header className="_88764ad9">
                         <h2 className="_f7571d74">Características principales</h2>
@@ -151,45 +155,50 @@ function Home() {
                     </header>
                     <div className="_33751d42">
                         <div className="_1f204cd4">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="um-icon _ac2e304b" fill="currentColor"
+						<svg xmlns="http://www.w3.org/2000/svg" className="um-icon _ac2e304b" fill="currentColor"
+                          
                                 width="24" height="24" viewBox="0 0 24 24">
                                 <path
-                                    d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z">
+								 d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z">
+                                 
                                 </path>
                             </svg>
                             <h3 className="_a28adcc4">Busqueda inteligente</h3>
                             <span className="_9123e15d">
-                                Encuentre rápidamente mercados y productos potenciales con nuestro módulo de búsqueda intuitivo impulsado por IA.
+                                Encuentre rápidamente normativas y regulaciones con nuestro módulo de búsqueda intuitivo. Consulte tambien nuestro chatbot de inteligencia artificial para una experiencia interactiva.
                             </span>
                             <button id="btn_7ayqwludij" className="_a38e689d btn">
-                                <span>Más información</span>
+                                <span>Descubra cómo</span>
                             </button>
                         </div>
-                        <div className="_1f204cd4"><svg xmlns="http://www.w3.org/2000/svg" className="um-icon _ac2e304b" fill="currentColor"
+                        <div className="_1f204cd4">
+						  <svg xmlns="http://www.w3.org/2000/svg" className="um-icon _ac2e304b" fill="currentColor"
+						
                             width="24" height="24" viewBox="0 0 24 24">
                             <path
-                                d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z">
+							   d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z">
+                             
                             </path>
                         </svg>
-                            <h3 className="_a28adcc4">Conexión del comprador</h3>
+                            <h3 className="_a28adcc4">Mercados Potenciales</h3>
                             <span className="_9123e15d">
-                                Conéctese con compradores internacionales verificados y amplíe su negocio con un alcance específico.
+                                Descubra en qué paises su modelo de negocio podría convertirse en una oportunidad con nuestro módulo de recomendación de mercados.
                             </span>
                             <button id="btn_5dcksxnryc" className="_a38e689d btn">
                                 Aprende más
                             </button>
                         </div>
                         <div className="_1f204cd4">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="um-icon _ac2e304b" fill="currentColor"
+                           <svg xmlns="http://www.w3.org/2000/svg" className="um-icon _ac2e304b" fill="currentColor"
                                 width="24" height="24" viewBox="0 0 24 24">
                                 <path
-                                    d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.64-4.96z">
+                                      d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z">
                                 </path>
                             </svg>
                             <h3 className="_a28adcc4">Información para exportar</h3>
-                            <span className="_9123e15d"></span>
+                            <span className="_9123e15d">Reciba notificaciones sobre nuevas normativas o actualizaciones recientes del comercio exterior argentino con nuestro sistema de alertas  </span>
                             <button id="btn_xyppnk6o3n" className="_a38e689d btn">
-                                Descubra cómo
+                                Más información
                             </button>
                         </div>
                     </div>
@@ -204,7 +213,7 @@ function Home() {
                         </p>
                     </header>
                     <div className="_991c2a56">
-                        <Accordion defaultExpanded>
+                        <Accordion>
                             <AccordionSummary
                                 expandIcon={<ExpandMoreSharp />}
                                 aria-controls="panel1-content"
@@ -213,7 +222,7 @@ function Home() {
                                 ¿Qué es Hubber?
                             </AccordionSummary>
                             <AccordionDetails>
-                                Hubber es una plataforma digital diseñada para ayudar a los productores en exportar sus productos al exterior de manera eficiente.
+                                Hubber es una plataforma digital diseñada para potenciar a los productores argentinos y de economías regionales en su acceso a mercados internacionales. Con un enfoque en las necesidades específicas del sector productivo local, Hubber brinda herramientas avanzadas que simplifican el proceso de exportación, asegurando operaciones seguras y conectando a productores con compradores globales de manera eficiente. Nuestra plataforma impulsa el crecimiento y la competitividad de las economías regionales, facilitando la internacionalización de sus productos.
                             </AccordionDetails>
                         </Accordion>
                         <Accordion>
@@ -225,7 +234,7 @@ function Home() {
                                 ¿Cómo me uno a Hubber?
                             </AccordionSummary>
                             <AccordionDetails>
-                                Comience registrándose en nuestro sitio web, configurando su perfil, y explorando nuestros diversos módulos.
+                                Comience registrándose en nuestro sitio web, configurando su perfil, y explorando el apartado de <b>Información General.</b>
                             </AccordionDetails>
                         </Accordion>
                         <Accordion>
@@ -237,7 +246,7 @@ function Home() {
                                 ¿Qué productos puedo exportar?
                             </AccordionSummary>
                             <AccordionDetails>
-                                Hubber admite una amplia gama de productos en diversas industrias. Consulte nuestro directorio para obtener más información.
+                                Hubber admite una amplia gama de productos en diversas industrias. Consulte nuestras herramientas de búsqueda de normativas para conocer para obtener más información.
                             </AccordionDetails>
                         </Accordion>
                     </div>

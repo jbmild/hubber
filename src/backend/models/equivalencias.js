@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const EquivalenciaSchema = new Schema({
-        normativa1: String,
-        normativa2: String,
+        normativa1: { type: mongoose.Schema.Types.ObjectId, ref: 'Normativa' },
+        normativa2: { type: mongoose.Schema.Types.ObjectId, ref: 'Normativa' },
     }
 );
 

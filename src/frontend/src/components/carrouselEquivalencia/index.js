@@ -24,13 +24,13 @@ import OpenAI from 'openai';
 import axios from 'axios';
 import { ArrowBack, ArrowForward } from '@mui/icons-material'; // Importamos los iconos
 
-const CarrouselDialog = ({ sugerencias, openModal, producto, handleCloseModal }) => {
+const CarrouselEquivalencia = ({ equivalencias, openModal, handleCloseModal, provisorio, normativas, setNormativas }) => {
+
   const [tabSelected, setTabSelected] = useState(0);
   const [currentStatus, setCurrentStatus] = useState(null);
   const [changes, setChanges] = useState(false);
   const [respuesta, setRespuesta] = useState(''); // State for storing the OpenAI response
   const [isLoading, setIsLoading] = useState(false); // New state for loading message
-  const [normativasUsuario, setNormativasUsuario] = useState([]); // New state for loading message
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -42,99 +42,50 @@ const CarrouselDialog = ({ sugerencias, openModal, producto, handleCloseModal })
   useEffect(() => {
     setCurrentIndex(0);
     setTabSelected(0);
-}, [sugerencias])
+}, [equivalencias])
 
 
     useEffect(() => {
         const loadSugerencia = async () => {
+
             setIsLoading(true);
             setTabSelected(0);
-            setData(sugerencias[currentIndex]);
+            setData(equivalencias[currentIndex]);
+
             setIsLoading(false)
         }
         loadSugerencia();
-    },[currentIndex, sugerencias])
+    },[currentIndex, equivalencias])
     
 
     // Función para navegar al elemento anterior
     const handlePrev = () => {
-        setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : sugerencias.length - 1));
+        setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : equivalencias.length - 1));
     };
 
     // Función para navegar al siguiente elemento
     const handleNext = () => {
-        setCurrentIndex((prevIndex) => (prevIndex < sugerencias.length - 1 ? prevIndex + 1 : 0));
+        setCurrentIndex((prevIndex) => (prevIndex < equivalencias.length - 1 ? prevIndex + 1 : 0));
     };
 
-  // Initialize OpenAI client
-  /*
-  const openai = new OpenAI({
-    dangerouslyAllowBrowser: true,
-    apiKey: "XD", // Ensure your API key is set in environment variables
-  });*/
-   const openai = new OpenAI({
-    dangerouslyAllowBrowser: true,
-    apiKey: process.env.REACT_APP_OPENAI_API_KEY, // Usa la variable de entorno aquí
-  });
-
-  useEffect(() => {
-
-    const fetchNormativasUsuario = async () => {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/normativas-usuario`, { withCredentials: true });
-      return response.data;
-    }
-
-    fetchNormativasUsuario().then(normativas => {
-      if (data && normativas) {
-        setNormativasUsuario(normativas);
-        fetchOpenAIResponse();
-        //filtrar data._id (si existe) en response.data[x].idNormativa, si existe me traigo el status
-        const normativaUsuario = normativas.find(normativa => normativa.idNormativa._id === data._id);
-        if(normativaUsuario){
-          setCurrentStatus(normativaUsuario.status || null);
-        } else {
-          setCurrentStatus('');
-        }
-       } // Fetch OpenAI response when data changes
-    });
-  
-  }, [data]);
-
-  const fetchOpenAIResponse = async () => {
-    if (!sugerencias) return; // Ensure data is available before proceeding
-
-    // Formulate the question for OpenAI
-    const pregunta = `[Normativa:${data.titulo} ,Descripcion:${data.descripcion} ,Pais emisor de normativa:${data.pais} ,Pais origen exportacion: Argentina, Producto:${producto}] Explica facil y detalladamente que sabes sobre la normativa/ley especifica, y a donde ir a realizar el tramite. La explicacion debe ser acorde al producto (cantidad max caracteres:900).Importante: no escribas en negrita y nunca digas que no puedes hacer algo. Actua como un buscador experto`;
-
-    try {
-      setIsLoading(true); // Activate loading state before making the request
-      const response = await openai.chat.completions.create({
-        model: "gpt-4",
-        messages: [{ role: "user", content: pregunta }],
-      });
-      setRespuesta(response.choices[0].message.content); // Set the response to state
-      setIsLoading(false); // Deactivate loading state after receiving the response
-    } catch (error) {
-      console.error('Error fetching OpenAI response:', error);
-      setRespuesta('Error fetching response from OpenAI.');
-      setIsLoading(false); // Deactivate loading state in case of error
-    }
-  };
 
   const handleTabChange = (event, newValue) => {
     setTabSelected(newValue);
   };
 
-  const handleStatusChange = async (status) => {
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/users/normativas-usuario/${data._id}/status`, { status }, { withCredentials: true });
-      console.log('Status updated:', response.data);
-      setChanges(true);
-      setCurrentStatus(status);
-    } catch (error) {
-      console.error('Error updating status:', error);
-    }
-  };
+  const handleQuitar = (normativa) => {
+    if(normativas.normativa1._id === normativa._id)
+      setNormativas(prevNormativas => ({
+        ...prevNormativas,
+        normativa1: '',
+    }));
+    else if(normativas.normativa2._id === normativa._id)
+      setNormativas(prevNormativas => ({
+        ...prevNormativas,
+        normativa2: '',
+    }));
+  }
+
 
   return (
     <Dialog
@@ -154,7 +105,7 @@ const CarrouselDialog = ({ sugerencias, openModal, producto, handleCloseModal })
       }}
     >
       <DialogTitle>
-        Normativa {currentIndex+1}/{sugerencias.length}
+        Normativa {currentIndex+1}/{equivalencias.length}
         <Button onClick={() => handleCloseModal(changes)} sx={{ position: 'absolute', right: 0, top: 0, paddingBlock: '1em' }}>
           <CloseIcon />
         </Button>
@@ -190,7 +141,6 @@ const CarrouselDialog = ({ sugerencias, openModal, producto, handleCloseModal })
               >
                 <Tab label="Información Basica" {...a11yProps(0)} />
                 <Tab label="Descripción" {...a11yProps(1)} />
-                <Tab label="Sugerencias" {...a11yProps(2)} />
               </Tabs>
             </Box>
             <TabPanel className={'tabPanel'} value={tabSelected} index={0}>
@@ -263,14 +213,6 @@ const CarrouselDialog = ({ sugerencias, openModal, producto, handleCloseModal })
             <TabPanel className={'tabPanel'} value={tabSelected} index={1}>
               <p>{data.descripcion}</p>
             </TabPanel>
-            <TabPanel className={'tabPanel'} value={tabSelected} index={2}>
-              {isLoading ? ( // Show loading message while fetching response
-                					<><CircularProgress />
-                          <p style={{ marginTop: '1em' }}>Hubbber está pensando...</p></>
-              ) : (
-                <p>{respuesta}</p> // Display the OpenAI response here
-              )}
-            </TabPanel>
           </Box>
         ) : (
           <p>Loading data...</p> // Fallback content while loading
@@ -278,32 +220,17 @@ const CarrouselDialog = ({ sugerencias, openModal, producto, handleCloseModal })
       </DialogContent>
       <DialogActions>
         {
-          (!currentStatus || currentStatus == 'Pendiente') ?
-            <Button variant="contained" color="success" onClick={() => (handleStatusChange('Aprobado'))}>
-              Normativa Cumplida
-            </Button>
-          :
-            <Button variant="contained" color="error" onClick={() => (handleStatusChange('Pendiente'))}>
-              Normativa No Cumplida
+          provisorio &&
+            <Button variant="contained" color="warning" onClick={() => handleQuitar(data)}>
+              Quitar de Equivalencia
             </Button>
         }
-        {
-          !currentStatus ? 
-            <Button variant="contained" color="warning" onClick={() => (handleStatusChange('Pendiente'))}>
-              Seguir
-            </Button>
-          :
-            <Button variant="contained" color="warning" onClick={() => (handleStatusChange(null))}>
-              Dejar de Seguir
-            </Button>
-        }
-
 
       </DialogActions>
       <Box>
             
             {
-                sugerencias ? (
+                equivalencias ? (
                 <>
                 <IconButton
                     onClick={handlePrev}
@@ -340,5 +267,5 @@ const CarrouselDialog = ({ sugerencias, openModal, producto, handleCloseModal })
   );
 };
 
-export default CarrouselDialog;
+export default CarrouselEquivalencia;
 

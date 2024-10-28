@@ -4,7 +4,7 @@ const Normativa = require('../models/normativas'); // Path to the Book model
 
 const obtenerNormativasEquivalentes = async (idNormativas) => {
     const equivalenciasObj = await Equivalencia.find({ $or: [{ normativa1: { $in: idNormativas } }, { normativa2: { $in: idNormativas } }] });
-    const equivalenciasPlanas = equivalenciasObj.flatMap(e => { return [e.normativa1.toString(), e.normativa2.toString()] });
+    const equivalenciasPlanas = equivalenciasObj.flatMap(e => { return [e.normativa1, e.normativa2] });
     const equivalenciasIdsPre = equivalenciasPlanas.concat(idNormativas);
     const equivalenciasIds = equivalenciasIdsPre.filter(function (item, pos) {
         return equivalenciasIdsPre.indexOf(item) == pos;
@@ -24,7 +24,7 @@ exports.getSugerenciasHandler = async (req, res) => {
         const productos = usuario.productos_interes || [];
 
         //Obtengo los ids de todas las normativas y equivalencias del usuario
-        const idNormativas = usuario.normativasUsuario?.map(n => n._id.toString()) || [];
+        const idNormativas = usuario.normativasUsuario?.map(n => n.idNormativa) || [];
         const equivalenciasIds = await obtenerNormativasEquivalentes(idNormativas) || []
 
         //Obtener todos los paises disponibles
@@ -75,7 +75,7 @@ exports.getSugerenciaHandler = async (req, res) => {
             return res.status(404).json({ error: 'Es necesario el pais y el producto para buscar una sugerencia en particular' });
         }
 
-        const idNormativas = usuario.normativasUsuario?.map(n => n._id.toString()) || [];
+        const idNormativas = usuario.normativasUsuario?.map(n => n.idNormativa) || [];
         const equivalenciasIds = await obtenerNormativasEquivalentes(idNormativas) || []
 
         const normativas = await Normativa.find({ pais: pais, etiquetas: { $elemMatch: { $in: [producto] } }, _id: { $nin: equivalenciasIds } });

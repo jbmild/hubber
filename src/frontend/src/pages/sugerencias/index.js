@@ -22,6 +22,7 @@ const Sugerencias = () => {
     const [sugerenciasUsuario, setSugerencias] = useState([]);
     const [openModal, setOpenModal] = useState(false);
     const [selectedRow, setSelectedRow] = useState([]);
+    const [selectedProducto, setSelectedProducto] = useState('');
 
     useEffect (() => {
         const fetchSugerencias = async () => {
@@ -44,6 +45,7 @@ const Sugerencias = () => {
     const verNormativa = async (producto, pais) => {
         const sugerencias = await getSugerencia(pais, producto);
         setSelectedRow(sugerencias);
+        setSelectedProducto(producto);
         setOpenModal(true);
       };
 
@@ -118,12 +120,13 @@ const Sugerencias = () => {
                     </Table>
 
                     </AccordionDetails>
-
+                   
                 </Accordion>
+                
                 );
                 
             })}
-                    <CarrouselDialog sugerencias={selectedRow} openModal={openModal} handleCloseModal={handleCloseModal}/>
+                    <CarrouselDialog sugerencias={selectedRow} openModal={openModal} producto={selectedProducto} handleCloseModal={handleCloseModal}/>
             </Paper>
         </Box>
     ));

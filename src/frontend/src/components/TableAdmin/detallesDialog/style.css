@@ -1,0 +1,17 @@
+.tabPanel > div{
+    max-height: 55vh;
+    overflow-y: auto;
+}
+
+.tabPanel > div::-webkit-scrollbar {
+  width: 8px; /* Ancho de la barra de desplazamiento */
+}
+
+.tabPanel > div::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Color del "thumb" de la barra de desplazamiento */
+  border-radius: 4px; /* Radio de borde del "thumb" */
+}
+
+.tabPanel > div::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1); /* Color de la pista de la barra de desplazamiento */
+}

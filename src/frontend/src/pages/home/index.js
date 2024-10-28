@@ -2,18 +2,62 @@ import * as React from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import WarningIcon from '@mui/icons-material/Warning';
+import Button from '@mui/material/Button';
 import { ExpandMoreSharp } from '@mui/icons-material';
 import { useNavigate } from "react-router-dom";
 
 function Home() {
     const navigate = useNavigate();
 	const featuresRef = React.useRef(null);
-	 const scrollToFeatures = () => {
+    const scrollToFeatures = () => {
         featuresRef.current.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // State to control the main info dialogs
+    const [open, setOpen] = React.useState(false);
+    const [dialogContent, setDialogContent] = React.useState('');
+
+    const handleClickOpen = (content) => {
+        setDialogContent(content);
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    // State for warning popup
+    const [openWarning, setOpenWarning] = React.useState(!localStorage.getItem('afipWarningDismissed'));
+
+    const handleCloseWarning = () => {
+        setOpenWarning(false);
+        localStorage.setItem('afipWarningDismissed', 'true');
     };
 
     return (
         <>
+            {/* Warning Popup */}
+            <Dialog open={openWarning} onClose={handleCloseWarning}>
+                <DialogTitle>
+                    <WarningIcon color="error" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                    Importante: Disolución de la AFIP
+                </DialogTitle>
+                <DialogContent>
+                    <p>
+                        Estimado usuario, a partir del anuncio emitido por el gobierno argentino sobre la disolución de la Administración Federal de Ingresos Públicos (AFIP), así como también la creación de la Agencia de Recaudación y Control Aduanero (ARCA) a través del Decreto 953/2024, 
+						Hubber se compromete a mantener su base normativas y guías completamente actualizadas. A medida que surja nueva información sobre el nuevo organismo, la plataforma le notificará los cambios para su tranquilidad.
+                        
+                    </p>
+                    <Button onClick={handleCloseWarning} variant="contained" color="primary" style={{ marginTop: '16px' }}>
+                        Muchas gracias
+                    </Button>
+                </DialogContent>
+            </Dialog>
+   
             <section className="_af0513fc">
                 <div className="wr">
                     <div className="_4b9aaa61">
@@ -246,7 +290,19 @@ function Home() {
                                 ¿Qué productos puedo exportar?
                             </AccordionSummary>
                             <AccordionDetails>
-                                Hubber admite una amplia gama de productos en diversas industrias. Consulte nuestras herramientas de búsqueda de normativas para conocer para obtener más información.
+                                Hubber prioriza las principales economías regionales argentinas. La plataforma también permite obtener información sobre más de 1000 productos de otras industrias para conocer las barreras comerciales y mercados a los que se exponen. Utilice nuestro clasificador de Código Arancelario para encontrar su producto a exportar.
+                            </AccordionDetails>
+                        </Accordion>
+						 <Accordion>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreSharp />}
+                                aria-controls="panel2-content"
+                                id="panel2-header"
+                            >
+                                ¿Cuales son las fuentes de información que utiliza Hubber?
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                Las normativas y guías de exportación que puede consultar en la plataforma se basan en datos proporcioados por la Agencia de Recaudación y Control Aduanero (ARCA o ex-AFIP), la Organización Mundial del Comercio (OMS), la Conferencia de las Naciones Unidas para el Comercio y el Desarrollo (UNCTAD), y el Sistema de Información de Comercio Exterior de la Organización de los Estados Americanos (SICE).
                             </AccordionDetails>
                         </Accordion>
                     </div>

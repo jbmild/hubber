@@ -254,13 +254,6 @@ function Layout({hasAlerts, setHasAlerts}) {
                   sx={{ my: 2, color: 'black', display: 'block' }}
                 >
                   Gestionar Equivalencias
-                </Button>
-                <Button
-                  key={'btn-adm-menu'}
-                  onClick={() => { handleCloseNavMenu('/clasificarProductos') }}
-                  sx={{ my: 2, color: 'black', display: 'block' }}
-                >
-                  Gestionar Administradores
                 </Button></>
                 )}
                 {!authenticated && (
@@ -446,14 +439,6 @@ function Layout({hasAlerts, setHasAlerts}) {
                         >
                           <Typography textAlign="center">
                             Gestionar Equivalencias
-                          </Typography>
-                        </MenuItem>
-                        <MenuItem
-                          key={'btn-administradores'}
-                          onClick={() => { handleCloseNavMenu('/clasificarProductos') }}
-                        >
-                          <Typography textAlign="center">
-                            Gestionar Administradores
                           </Typography>
                         </MenuItem>
                       </Box>

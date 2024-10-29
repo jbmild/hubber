@@ -219,9 +219,9 @@ src={exwimagen}
         }}
       >
         <p>
-          Fuente: Ventanilla Única de Comercio Exterior:{' '}
-          <a target="_blank" rel="noopener noreferrer" href="https://www.vuce.gob.ar/">
-            https://www.vuce.gob.ar/
+          Fuente: Sitio Web Oficial del Gobierno Argentino:{' '}
+          <a target="_blank" rel="noopener noreferrer" href="https://www.argentina.gob.ar/sites/default/files/incoterms.pdf">
+            https://www.argentina.gob.ar/sites/default/files/incoterms.pdf
           </a>
           .
         </p>

@@ -291,23 +291,27 @@ function Layout({hasAlerts, setHasAlerts}) {
                 open={Boolean(anchorElUser)}
                 onClose={() => handleCloseUserMenu()}
               >
-                 {!roleAdmin && (<><MenuItem key={'/misNormativas'} onClick={() => handleCloseUserMenu('/misNormativas')}>
-                    Mis Normativas
-                  </MenuItem>
-                  <MenuItem key={'/misIntereses'} onClick={() => handleCloseUserMenu('/misIntereses')}>
-                    Mis Intereses
-                  </MenuItem>
-                  <MenuItem key={'/misAlertas'} onClick={() => handleCloseUserMenu('/misAlertas')}>
-                    Notificaciones
-                      {hasAlerts && (
-                        <Badge color="error" variant="dot"              
-                       style={{ marginLeft: '8px'}}>
-                            <NotificationsActiveRoundedIcon  fontSize="small" />
-                        </Badge>)}
-                  </MenuItem>
-                  <MenuItem key={'/sugerencias'} onClick={() => handleCloseUserMenu('/sugerencias')}>
-                    Sugerencias
-                  </MenuItem></>)}
+                 {!roleAdmin && (
+                  <Box>
+                    <MenuItem key={'/misNormativas'} onClick={() => handleCloseUserMenu('/misNormativas')}>
+                      Mis Normativas
+                    </MenuItem>
+                    <MenuItem key={'/misIntereses'} onClick={() => handleCloseUserMenu('/misIntereses')}>
+                      Mis Intereses
+                    </MenuItem>
+                    <MenuItem key={'/misAlertas'} onClick={() => handleCloseUserMenu('/misAlertas')}>
+                      Notificaciones
+                        {hasAlerts && (
+                          <Badge color="error" variant="dot"              
+                        style={{ marginLeft: '8px'}}>
+                              <NotificationsActiveRoundedIcon  fontSize="small" />
+                          </Badge>)}
+                    </MenuItem>
+                    <MenuItem key={'/sugerencias'} onClick={() => handleCloseUserMenu('/sugerencias')}>
+                      Sugerencias
+                    </MenuItem>
+                  </Box>
+                )}
                   <MenuItem
                     key={'btn-register-menu'}
                     onClick={handleLogoutClick}
@@ -370,105 +374,110 @@ function Layout({hasAlerts, setHasAlerts}) {
                     </Typography>
                   </MenuItem>
 
-                  {!roleAdmin ? (<><MenuItem
-                    key={'btn-mercados-menu'}
-                    onClick={() => { handleCloseNavMenu('/mercados') }}
-                  >
-                    <Typography textAlign="center">
-                      Recomendar mercados
-                    </Typography>
-                  </MenuItem>
+                  {!roleAdmin ? (
+                    <Box>
+                      <MenuItem
+                        key={'btn-mercados-menu'}
+                        onClick={() => { handleCloseNavMenu('/mercados') }}
+                      >
+                        <Typography textAlign="center">
+                          Recomendar mercados
+                        </Typography>
+                      </MenuItem>
 
 
-                  <MenuItem
-                    key={'btn-chat-menu'}
-                    onClick={() => { handleCloseNavMenu('/chat') }}
-                  >
-                    <Typography textAlign="center">
-                      Soporte por chat
-                    </Typography>
-                  </MenuItem>
-                  <MenuItem
-                    key={'btn-dir-menu'}
-                    onClick={() => { handleCloseNavMenu('/clasificarProductos') }}
-                  >
-                    <Typography textAlign="center">
-                      Clasifica tu Producto
-                    </Typography>
-                  </MenuItem>
-                  {authenticated && (
-                    <>
-                    <MenuItem
-                      key={'btn-mis-normativas'}
-                      onClick={() => { handleCloseNavMenu('/misNormativas') }}
-                    >
-                      <Typography textAlign="center">
-                        Mis Normativas
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem
-                      key={'btn-mis-intereses'}
-                      onClick={() => { handleCloseNavMenu('/misIntereses') }}
-                    >
-                      <Typography textAlign="center">
-                        Mis Intereses
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem
-                      key={'btn-mis-alertas'}
-                      onClick={() => { handleCloseNavMenu('/misAlertas') }}
-                    >
-                      <Typography textAlign="center">
-                        Notificaciones
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem
-                      key={'btn-mis-sugerencias'}
-                      onClick={() => { handleCloseNavMenu('/sugerencias') }}
-                    >
-                      <Typography textAlign="center">
-                        Sugerencias
-                      </Typography>
-                    </MenuItem>
-                    </>
-                  )}</>) : (<>
-                    <MenuItem
-                      key={'btn-equivalencias'}
-                      onClick={() => { handleCloseNavMenu('/equivalencias') }}
-                    >
-                      <Typography textAlign="center">
-                        Gestionar Equivalencias
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem
-                      key={'btn-administradores'}
-                      onClick={() => { handleCloseNavMenu('/clasificarProductos') }}
-                    >
-                      <Typography textAlign="center">
-                        Gestionar Administradores
-                      </Typography>
-                    </MenuItem>
-                  </>)}
-                  <Divider sx={{ my: 0.5 }} />
-                  {!authenticated && (
-                    <MenuItem
-                      key={'btn-login-menu'}
-                      onClick={() => { handleCloseNavMenu('/login') }}
-                    >
-                      <Typography textAlign="center">
-                        Ingresar
-                      </Typography>
-                    </MenuItem>
-                  )}
-                  {authenticated && (
-                    <MenuItem
-                      key={'btn-register-menu'}
-                      onClick={handleLogoutClick}
-                    >
-                      <Typography textAlign="center">
-                        Salir
-                      </Typography>
-                    </MenuItem>
+                      <MenuItem
+                        key={'btn-chat-menu'}
+                        onClick={() => { handleCloseNavMenu('/chat') }}
+                      >
+                        <Typography textAlign="center">
+                          Soporte por chat
+                        </Typography>
+                      </MenuItem>
+                      <MenuItem
+                        key={'btn-dir-menu'}
+                        onClick={() => { handleCloseNavMenu('/clasificarProductos') }}
+                      >
+                        <Typography textAlign="center">
+                          Clasifica tu Producto
+                        </Typography>
+                      </MenuItem>
+                      {authenticated && (
+                        <>
+                        <MenuItem
+                          key={'btn-mis-normativas'}
+                          onClick={() => { handleCloseNavMenu('/misNormativas') }}
+                        >
+                          <Typography textAlign="center">
+                            Mis Normativas
+                          </Typography>
+                        </MenuItem>
+                        <MenuItem
+                          key={'btn-mis-intereses'}
+                          onClick={() => { handleCloseNavMenu('/misIntereses') }}
+                        >
+                          <Typography textAlign="center">
+                            Mis Intereses
+                          </Typography>
+                        </MenuItem>
+                        <MenuItem
+                          key={'btn-mis-alertas'}
+                          onClick={() => { handleCloseNavMenu('/misAlertas') }}
+                        >
+                          <Typography textAlign="center">
+                            Notificaciones
+                          </Typography>
+                        </MenuItem>
+                        <MenuItem
+                          key={'btn-mis-sugerencias'}
+                          onClick={() => { handleCloseNavMenu('/sugerencias') }}
+                        >
+                          <Typography textAlign="center">
+                            Sugerencias
+                          </Typography>
+                        </MenuItem>
+                        </>
+                      )}
+                    </Box>) : (
+                      <Box>
+                        <MenuItem
+                          key={'btn-equivalencias'}
+                          onClick={() => { handleCloseNavMenu('/equivalencias') }}
+                        >
+                          <Typography textAlign="center">
+                            Gestionar Equivalencias
+                          </Typography>
+                        </MenuItem>
+                        <MenuItem
+                          key={'btn-administradores'}
+                          onClick={() => { handleCloseNavMenu('/clasificarProductos') }}
+                        >
+                          <Typography textAlign="center">
+                            Gestionar Administradores
+                          </Typography>
+                        </MenuItem>
+                      </Box>
+                    )}
+                    <Divider sx={{ my: 0.5 }} />
+                    {!authenticated && (
+                      <MenuItem
+                        key={'btn-login-menu'}
+                        onClick={() => { handleCloseNavMenu('/login') }}
+                      >
+                        <Typography textAlign="center">
+                          Ingresar
+                        </Typography>
+                      </MenuItem>
+                    )}
+                    {authenticated && (
+                      <MenuItem
+                        key={'btn-register-menu'}
+                        onClick={handleLogoutClick}
+                      >
+                        <Typography textAlign="center">
+                          Salir
+                        </Typography>
+                      </MenuItem>
                   )}
                 </Menu>
               </Box>

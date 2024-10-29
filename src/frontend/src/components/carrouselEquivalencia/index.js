@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Button,
-  CircularProgress,
   Table,
   TableBody,
   TableCell,
@@ -20,8 +19,6 @@ import {
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import TabPanel, { a11yProps } from 'components/tabs/tabs';
-import OpenAI from 'openai';
-import axios from 'axios';
 import { ArrowBack, ArrowForward } from '@mui/icons-material'; // Importamos los iconos
 
 const CarrouselEquivalencia = ({ equivalencias, openModal, handleCloseModal, provisorio, normativas, setNormativas }) => {
@@ -49,6 +46,7 @@ const CarrouselEquivalencia = ({ equivalencias, openModal, handleCloseModal, pro
         const loadSugerencia = async () => {
 
             setIsLoading(true);
+            if(!equivalencias[0]) setCurrentIndex(1)
             setTabSelected(0);
             setData(equivalencias[currentIndex]);
 
@@ -84,6 +82,7 @@ const CarrouselEquivalencia = ({ equivalencias, openModal, handleCloseModal, pro
         ...prevNormativas,
         normativa2: '',
     }));
+
   }
 
 
@@ -105,7 +104,11 @@ const CarrouselEquivalencia = ({ equivalencias, openModal, handleCloseModal, pro
       }}
     >
       <DialogTitle>
-        Normativa {currentIndex+1}/{equivalencias.length}
+      {
+      (equivalencias[0] && equivalencias[1]) ?
+        <>Normativa {currentIndex+1}/{equivalencias.length}</> : 
+        <>Normativa</>
+      }
         <Button onClick={() => handleCloseModal(changes)} sx={{ position: 'absolute', right: 0, top: 0, paddingBlock: '1em' }}>
           <CloseIcon />
         </Button>
@@ -230,7 +233,7 @@ const CarrouselEquivalencia = ({ equivalencias, openModal, handleCloseModal, pro
       <Box>
             
             {
-                equivalencias ? (
+                (equivalencias[0] && equivalencias[1]) ? (
                 <>
                 <IconButton
                     onClick={handlePrev}

@@ -12,7 +12,8 @@ import {
     TableCell,
     TableRow,
     TableBody,
-    TableContainer
+    TableContainer,
+    Typography
 } from '@mui/material';
 import { 
     Close as CloseIcon
@@ -149,7 +150,7 @@ function PosicionRow({seccion, nivel}) {
         '& .MuiDialog-paper':{          
             maxWidth: {xs:"90%", sm:"80%" ,md:'70%'},
             width: { xs: '60vw', sm: '50vw', md: '40vw' }, 
-            height: { xs: '70vh', sm:'70vh', md: '65vh' }, 
+            height: { xs: '80vh', sm:'75vh', md: '65vh' }, 
             overflow: 'auto',
             display: 'flex',
             flexDirection: 'column'},
@@ -166,8 +167,8 @@ function PosicionRow({seccion, nivel}) {
                     </DialogTitle>
                     <Divider/>
         <DialogContent>
-            <Box sx={{paddingLeft:'5em'}}>
-                <p><span style={{fontWeight:'bold'}}>Arancel Externo Comun: </span>{seccion.arancel_externo_comun} %</p>
+            <Box sx={{paddingLeft:'4em', paddingTop: '0em'}}>
+                <span style={{fontWeight:'bold'}}>Arancel Externo Comun: </span>{seccion.arancel_externo_comun} %
                 <p><span style={{fontWeight:'bold'}}>Derechos de Exportacion: </span>{seccion.derechos_exportacion}%</p>
                 <p><span style={{fontWeight:'bold'}}>Derechos de Importacion Extrazona: </span>{seccion.derechos_importacion_extrazona}%</p>
                 <p><span style={{fontWeight:'bold'}}>Derechos de Importacion Intrazona: </span>{seccion.derechos_importacion_intrazona}%</p>
@@ -175,6 +176,7 @@ function PosicionRow({seccion, nivel}) {
                 <p><span style={{fontWeight:'bold'}}>Reintegros Intrazona: </span>{seccion.reintegros_intrazona}%</p>
             
             </Box>
+            <Typography variant='caption' fontSize={'10px'}>Los porcentajes mostrados se aplican al valor FOB (Free On Board) de la mercancía exportada.</Typography>
         </DialogContent>
         </Dialog>
       </TableContainer>

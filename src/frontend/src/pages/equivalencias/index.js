@@ -132,12 +132,12 @@ const Equivalencias = () => {
                         }
                         {
                             (normativas.normativa1 || normativas.normativa2) && (
-                            <TableRow style={{backgroundColor:"#f3e363"}} hover title="Ver detalle de las normativas" onClick={()=>verEquivalenciaProvisoria()} >
+                            <TableRow style={{backgroundColor:"#fdf4fb"}} hover title="Ver detalle de las normativas" onClick={()=>verEquivalenciaProvisoria()} >
                                 <TableCell sx={{fontSize: '0.7em', margin: 0}}>{normativas.normativa1 && normativas.normativa1.normativaOrigen}</TableCell>
                                 <TableCell sx={{fontSize: '0.7em', margin: 0}}>{normativas.normativa1 && normativas.normativa1.pais}</TableCell>
                                 <TableCell sx={{fontSize: '0.7em', margin: 0}}>{normativas.normativa2 && normativas.normativa2.normativaOrigen}</TableCell>
                                 <TableCell sx={{fontSize: '0.7em', margin: 0}}>{normativas.normativa2 && normativas.normativa2.pais}</TableCell>
-                                <TableCell><Button onClick={(event) => {event.stopPropagation(); guardarEquivalencia(normativas)}} title='Guardar equivalencia'><SaveIcon /></Button></TableCell>
+                                <TableCell><Button onClick={(event) => {event.stopPropagation(); guardarEquivalencia(normativas)}} title='Guardar equivalencia' disabled={!(normativas.normativa1 && normativas.normativa2)}><SaveIcon /></Button></TableCell>
                             </TableRow>)
                         }
                     </Table>

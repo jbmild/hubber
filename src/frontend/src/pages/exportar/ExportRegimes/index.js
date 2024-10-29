@@ -102,9 +102,9 @@ const ExportRegimes = () => {
         }}
       >
         <p>
-          Fuente: Ventanilla Única de Comercio Exterior:{' '}
-          <a target="_blank" rel="noopener noreferrer" href="https://www.vuce.gob.ar/">
-            https://www.vuce.gob.ar/
+          Fuente: Administración Federal de Ingresos Públicos:{' '}
+          <a target="_blank" rel="noopener noreferrer" href="https://www.afip.gob.ar/envios-internacionales/">
+            https://www.afip.gob.ar/envios-internacionales/
           </a>
           .
         </p>

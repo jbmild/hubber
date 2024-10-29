@@ -21,8 +21,10 @@ import { Close as CloseIcon } from '@mui/icons-material';
 import TabPanel, { a11yProps } from 'components/tabs/tabs';
 import OpenAI from 'openai';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const DialogDetalles = ({ data, producto, openModal, handleCloseModal }) => {
+  const navigate = useNavigate();
   const [tabSelected, setTabSelected] = useState(0);
   const [currentStatus, setCurrentStatus] = useState(null);
   const [changes, setChanges] = useState(false);
@@ -46,8 +48,14 @@ const DialogDetalles = ({ data, producto, openModal, handleCloseModal }) => {
   useEffect(() => {
 
     const fetchNormativasUsuario = async () => {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/normativas-usuario`, { withCredentials: true });
-      return response.data;
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/normativas-usuario`, { withCredentials: true }).catch((error) => {
+        if(error?.response?.status == 401){
+          navigate('/login');
+        }else{
+          throw new Error();
+        }
+      });
+      return response?.data;
     }
 	
     fetchNormativasUsuario().then(normativas => {
@@ -99,7 +107,7 @@ const DialogDetalles = ({ data, producto, openModal, handleCloseModal }) => {
       setChanges(true);
       setCurrentStatus(status);
     } catch (error) {
-      console.error('Error updating status:', error);
+      throw new Error();
     }
   };
 

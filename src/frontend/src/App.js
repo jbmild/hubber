@@ -46,6 +46,8 @@ import ExportCosts from './pages/exportar/ExportCosts';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import YourProduct from './pages/exportar/YourProduct';
+import ErrorPage from 'pages/error';
+import ErrorBoundary from 'components/errorBoundary';
 
 function App() {
 
@@ -54,34 +56,35 @@ function App() {
   return (
     <>
       <ToastContainer />
-      <Routes>
-        <Route path="/" element={<Layout hasAlerts={hasAlerts} setHasAlerts={setHasAlerts}/>} >
-          <Route index element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/profile' element={<Profile />} />
-          <Route element={<PrivateRoute />}>
-            <Route path='/buscador' element={<Browser />} />
-            <Route path='/chat' element={<Chat />} />
-            <Route path='/clasificarProductos' element={<ProductClassifier />} />
-            <Route path='/exportar' element={<Exportar />} />
-            <Route path='/mercados' element={<Markets />} />
-            <Route path='/sugerencias' element={<Sugerencias />} />
-            <Route path='/equivalencias' element={<Equivalencias />} />
-            <Route path='/exportar/proceso' element={<ExportProcess />} />
-            <Route path='/exportar/regimenes' element={<ExportRegimes />} />
-            <Route path='/exportar/requisitos' element={<ExportRequirements />} />
-
-            <Route path='/exportar/incoterms' element={<Incoterms />} />
-            <Route path='/exportar/cobros' element={<PaymentsAndReimbursements />} />
-            <Route path='/exportar/costos' element={<ExportCosts />} />
-            <Route path='/exportar/tu-producto' element={<YourProduct />} />
-            <Route path='/misNormativas' element={<MisNormativas />} />
-            <Route path='/misIntereses' element={<MisIntereses />} />
-            <Route path='/misAlertas' element={<MisAlertas setHasAlerts={setHasAlerts}/>} />
+      <ErrorBoundary>
+        <Routes>
+          <Route path="/" element={<Layout hasAlerts={hasAlerts} setHasAlerts={setHasAlerts}/>} >
+            <Route index element={<Home />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='/error' element={<ErrorPage />} />
+            <Route element={<PrivateRoute />}>
+              <Route path='/buscador' element={<Browser />} />
+              <Route path='/chat' element={<Chat />} />
+              <Route path='/clasificarProductos' element={<ProductClassifier />} />
+              <Route path='/exportar' element={<Exportar />} />
+              <Route path='/mercados' element={<Markets />} />
+              <Route path='/sugerencias' element={<Sugerencias />} />
+              <Route path='/equivalencias' element={<Equivalencias />} />
+              <Route path='/exportar/proceso' element={<ExportProcess />} />
+              <Route path='/exportar/regimenes' element={<ExportRegimes />} />
+              <Route path='/exportar/requisitos' element={<ExportRequirements />} />
+              <Route path='/exportar/incoterms' element={<Incoterms />} />
+              <Route path='/exportar/cobros' element={<PaymentsAndReimbursements />} />
+              <Route path='/exportar/costos' element={<ExportCosts />} />
+              <Route path='/exportar/tu-producto' element={<YourProduct />} />
+              <Route path='/misNormativas' element={<MisNormativas />} />
+              <Route path='/misIntereses' element={<MisIntereses />} />
+              <Route path='/misAlertas' element={<MisAlertas setHasAlerts={setHasAlerts}/>} />
+            </Route>
           </Route>
-        </Route>
-      </Routes>
-
+        </Routes>
+      </ErrorBoundary>
     </>
   );
 }

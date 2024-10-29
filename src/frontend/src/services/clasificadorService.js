@@ -27,17 +27,38 @@ const translate = async (text, idioma) => {
   };
   
 export async function clasificar(producto) {
-  //producto = await translate(producto, "en");
-  const response =  await axios.get(`${backend}/clasificador?producto=${producto}`);
-  var respuesta = [];
-  const predicciones = response.data.predicciones
+  // Convertir el producto a minúsculas para comparaciones sin distinción de mayúsculas/minúsculas
+  const productoLower = producto.toLowerCase();
 
-  for(let i=0; i<predicciones.length; i++){
+  // Verificar si el producto es "alfajor" o "alfajores"
+  if (productoLower === 'alfajor' || productoLower === 'alfajores') {
+    // Hacer algo distinto para "alfajor" o "alfajores"
+    // Por ejemplo, retornar una respuesta específica
+    const respuesta = [
+      {
+        posicion: '190590 (tambien es aceptado 1905.90.90.4) - Alfajores', // Código arancelario específico para alfajores
+        porcentaje: 100 // Porcentaje de certeza
+      }
+    ];
+    return respuesta;
+  }
+
+  // Continuar con el flujo normal para otros productos
+  producto = await translate(producto, "en");
+  const response = await axios.get(`${backend}/clasificador?producto=${producto}`);
+  var respuesta = [];
+  const predicciones = response.data.predicciones;
+
+  for (let i = 0; i < predicciones.length; i++) {
     const pos = predicciones[i][0];
     const posicion = await axios.get(`${backend}/mercados?query=${pos}`);
-    const obj = {"posicion": posicion.data.posiciones[0].posicion, "porcentaje" : predicciones[i][1]}
-    respuesta.push(obj)
+    const obj = {
+      "posicion": posicion.data.posiciones[0].posicion,
+      "porcentaje": predicciones[i][1]
+    };
+    respuesta.push(obj);
   }
 
   return respuesta;
 }
+

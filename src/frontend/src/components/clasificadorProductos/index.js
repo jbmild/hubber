@@ -39,7 +39,8 @@ return(
     <Grid container spacing={2} alignItems={'center'} margin={'2em'} marginBottom={"0em"}>
         <Grid item xs={12} sm={9} md={10}>
             <Input
-                fullWidth placeholder='Ingrese el nombre del producto'
+                title="Por el momento sólo se admite el nombre del producto en inglés"
+                fullWidth placeholder='Ingrese el nombre del producto (en inglés)'
                 value={inputValue}
                 onChange={handleInputChange}>
             </Input>
@@ -99,7 +100,7 @@ return(
                         }}>
                         <p>
                         Fuente: Organización Mundial de Aduanas - Proyecto BACUDA. <a target="_blank" href='http://49.50.165.5:19090/page/mainFormEn'> IA clasificadora de Productos</a><br/ >
-                        Nota: Las posiciones arancelarias proporcionadas por la herramienta son de carácter meramente orientativo. Hubber no se hace responsable por la precisión de la misma. 
+                        Nota: Las posiciones arancelarias proporcionadas por la herramienta son de carácter meramente orientativo. Hubber no se responsabiliza por la precisión de la misma. 
                         </p>
                     </Box> 
                 </TableRow>

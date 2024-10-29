@@ -33,7 +33,8 @@ function ArbolPosiciones(){
             '&:hover': {
                 textDecoration: 'underline', 
                 backgroundColor: 'transparent'}}}
-                onClick={handleArbolClick}>
+                onClick={handleArbolClick}
+                title="Estructura de árbol para facilitar la búsqueda de la posición arancelaria de su producto">
         Búsqueda en forma de árbol</Button></p>
         <DialogArbol secciones={secciones} openModal={openModal} handleCloseModal={handleCloseModal} />
         </Grid>

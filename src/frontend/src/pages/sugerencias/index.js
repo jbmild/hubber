@@ -1,10 +1,8 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Paper, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react"
 import { getSugerencias, getSugerencia } from "services/sugerenciasService"
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CarrouselDialog from 'components/carrouselDialog';
-import DialogDetalles from "components/paginatedTable/detallesDialog";
-
 
 function transformedArray(data) { 
     const response = Object.keys(data).map(producto => {
@@ -66,6 +64,7 @@ const Sugerencias = () => {
           flexDirection: 'column',
           padding: '1em'
         }}>
+             <Typography variant={"h6"} color={"#161D6F"} sx={{textAlign:"center"}}>Aquí podrá ver qué normativas le faltan para cumplir con el "compliance" de cada país para los productos de su interés </Typography>
             <Paper 
             sx={{
               padding: { xs: '3.5em', sm: '2.5em', md: '1em' },
@@ -101,7 +100,7 @@ const Sugerencias = () => {
                     <Table>
                             <TableHead>
                                 <TableCell>Pais</TableCell>
-                                <TableCell>Normativas</TableCell>
+                                <TableCell>Normativas restantes</TableCell>
                             </TableHead>
                             <TableBody>
                         {paises.map((paisObj, index) => {

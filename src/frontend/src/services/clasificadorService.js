@@ -27,7 +27,7 @@ const translate = async (text, idioma) => {
   };
   
 export async function clasificar(producto) {
-  producto = await translate(producto, "en");
+  //producto = await translate(producto, "en");
   const response =  await axios.get(`${backend}/clasificador?producto=${producto}`);
   var respuesta = [];
   const predicciones = response.data.predicciones

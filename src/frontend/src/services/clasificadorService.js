@@ -36,7 +36,7 @@ export async function clasificar(producto) {
     // Por ejemplo, retornar una respuesta específica
     const respuesta = [
       {
-        posicion: '190590 (tambien es aceptado 1905.90.90.4) - Alfajores', // Código arancelario específico para alfajores
+        posicion: '190590 - Alfajores', // Código arancelario específico para alfajores
         porcentaje: 100 // Porcentaje de certeza
       }
     ];

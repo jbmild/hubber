@@ -100,11 +100,9 @@ function Layout({hasAlerts, setHasAlerts}) {
   const [anchorElExport, setAnchorElExport] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [roleAdmin, setRoleAdmin] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
-      setLoading(true);
       const auth = await isAuthenticated();
       setAuthenticated(auth);
       if(auth){
@@ -116,21 +114,16 @@ function Layout({hasAlerts, setHasAlerts}) {
       } else {
         setRoleAdmin(false);
       }
-      setLoading(false);
     };
     checkAuth();
   }, [location.pathname]);
 
   useEffect(() => {
     const checkUser = async () => {
-      setLoading(true);
-      const auth = await isAuthenticated();
-      setAuthenticated(auth);
-      if(auth){
+      if(authenticated){
         const nombre = await getUser();
         setUsername(nombre);
       }
-      setLoading(false);
     };
     checkUser();
   }, []);
@@ -154,10 +147,10 @@ function Layout({hasAlerts, setHasAlerts}) {
   };
 
   const handleLogoutClick = () => {
-    logOut();
     setAnchorElUser(null);
     setAnchorElNav(null);
     setHasAlerts(false);
+    logOut();
     setRoleAdmin(false);
     setAuthenticated(false);
     navigate('/');
@@ -185,7 +178,7 @@ function Layout({hasAlerts, setHasAlerts}) {
 
   return (
     <>
-      {!loading && <AppBar position="static" style={{ backgroundColor: "#fff" }}>
+      <AppBar position="static" style={{ backgroundColor: "#fff" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <Stack direction="row" spacing={0} display={'flex'} width={'100%'}>
@@ -507,7 +500,7 @@ function Layout({hasAlerts, setHasAlerts}) {
             </Stack>
           </Toolbar>
         </Container>
-      </AppBar>}
+      </AppBar>
 
       <Outlet />
 

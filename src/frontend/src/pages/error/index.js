@@ -4,7 +4,7 @@ import React from "react";
 const ErrorPage = ({message}) => {
 
     return (
-        <Paper sx={{display: 'flex', flexDirection: 'column', height: '50vh', justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}>
+        <Box sx={{display: 'flex', flexDirection: 'column', height: '50vh', justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}>
             <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}>
                 <Typography variant="h2">
                     Oops!
@@ -20,7 +20,7 @@ const ErrorPage = ({message}) => {
                     </Typography>
                 </Box>
             }
-        </Paper>
+        </Box>
     );
 }
 

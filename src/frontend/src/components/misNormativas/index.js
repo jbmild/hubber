@@ -4,6 +4,7 @@ import {
     Table, TableBody, TableCell, 
     TableContainer, TableHead, TableRow, Paper, TablePagination, CircularProgress
 } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import { getNormativa } from 'services/normativasService';
 import DialogDetalles from 'components/paginatedTable/detallesDialog';
@@ -176,7 +177,14 @@ const MisNormativas = () => {
 
     // Check if userData is empty
     if (!userData || userData.length === 0) {
-        return <div>Este usuario no tiene normativas.</div>;
+        return (
+            <Box sx={{display: 'flex', flexDirection: 'column', height: '50vh', justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}>
+                <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}>
+                    <Typography variant={"h6"} color={"#161D6F"} sx={{textAlign:"center"}}>En esta sección podrá ver las normativas que que este siguendo.</Typography>
+                
+                </Box>
+            </Box>           
+        );
     }
 
 

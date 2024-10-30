@@ -4,6 +4,7 @@ import {
    Button, ButtonGroup,
    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, CircularProgress
 } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import {getNotificaciones, cambiarEstado} from 'services/notificacionesService';
 import { getNormativa } from 'services/normativasService';
 import DialogDetalles from 'components/paginatedTable/detallesDialog'
@@ -79,7 +80,14 @@ const MisNormativas = ({setHasAlerts}) => {
 
     // Check if userData is empty
     if (!userData || userData.length === 0) {
-        return <div>Este usuario no tiene notificaciones.</div>;
+        return (
+            <Box sx={{display: 'flex', flexDirection: 'column', height: '50vh', justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}>
+                <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}>
+                    <Typography variant={"h6"} color={"#161D6F"} sx={{textAlign:"center"}}>Este usuario no tiene notificaciones.</Typography>
+                
+                </Box>
+            </Box>   
+        );
     }
 
     return (

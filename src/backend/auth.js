@@ -67,7 +67,7 @@ router.get('/logout', (req, res) => {
     if (err) {
       console.error(err);
     }
-    res.redirect(`${process.env.CLIENT_URL}/`);
+    return res.status(200).json({ success: true });
   });
 });
 

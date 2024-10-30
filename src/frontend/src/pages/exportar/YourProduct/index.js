@@ -7,6 +7,7 @@ const CodigoArancelario = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [formData, setFormData] = useState({});
   const [codigoArancelario, setCodigoArancelario] = useState(null);
+  const [codigoEspecifico, setCodigoEspecifico] = useState(null);
   const [arancelInfo, setArancelInfo] = useState(null);
   const [currentStep, setCurrentStep] = useState(1); // Para manejar los pasos en vinos
 
@@ -42,6 +43,7 @@ const CodigoArancelario = () => {
     setSelectedProduct(null);
     setFormData({});
     setCodigoArancelario(null);
+    setCodigoEspecifico(null);
     setArancelInfo(null);
     setCurrentStep(1); // Resetear el paso al cerrar el formulario
   };
@@ -50,6 +52,7 @@ const CodigoArancelario = () => {
     setSelectedProduct(product);
     setFormData({});
     setCodigoArancelario(null);
+    setCodigoEspecifico(null);
     setArancelInfo(null);
     setShowProductPopup(false);
     setCurrentStep(1); // Iniciar en el paso 1 para vinos
@@ -77,37 +80,46 @@ const CodigoArancelario = () => {
   };
 
   const calculateCodigoArancelario = () => {
-    let codigo, info;
+    let codigoPadre, codigoEspecifico, info;
 
     if (selectedProduct === 'vinos') {
       // Lógica para vinos basada en los pasos
       const { isSparkling, containerType, isMistela, isVarietal } = formData;
 
       if (isSparkling === 'si') {
-        codigo = '2204.10';
+        codigoEspecifico = '2204.10';
+        codigoPadre = '220410';
       } else {
         if (containerType === 'menor_igual_2') {
           if (isMistela === 'si') {
-            codigo = '2204.21.00.100';
+            codigoEspecifico = '2204.21';
+            codigoPadre = '220421';
           } else if (isVarietal === 'si') {
-            codigo = '2204.21.00.200';
+            codigoEspecifico = '2204.21';
+            codigoPadre = '220421';
           } else {
-            codigo = '2204.21.00.900';
+            codigoEspecifico = '2204.29';
+            codigoPadre = '220429';
           }
         } else if (containerType === '2_a_10') {
           if (isVarietal === 'si') {
-            codigo = '2204.22.11.100';
+            codigoEspecifico = '2204.22.11.100';
+            codigoPadre = '220422';
           } else {
-            codigo = '2204.22.11.900';
+            codigoEspecifico = '2204.22.11.900';
+            codigoPadre = '220422';
           }
         } else if (containerType === 'mayor_10') {
           if (isVarietal === 'si') {
-            codigo = '2204.29.10.100';
+            codigoEspecifico = '2204.29.10.100';
+            codigoPadre = '220429';
           } else {
-            codigo = '2204.29.10.900';
+            codigoEspecifico = '2204.29.10.900';
+            codigoPadre = '220429';
           }
         } else {
-          codigo = 'N/A';
+          codigoEspecifico = 'N/A';
+          codigoPadre = 'N/A';
         }
       }
 
@@ -122,7 +134,8 @@ const CodigoArancelario = () => {
       // Lógica existente para otros productos
       switch (selectedProduct) {
         case 'alfajores':
-          codigo = formData.hasFilling === 'si' ? '1905.90.90.490B' : '1905.90.90.490A';
+          codigoPadre = '190590';
+          codigoEspecifico = formData.hasFilling === 'si' ? '1905.90.90.490B' : '1905.90.90.490A';
           info = {
             arancelComun: '18%',
             derechoExportacion: '4,5%',
@@ -131,7 +144,8 @@ const CodigoArancelario = () => {
           };
           break;
         case 'miel':
-          codigo = formData.isEnvased25 === 'si' ? '0409.00.001' : (formData.isGranel === 'si' ? '0409.00.0091' : '0409.00.009');
+          codigoPadre = '040900';
+          codigoEspecifico = formData.isEnvased25 === 'si' ? '0409.00.001' : (formData.isGranel === 'si' ? '0409.00.0091' : '0409.00.009');
           info = {
             arancelComun: '10%',
             derechoExportacion: '0%',
@@ -140,7 +154,8 @@ const CodigoArancelario = () => {
           };
           break;
         default:
-          codigo = 'N/A';
+          codigoPadre = 'N/A';
+          codigoEspecifico = 'N/A';
           info = {
             arancelComun: 'N/A',
             derechoExportacion: 'N/A',
@@ -150,7 +165,8 @@ const CodigoArancelario = () => {
       }
     }
 
-    setCodigoArancelario(codigo);
+    setCodigoArancelario(codigoPadre);
+    setCodigoEspecifico(codigoEspecifico);
     setArancelInfo(info);
   };
 
@@ -188,7 +204,7 @@ const CodigoArancelario = () => {
           return (
             <div style={styles.formContainer}>
               <p style={styles.text}>
-                El código arancelario para tu vino espumoso es <strong>2204.10</strong>.
+                El código arancelario específico para tu vino espumoso es <strong>2204.10</strong>.
               </p>
               <button
                 style={styles.button}
@@ -380,7 +396,7 @@ const CodigoArancelario = () => {
                 {product.name}
               </button>
             ))}
-			<p><em>¿Tu producto no aparece en esta lista? </em> <a href="http://localhost:3000/clasificarProductos"> Clasifica tu producto aquí</a></p>
+              <p><em>¿Tu producto no aparece en esta lista? </em> <a href="http://localhost:3000/clasificarProductos"> Clasifica tu producto aquí</a></p>
           </div>
           <button style={styles.closeButton} onClick={() => setShowProductPopup(false)}>
             Cerrar
@@ -434,8 +450,21 @@ const CodigoArancelario = () => {
           {codigoArancelario && (
             <div style={styles.result}>
               <p style={styles.codigo}>
-                <strong>Código Arancelario:</strong> {codigoArancelario}
+                <strong>Código Arancelario General:</strong> {codigoArancelario}
               </p>
+              <p style={styles.text}>
+                Este es el código padre que puede utilizar para buscar mercados y barreras comerciales.
+              </p>
+              {codigoEspecifico && (
+                <>
+                  <p style={styles.codigoEspecifico}>
+                    <strong>Código Arancelario Específico:</strong> {codigoEspecifico}
+                  </p>
+                  <p style={styles.text}>
+                    Este es el código específico utilizado para aranceles y el que debe especificar en su factura de exportación.
+                  </p>
+                </>
+              )}
               <p style={styles.arancelSmall}>
                 <strong>Arancel Externo Común:</strong> {arancelInfo.arancelComun}
               </p>
@@ -467,8 +496,8 @@ const styles = {
     margin: '0 auto',
     padding: '20px',
     fontFamily: 'Arial, sans-serif',
-    position: 'relative', // Asegura que los elementos hijos posicionados se basen en este contenedor
-    zIndex: 1, // Define una capa base
+    position: 'relative',
+    zIndex: 1,
   },
   title: {
     fontSize: '2em',
@@ -521,6 +550,11 @@ const styles = {
     fontSize: '1.3em',
     marginBottom: '10px',
   },
+  codigoEspecifico: {
+    color: 'gold',
+    fontSize: '1.1em',
+    marginBottom: '10px',
+  },
   arancelSmall: {
     color: '#2980b9',
     fontSize: '0.9em',
@@ -542,14 +576,14 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1000, // Asegura que el popup esté por encima de otros elementos, incluido el footer
+    zIndex: 1000,
   },
   popupContent: {
     backgroundColor: '#fff',
     padding: '30px',
     borderRadius: '10px',
     maxWidth: '500px',
-    width: '90%', // Asegura que el contenido sea responsivo
+    width: '90%',
     margin: '20px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     position: 'relative',

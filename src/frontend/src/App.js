@@ -35,6 +35,7 @@ import MisIntereses from 'pages/misIntereses';
 import MisAlertas from 'pages/misAlertas';
 import ProductClassifier from 'pages/clasificarProductos';
 import Sugerencias from 'pages/sugerencias';
+import Equivalencias from 'pages/equivalencias';
 
 import ExportProcess from './pages/exportar/ExportProcess';
 import ExportRegimes from './pages/exportar/ExportRegimes';
@@ -77,6 +78,7 @@ function App() {
               <Route path='/exportar/costos' element={<ExportCosts />} />
               <Route path='/exportar/tu-producto' element={<YourProduct />} />
               <Route path='/misNormativas' element={<MisNormativas />} />
+              <Route path='/equivalencias' element={<Equivalencias />} />
               <Route path='/misIntereses' element={<MisIntereses />} />
               <Route path='/misAlertas' element={<MisAlertas setHasAlerts={setHasAlerts}/>} />
             </Route>
@@ -97,6 +99,7 @@ function Layout({hasAlerts, setHasAlerts}) {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElExport, setAnchorElExport] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [roleAdmin, setRoleAdmin] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -107,15 +110,16 @@ function Layout({hasAlerts, setHasAlerts}) {
         const notificaciones = await tieneNuevasNotificaciones();
         setHasAlerts(notificaciones);
         setUsername(nombre.username);
+        setRoleAdmin(nombre.esAdmin);
       }
     };
     checkAuth();
-  }, [location.pathname]);
+  }, [location.pathname, authenticated]);
 
   useEffect(() => {
     const checkUser = async () => {
-      const nombre = await getUser();
       if(authenticated){
+        const nombre = await getUser();
         setUsername(nombre);
       }
     };
@@ -143,6 +147,7 @@ function Layout({hasAlerts, setHasAlerts}) {
   const handleLogoutClick = () => {
     setAnchorElNav(null);
     logOut();
+    setRoleAdmin(false);
     setAuthenticated(false);
     navigate('/');
   };
@@ -195,7 +200,7 @@ function Layout({hasAlerts, setHasAlerts}) {
               </Typography>
 
               <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'inline-flex', lg: 'inline-flex', justifyContent: 'flex-end' } }}>
-                <Button
+                {!roleAdmin ? (<><Button
                   key={'btn-exportar-menu'}
                   onClick={handleOpenExportMenu}
                   sx={{ my: 2, color: 'black', display: 'block' }}
@@ -242,7 +247,23 @@ function Layout({hasAlerts, setHasAlerts}) {
                   sx={{ my: 2, color: 'black', display: 'block' }}
                 >
                   Clasifica tu Producto
-                </Button>
+                </Button></>):(
+                  <>
+
+                  <Button
+                  
+                  key={'btn-eqv-menu'}
+                  
+                  onClick={() => { handleCloseNavMenu('/equivalencias') }}
+                  
+                  sx={{ my: 2, color: 'black', display: 'block' }}
+                  
+                  >
+                  
+                  Gestionar Equivalencias
+                  
+                  </Button></>
+                )}
                 {!authenticated && (
                   <Button
                     key={'btn-login-menu'}
@@ -271,7 +292,7 @@ function Layout({hasAlerts, setHasAlerts}) {
                     open={Boolean(anchorElUser)}
                     onClose={() => handleCloseUserMenu()}
                   >
-                    <MenuItem key={'/misNormativas'} onClick={() => handleCloseUserMenu('/misNormativas')}>
+                   { !roleAdmin && <><MenuItem key={'/misNormativas'} onClick={() => handleCloseUserMenu('/misNormativas')}>
                       Mis Normativas
                     </MenuItem>
                     <MenuItem key={'/misIntereses'} onClick={() => handleCloseUserMenu('/misIntereses')}>
@@ -287,7 +308,7 @@ function Layout({hasAlerts, setHasAlerts}) {
                     </MenuItem>
                     <MenuItem key={'/sugerencias'} onClick={() => handleCloseUserMenu('/sugerencias')}>
                       Sugerencias
-                    </MenuItem>
+                    </MenuItem></>}
                     <MenuItem
                       key={'btn-register-menu'}
                       onClick={handleLogoutClick}
@@ -328,7 +349,7 @@ function Layout({hasAlerts, setHasAlerts}) {
                     display: { xs: 'block', md: 'none', lg: 'none' },
                   }}
                 >
-                  <MenuItem
+                  {!roleAdmin ? (<><MenuItem
                     key={'btn-exportar-menu'}
                     onClick={handleOpenExportMenu}
                   >
@@ -375,10 +396,24 @@ function Layout({hasAlerts, setHasAlerts}) {
                     <Typography textAlign="center">
                       Clasifica tu Producto
                     </Typography>
-                  </MenuItem>
+                  </MenuItem></>) : <MenuItem
+
+                      key={'btn-equivalencias'}
+
+                      onClick={() => { handleCloseNavMenu('/equivalencias') }}
+
+                      >
+
+                      <Typography textAlign="center">
+
+                      Gestionar Equivalencias
+
+                      </Typography>
+
+                      </MenuItem>}
                   {authenticated && (
                     <Box>
-                      <MenuItem
+                      {!roleAdmin && (<><MenuItem
                         key={'btn-mis-normativas'}
                         onClick={() => { handleCloseNavMenu('/misNormativas') }}
                       >
@@ -409,7 +444,7 @@ function Layout({hasAlerts, setHasAlerts}) {
                         <Typography textAlign="center">
                           Sugerencias
                         </Typography>
-                      </MenuItem>
+                      </MenuItem></>)}
                     </Box>
                   )}
                   <Divider sx={{ my: 0.5 }} />

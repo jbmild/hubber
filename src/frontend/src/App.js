@@ -296,23 +296,26 @@ function Layout({hasAlerts, setHasAlerts}) {
                     open={Boolean(anchorElUser)}
                     onClose={() => handleCloseUserMenu()}
                   >
-                   { !roleAdmin && <><MenuItem key={'/misNormativas'} onClick={() => handleCloseUserMenu('/misNormativas')}>
-                      Mis Normativas
-                    </MenuItem>
-                    <MenuItem key={'/misIntereses'} onClick={() => handleCloseUserMenu('/misIntereses')}>
-                      Mis Intereses
-                    </MenuItem>
-                    <MenuItem key={'/misAlertas'} onClick={() => handleCloseUserMenu('/misAlertas')}>
-                      Notificaciones
-                        {hasAlerts && (
-                          <Badge color="error" variant="dot"              
-                        style={{ marginLeft: '8px'}}>
-                              <NotificationsActiveRoundedIcon  fontSize="small" />
-                          </Badge>)}
-                    </MenuItem>
-                    <MenuItem key={'/sugerencias'} onClick={() => handleCloseUserMenu('/sugerencias')}>
-                      Sugerencias
-                    </MenuItem></>}
+                   { !roleAdmin && 
+                    <Box>
+                      <MenuItem key={'/misNormativas'} onClick={() => handleCloseUserMenu('/misNormativas')}>
+                        Mis Normativas
+                      </MenuItem>
+                      <MenuItem key={'/misIntereses'} onClick={() => handleCloseUserMenu('/misIntereses')}>
+                        Mis Intereses
+                      </MenuItem>
+                      <MenuItem key={'/misAlertas'} onClick={() => handleCloseUserMenu('/misAlertas')}>
+                        Notificaciones
+                          {hasAlerts && (
+                            <Badge color="error" variant="dot"              
+                          style={{ marginLeft: '8px'}}>
+                                <NotificationsActiveRoundedIcon  fontSize="small" />
+                            </Badge>)}
+                      </MenuItem>
+                      <MenuItem key={'/sugerencias'} onClick={() => handleCloseUserMenu('/sugerencias')}>
+                        Sugerencias
+                      </MenuItem>
+                    </Box>}
                     <MenuItem
                       key={'btn-register-menu'}
                       onClick={handleLogoutClick}
@@ -353,54 +356,57 @@ function Layout({hasAlerts, setHasAlerts}) {
                     display: { xs: 'block', md: 'none', lg: 'none' },
                   }}
                 >
-                  {!roleAdmin ? (<><MenuItem
-                    key={'btn-exportar-menu'}
-                    onClick={handleOpenExportMenu}
-                  >
-                    <Typography textAlign="center">
-                      Información General
-                    </Typography>
-                  </MenuItem>
-                  {exportMenuItems.map((item) => (
-                    <MenuItem key={item.path} onClick={() => handleCloseExportMenu(item.path)} sx={{ pl: 4 }}>
-                      <Typography textAlign="center">{item.label}</Typography>
-                    </MenuItem>
-                  ))}
-                  <MenuItem
-                    key={'btn-productos-menu'}
-                    onClick={() => { handleCloseNavMenu('/buscador') }}
-                  >
-                    <Typography textAlign="center">
-                      Buscar Normativas
-                    </Typography>
-                  </MenuItem>
+                  {!roleAdmin ? (
+                    <Box>
+                      <MenuItem
+                        key={'btn-exportar-menu'}
+                        onClick={handleOpenExportMenu}
+                      >
+                        <Typography textAlign="center">
+                          Información General
+                        </Typography>
+                      </MenuItem>
+                      {exportMenuItems.map((item) => (
+                        <MenuItem key={item.path} onClick={() => handleCloseExportMenu(item.path)} sx={{ pl: 4 }}>
+                          <Typography textAlign="center">{item.label}</Typography>
+                        </MenuItem>
+                      ))}
+                      <MenuItem
+                        key={'btn-productos-menu'}
+                        onClick={() => { handleCloseNavMenu('/buscador') }}
+                      >
+                        <Typography textAlign="center">
+                          Buscar Normativas
+                        </Typography>
+                      </MenuItem>
 
-                  <MenuItem
-                    key={'btn-mercados-menu'}
-                    onClick={() => { handleCloseNavMenu('/mercados') }}
-                  >
-                    <Typography textAlign="center">
-                      Recomendar mercados
-                    </Typography>
-                  </MenuItem>
+                      <MenuItem
+                        key={'btn-mercados-menu'}
+                        onClick={() => { handleCloseNavMenu('/mercados') }}
+                      >
+                        <Typography textAlign="center">
+                          Recomendar mercados
+                        </Typography>
+                      </MenuItem>
 
 
-                  <MenuItem
-                    key={'btn-chat-menu'}
-                    onClick={() => { handleCloseNavMenu('/chat') }}
-                  >
-                    <Typography textAlign="center">
-                      Soporte por chat
-                    </Typography>
-                  </MenuItem>
-                  <MenuItem
-                    key={'btn-dir-menu'}
-                    onClick={() => { handleCloseNavMenu('/clasificarProductos') }}
-                  >
-                    <Typography textAlign="center">
-                      Clasifica tu Producto
-                    </Typography>
-                  </MenuItem></>) : <MenuItem
+                      <MenuItem
+                        key={'btn-chat-menu'}
+                        onClick={() => { handleCloseNavMenu('/chat') }}
+                      >
+                        <Typography textAlign="center">
+                          Soporte por chat
+                        </Typography>
+                      </MenuItem>
+                      <MenuItem
+                        key={'btn-dir-menu'}
+                        onClick={() => { handleCloseNavMenu('/clasificarProductos') }}
+                      >
+                        <Typography textAlign="center">
+                          Clasifica tu Producto
+                        </Typography>
+                      </MenuItem>
+                    </Box>) : <MenuItem
 
                       key={'btn-equivalencias'}
 
@@ -415,9 +421,9 @@ function Layout({hasAlerts, setHasAlerts}) {
                       </Typography>
 
                       </MenuItem>}
-                  {authenticated && (
+                  {(authenticated && !roleAdmin ) && (
                     <Box>
-                      {!roleAdmin && (<><MenuItem
+                      <MenuItem
                         key={'btn-mis-normativas'}
                         onClick={() => { handleCloseNavMenu('/misNormativas') }}
                       >
@@ -448,7 +454,7 @@ function Layout({hasAlerts, setHasAlerts}) {
                         <Typography textAlign="center">
                           Sugerencias
                         </Typography>
-                      </MenuItem></>)}
+                      </MenuItem>
                     </Box>
                   )}
                   <Divider sx={{ my: 0.5 }} />

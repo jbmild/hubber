@@ -6,9 +6,11 @@ const ErrorBoundary = ({ children }) => {
   const navigate = useNavigate();
 
   const handleError = (error) => {
-    console.error("Error capturado por ErrorBoundary:", error);
-    setHasError(true);
-    navigate('/error');
+    if(!(error.name == 'AxiosError' && error.response && error.response.status == 401)){    
+      console.error("Error capturado por ErrorBoundary:", error);
+      setHasError(true);
+      navigate('/error');
+    }
   };
 
   useEffect(() => {

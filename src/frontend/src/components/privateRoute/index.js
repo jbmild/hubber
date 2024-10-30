@@ -19,7 +19,7 @@ function PrivateRoute() {
       setAuth(auth);
     };
     checkAuth();
-  }, [location]);
+  }, [location.pathname]);
 
   useEffect(() => {
     if(!auth){

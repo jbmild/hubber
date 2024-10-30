@@ -2,16 +2,19 @@ import axios from 'axios';
 
 export async function isAuthenticated() {
     try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/profile`, {
-            method: 'GET',
-            credentials: 'include',
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/auth/profile`, {
+            withCredentials: true
         });
-        if (response.ok) {
-            const user = await response.json();
+        if (response && response.status == 200) {
+            const user = await response.data;
             return !!user.email; // If the user data is valid, return true (authenticated)
         }
     } catch (error) {
-        console.error('Error checking authentication status:', error);
+        if (error.response && error.response.status === 401) {
+            return false;
+        } else {
+            console.error('Error checking authentication status:', error);
+        }
     }
     console.log("devuelve false?");
     return false; // If no session or the session is invalid, return false
@@ -19,16 +22,19 @@ export async function isAuthenticated() {
 
 export async function getUser() {
     try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/users/me`, {
-            method: 'GET',
-            credentials: 'include',
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/me`, {
+            withCredentials: true
         });
-        if (response.ok) {
-            const user = await response.json();
+        if (response && response.status == 200) {
+            const user = await response.data;
             return user; // If the user data is valid, return true (authenticated)
         }
     } catch (error) {
-        console.error('Error checking authentication status:', error);
+        if (error.response && error.response.status === 401) {
+            return false;
+        } else {
+            console.error('Error checking authentication status:', error);
+        }
     }
     console.log("devuelve false?");
     return false; // If no session or the session is invalid, return false

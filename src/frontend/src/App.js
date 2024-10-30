@@ -111,10 +111,12 @@ function Layout({hasAlerts, setHasAlerts}) {
         setHasAlerts(notificaciones);
         setUsername(nombre.username);
         setRoleAdmin(nombre.esAdmin);
+      } else {
+        setRoleAdmin(false);
       }
     };
     checkAuth();
-  }, [location.pathname, authenticated]);
+  }, [location.pathname]);
 
   useEffect(() => {
     const checkUser = async () => {

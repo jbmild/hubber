@@ -29,10 +29,12 @@ exports.handleTraerPaises = async (req, res) => {
 
 exports.handleTraerNormativas = async (req, res) => {
   try{
+    const prod = req.query.producto;
+    const listaCodigos = [prod, prod.substr(0,2), prod.substr(0,4)];
     const filters = {
       $and:[
         {$or: [
-          { codigos: { $in:  req.query.producto } },
+          { codigos: { $in:  listaCodigos } },
           { etiquetas: { $in: req.query.producto } }
         ]},
         { pais: req.query.pais }

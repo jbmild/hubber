@@ -22,7 +22,12 @@ export async function getPosiciones(newQuery, newOffset) { //Va a buscar al Mong
 }
 
 export async function tabla_ima(pos) {//Valores Generales de IMA
-    const posicionArancelaria = pos.replace(/"/g, '\\"');
+    let posicionArancelaria = pos.replace(/"/g, '\\"');
+
+    if(posicionArancelaria.substr(0,6) === "190590")
+    { 
+        posicionArancelaria = posicionArancelaria.replace("Alfajores. ", "");
+    } 
     const body = `{"version\":\"1.0.0\",\"queries\":[{\"Query\":{\"Commands\":[{\"SemanticQueryDataShapeCommand\":{\"Query\":{\"Version\":2,\"From\":[{\"Name\":\"i\",\"Entity\":\"ima_unpivot\",\"Type\":0},{\"Name\":\"p\",\"Entity\":\"Paises\",\"Type\":0},{\"Name\":\"subquery\",\"Expression\":{\"Subquery\":{\"Query\":{\"Version\":2,\"From\":[{\"Name\":\"i1\",\"Entity\":\"ima_unpivot\",\"Type\":0},{\"Name\":\"p2\",\"Entity\":\"Paises\",\"Type\":0},{\"Name\":\"p11\",\"Entity\":\"productos\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i1\"}},\"Property\":\"Pais\"},\"Name\":\"field\"}],\"Where\":[{\"Condition\":{\"Comparison\":{\"ComparisonKind\":0,\"Left\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i1\"}},\"Property\":\"Pais\"}},\"Right\":{\"AnyValue\":{\"DefaultValueOverridesAncestors\":true}}}}},{\"Condition\":{\"Comparison\":{\"ComparisonKind\":0,\"Left\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"p2\"}},\"Property\":\"flags_iso.URL\"}},\"Right\":{\"AnyValue\":{\"DefaultValueOverridesAncestors\":true}}}}},{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"p11\"}},\"Property\":\"Codigo + desc\"}}],\"Values\":[[{\"Literal\":{\"Value\":\"\'${posicionArancelaria}\'\"}}]]}}}],\"OrderBy\":[{\"Direction\":1,\"Expression\":{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i1\"}},\"Property\":\"Sorting\"}},\"Function\":0}}}],\"Top\":10}}},\"Type\":2},{\"Name\":\"p1\",\"Entity\":\"productos\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"Pais\"},\"Name\":\"ima_unpivot.Pais\"},{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"ima_total\"}},\"Function\":1},\"Name\":\"Sum(ima_unpivot.ima_total)\"},{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"p\"}},\"Property\":\"flags_iso.URL\"},\"Name\":\"Paises.flags_iso.URL\",\"NativeReferenceName\":\" \"}],\"Where\":[{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"Pais\"}}],\"Table\":{\"SourceRef\":{\"Source\":\"subquery\"}}}}},{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"p1\"}},\"Property\":\"Codigo + desc\"}}],\"Values\":[[{\"Literal\":{\"Value\":\"\'${posicionArancelaria}\'\"}}]]}}}],\"OrderBy\":[{\"Direction\":2,\"Expression\":{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"ima_total\"}},\"Function\":1}}}]},\"Binding\":{\"Primary\":{\"Groupings\":[{\"Projections\":[0,1,2]}]},\"DataReduction\":{\"DataVolume\":3,\"Primary\":{\"Window\":{\"Count\":500}}},\"Version\":1},\"ExecutionMetricsKind\":1}}]},\"QueryId\":\"\",\"ApplicationContext\":{\"DatasetId\":\"8d196c10-223d-40f5-b770-7291cf7a5cdd\",\"Sources\":[{\"ReportId\":\"f826b8bc-6fef-40cd-9231-2c5d0438b7bc\",\"VisualId\":\"602bdc0682fd364320a4\"}]}}],\"cancelQueries\":[],\"modelId\":8198277}`;
     try {
         const response = await axios.post(urlIMA, body, { headers });
@@ -77,7 +82,12 @@ function parseIMA(data){
 
 
 export async function detalle_ima(pos) { //Devuelve el detalle del IMA
-    const posicionArancelaria = pos.replace(/"/g, '\\"');
+    let posicionArancelaria = pos.replace(/"/g, '\\"');
+    if(posicionArancelaria.substr(0,6) === "190590")
+        { 
+            posicionArancelaria = posicionArancelaria.replace("Alfajores. ", "");
+        } 
+
     const paises = await ima_paises(pos);
     const body = `{\"version\":\"1.0.0\",\"queries\":[{\"Query\":{\"Commands\":[{\"SemanticQueryDataShapeCommand\":{\"Query\":{\"Version\":2,\"From\":[{\"Name\":\"i\",\"Entity\":\"ima_unpivot\",\"Type\":0},{\"Name\":\"p\",\"Entity\":\"productos\",\"Type\":0}],\"Select\":[{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"Valor\"}},\"Function\":0},\"Name\":\"Sum(ima_unpivot.Valor)\"},{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"Dimension\"},\"Name\":\"ima_unpivot.dimension\"},{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"Pais + imaGral\"},\"Name\":\"ima_unpivot.Pais + imaGral\"}],\"Where\":[{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"p\"}},\"Property\":\"Codigo + desc\"}}],\"Values\":[[{\"Literal\":{\"Value\":\"\'${posicionArancelaria}\'\"}}]]}}},{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"Sorting\"}}],\"Values\":[${paises}]}}}],\"OrderBy\":[{\"Direction\":1,\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"Dimension\"}}}]},\"Binding\":{\"Primary\":{\"Groupings\":[{\"Projections\":[1]}]},\"Secondary\":{\"Groupings\":[{\"Projections\":[0,2]}]},\"DataReduction\":{\"DataVolume\":3,\"Primary\":{\"Window\":{\"Count\":100}},\"Secondary\":{\"Top\":{\"Count\":100}}},\"Aggregates\":[{\"Select\":0,\"Aggregations\":[{\"Min\":{}},{\"Max\":{}}]}],\"Version\":1},\"ExecutionMetricsKind\":1}}]},\"QueryId\":\"\",\"ApplicationContext\":{\"DatasetId\":\"8d196c10-223d-40f5-b770-7291cf7a5cdd\",\"Sources\":[{\"ReportId\":\"f826b8bc-6fef-40cd-9231-2c5d0438b7bc\",\"VisualId\":\"41a378da9309dc880c0b\"}]}}],\"cancelQueries\":[],\"modelId\":8198277}`;
     try {
@@ -124,9 +134,14 @@ function parseDetalles(data){
 
 
 async function ima_paises(pos){
-    const posicionArancelaria = pos.replace(/"/g, '\\"');
+    let posicionArancelaria = pos.replace(/"/g, '\\"');
+
+    if(posicionArancelaria.substr(0,6) === "190590")
+        { 
+            posicionArancelaria = posicionArancelaria.replace("Alfajores. ", "");
+        } 
+
     const body = `{\"version\":\"1.0.0\",\"queries\":[{\"Query\":{\"Commands\":[{\"SemanticQueryDataShapeCommand\":{\"Query\":{\"Version\":2,\"From\":[{\"Name\":\"i\",\"Entity\":\"ima_unpivot\",\"Type\":0},{\"Name\":\"subquery\",\"Expression\":{\"Subquery\":{\"Query\":{\"Version\":2,\"From\":[{\"Name\":\"i1\",\"Entity\":\"ima_unpivot\",\"Type\":0},{\"Name\":\"p1\",\"Entity\":\"productos\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i1\"}},\"Property\":\"Sorting\"},\"Name\":\"field\"}],\"Where\":[{\"Condition\":{\"Comparison\":{\"ComparisonKind\":0,\"Left\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i1\"}},\"Property\":\"Sorting\"}},\"Right\":{\"AnyValue\":{\"DefaultValueOverridesAncestors\":true}}}}},{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"p1\"}},\"Property\":\"Codigo + desc\"}}],\"Values\":[[{\"Literal\":{\"Value\":\"\'${posicionArancelaria}\'\"}}]]}}}],\"OrderBy\":[{\"Direction\":1,\"Expression\":{\"Aggregation\":{\"Expression\":{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i1\"}},\"Property\":\"Sorting\"}},\"Function\":0}}}],\"Top\":10}}},\"Type\":2},{\"Name\":\"p\",\"Entity\":\"productos\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"Sorting\"},\"Name\":\"ima_unpivot.Sorting\"}],\"Where\":[{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"i\"}},\"Property\":\"Sorting\"}}],\"Table\":{\"SourceRef\":{\"Source\":\"subquery\"}}}}},{\"Condition\":{\"In\":{\"Expressions\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"p\"}},\"Property\":\"Codigo + desc\"}}],\"Values\":[[{\"Literal\":{\"Value\":\"\'${posicionArancelaria}\'\"}}]]}}}]},\"Binding\":{\"Primary\":{\"Groupings\":[{\"Projections\":[0]}]},\"DataReduction\":{\"DataVolume\":3,\"Primary\":{\"Window\":{}}},\"IncludeEmptyGroups\":true,\"Version\":1},\"ExecutionMetricsKind\":1}}]},\"QueryId\":\"\",\"ApplicationContext\":{\"DatasetId\":\"8d196c10-223d-40f5-b770-7291cf7a5cdd\",\"Sources\":[{\"ReportId\":\"f826b8bc-6fef-40cd-9231-2c5d0438b7bc\",\"VisualId\":\"f4237206aa5e241a2c0e\"}]}}],\"cancelQueries\":[],\"modelId\":8198277}`;
-    
     try {
         const response = await axios.post(urlIMA, body, { headers });
         const data = response.data;

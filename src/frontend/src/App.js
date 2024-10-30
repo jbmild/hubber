@@ -45,6 +45,8 @@ import ExportCosts from './pages/exportar/ExportCosts';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import YourProduct from './pages/exportar/YourProduct';
+import ErrorPage from 'pages/error';
+import ErrorBoundary from 'components/errorBoundary';
 
 function App() {
 
@@ -53,33 +55,34 @@ function App() {
   return (
     <>
       <ToastContainer />
-      <Routes>
-        <Route path="/" element={<Layout hasAlerts={hasAlerts} setHasAlerts={setHasAlerts}/>} >
-          <Route index element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/profile' element={<Profile />} />
-          <Route element={<PrivateRoute />}>
-            <Route path='/buscador' element={<Browser />} />
-            <Route path='/chat' element={<Chat />} />
-            <Route path='/clasificarProductos' element={<ProductClassifier />} />
-            <Route path='/exportar' element={<Exportar />} />
-            <Route path='/mercados' element={<Markets />} />
-            <Route path='/sugerencias' element={<Sugerencias />} />
-            <Route path='/exportar/proceso' element={<ExportProcess />} />
-            <Route path='/exportar/regimenes' element={<ExportRegimes />} />
-            <Route path='/exportar/requisitos' element={<ExportRequirements />} />
-
-            <Route path='/exportar/incoterms' element={<Incoterms />} />
-            <Route path='/exportar/cobros' element={<PaymentsAndReimbursements />} />
-            <Route path='/exportar/costos' element={<ExportCosts />} />
-            <Route path='/exportar/tu-producto' element={<YourProduct />} />
-            <Route path='/misNormativas' element={<MisNormativas />} />
-            <Route path='/misIntereses' element={<MisIntereses />} />
-            <Route path='/misAlertas' element={<MisAlertas setHasAlerts={setHasAlerts}/>} />
+      <ErrorBoundary>
+        <Routes>
+          <Route path="/" element={<Layout hasAlerts={hasAlerts} setHasAlerts={setHasAlerts}/>} >
+            <Route index element={<Home />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='/error' element={<ErrorPage />} />
+            <Route element={<PrivateRoute />}>
+              <Route path='/buscador' element={<Browser />} />
+              <Route path='/chat' element={<Chat />} />
+              <Route path='/clasificarProductos' element={<ProductClassifier />} />
+              <Route path='/exportar' element={<Exportar />} />
+              <Route path='/mercados' element={<Markets />} />
+              <Route path='/sugerencias' element={<Sugerencias />} />
+              <Route path='/exportar/proceso' element={<ExportProcess />} />
+              <Route path='/exportar/regimenes' element={<ExportRegimes />} />
+              <Route path='/exportar/requisitos' element={<ExportRequirements />} />
+              <Route path='/exportar/incoterms' element={<Incoterms />} />
+              <Route path='/exportar/cobros' element={<PaymentsAndReimbursements />} />
+              <Route path='/exportar/costos' element={<ExportCosts />} />
+              <Route path='/exportar/tu-producto' element={<YourProduct />} />
+              <Route path='/misNormativas' element={<MisNormativas />} />
+              <Route path='/misIntereses' element={<MisIntereses />} />
+              <Route path='/misAlertas' element={<MisAlertas setHasAlerts={setHasAlerts}/>} />
+            </Route>
           </Route>
-        </Route>
-      </Routes>
-
+        </Routes>
+      </ErrorBoundary>
     </>
   );
 }
@@ -250,50 +253,50 @@ function Layout({hasAlerts, setHasAlerts}) {
                   </Button>
                 )}
                 {authenticated && (
-                  <>
-                <Button
-                  key={'btn-user-menu'}
-                  onClick={handleOpenUserMenu}
-                  disableRipple= {true}
-                  sx={{    my: 2, color: 'black', display: 'flex', borderRadius: '100%',
-                    '&:hover': {
-                        background: 'none',
-                    },
-                } }
-                >
-                  <BackgroundLetterAvatars onClick={handleOpenUserMenu} name = {myUsername} hasAlerts = {hasAlerts}/>
-                </Button>
-              <Menu
-                anchorEl={anchorElUser}
-                open={Boolean(anchorElUser)}
-                onClose={() => handleCloseUserMenu()}
-              >
-                 <MenuItem key={'/misNormativas'} onClick={() => handleCloseUserMenu('/misNormativas')}>
-                    Mis Normativas
-                  </MenuItem>
-                  <MenuItem key={'/misIntereses'} onClick={() => handleCloseUserMenu('/misIntereses')}>
-                    Mis Intereses
-                  </MenuItem>
-                  <MenuItem key={'/misAlertas'} onClick={() => handleCloseUserMenu('/misAlertas')}>
-                    Notificaciones
-                      {hasAlerts && (
-                        <Badge color="error" variant="dot"              
-                       style={{ marginLeft: '8px'}}>
-                            <NotificationsActiveRoundedIcon  fontSize="small" />
-                        </Badge>)}
-                  </MenuItem>
-                  <MenuItem key={'/sugerencias'} onClick={() => handleCloseUserMenu('/sugerencias')}>
-                    Sugerencias
-                  </MenuItem>
-                  <MenuItem
-                    key={'btn-register-menu'}
-                    onClick={handleLogoutClick}
-                    sx={{ color: 'black', display: 'block', backgroundColor: 'rgb(206 206 206)' }}
+                <Box sx={{display: 'flex', flexWrap: 'wrap', alignContent: 'center'}}>
+                  <Button
+                    key={'btn-user-menu'}
+                    onClick={handleOpenUserMenu}
+                    disableRipple= {true}
+                    sx={{    my: 2, color: 'black', display: 'flex', borderRadius: '100%',
+                      '&:hover': {
+                          background: 'none',
+                      },
+                  } }
                   >
-                    Salir
-                  </MenuItem>
-                </Menu>
-                </>)}
+                    <BackgroundLetterAvatars onClick={handleOpenUserMenu} name = {myUsername} hasAlerts = {hasAlerts}/>
+                  </Button>
+                  <Menu
+                    anchorEl={anchorElUser}
+                    open={Boolean(anchorElUser)}
+                    onClose={() => handleCloseUserMenu()}
+                  >
+                    <MenuItem key={'/misNormativas'} onClick={() => handleCloseUserMenu('/misNormativas')}>
+                      Mis Normativas
+                    </MenuItem>
+                    <MenuItem key={'/misIntereses'} onClick={() => handleCloseUserMenu('/misIntereses')}>
+                      Mis Intereses
+                    </MenuItem>
+                    <MenuItem key={'/misAlertas'} onClick={() => handleCloseUserMenu('/misAlertas')}>
+                      Notificaciones
+                        {hasAlerts && (
+                          <Badge color="error" variant="dot"              
+                        style={{ marginLeft: '8px'}}>
+                              <NotificationsActiveRoundedIcon  fontSize="small" />
+                          </Badge>)}
+                    </MenuItem>
+                    <MenuItem key={'/sugerencias'} onClick={() => handleCloseUserMenu('/sugerencias')}>
+                      Sugerencias
+                    </MenuItem>
+                    <MenuItem
+                      key={'btn-register-menu'}
+                      onClick={handleLogoutClick}
+                      sx={{ color: 'black', display: 'block', backgroundColor: 'rgb(206 206 206)' }}
+                    >
+                      Salir
+                    </MenuItem>
+                  </Menu>
+                </Box>)}
               </Box>
 
               <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none', lg: 'none' } }}>
@@ -374,40 +377,40 @@ function Layout({hasAlerts, setHasAlerts}) {
                     </Typography>
                   </MenuItem>
                   {authenticated && (
-                    <>
-                    <MenuItem
-                      key={'btn-mis-normativas'}
-                      onClick={() => { handleCloseNavMenu('/misNormativas') }}
-                    >
-                      <Typography textAlign="center">
-                        Mis Normativas
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem
-                      key={'btn-mis-intereses'}
-                      onClick={() => { handleCloseNavMenu('/misIntereses') }}
-                    >
-                      <Typography textAlign="center">
-                        Mis Intereses
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem
-                      key={'btn-mis-alertas'}
-                      onClick={() => { handleCloseNavMenu('/misAlertas') }}
-                    >
-                      <Typography textAlign="center">
-                        Notificaciones
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem
-                      key={'btn-mis-sugerencias'}
-                      onClick={() => { handleCloseNavMenu('/sugerencias') }}
-                    >
-                      <Typography textAlign="center">
-                        Sugerencias
-                      </Typography>
-                    </MenuItem>
-                    </>
+                    <Box>
+                      <MenuItem
+                        key={'btn-mis-normativas'}
+                        onClick={() => { handleCloseNavMenu('/misNormativas') }}
+                      >
+                        <Typography textAlign="center">
+                          Mis Normativas
+                        </Typography>
+                      </MenuItem>
+                      <MenuItem
+                        key={'btn-mis-intereses'}
+                        onClick={() => { handleCloseNavMenu('/misIntereses') }}
+                      >
+                        <Typography textAlign="center">
+                          Mis Intereses
+                        </Typography>
+                      </MenuItem>
+                      <MenuItem
+                        key={'btn-mis-alertas'}
+                        onClick={() => { handleCloseNavMenu('/misAlertas') }}
+                      >
+                        <Typography textAlign="center">
+                          Notificaciones
+                        </Typography>
+                      </MenuItem>
+                      <MenuItem
+                        key={'btn-mis-sugerencias'}
+                        onClick={() => { handleCloseNavMenu('/sugerencias') }}
+                      >
+                        <Typography textAlign="center">
+                          Sugerencias
+                        </Typography>
+                      </MenuItem>
+                    </Box>
                   )}
                   <Divider sx={{ my: 0.5 }} />
                   {!authenticated && (

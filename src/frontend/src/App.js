@@ -147,6 +147,7 @@ function Layout({hasAlerts, setHasAlerts}) {
   };
 
   const handleLogoutClick = () => {
+    setAnchorElUser(null);
     setAnchorElNav(null);
     logOut();
     setRoleAdmin(false);

@@ -396,7 +396,7 @@ const CodigoArancelario = () => {
                 {product.name}
               </button>
             ))}
-              <p><em>¿Tu producto no aparece en esta lista? </em> <a href="http://localhost:3000/clasificarProductos"> Clasifica tu producto aquí</a></p>
+              <p><em>¿Tu producto no aparece en esta lista? </em> <a href="https://hubber.com.ar/clasificarProductos"> Clasifica tu producto aquí</a></p>
           </div>
           <button style={styles.closeButton} onClick={() => setShowProductPopup(false)}>
             Cerrar

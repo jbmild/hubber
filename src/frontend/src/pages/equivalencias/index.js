@@ -18,6 +18,7 @@ const Equivalencias = () => {
     const [provisorio, setProvisorio] = useState(false);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [totalItems, setTotalItems] = useState(0);
 
 
     const [selectedRowEquivalencia, setSelectedRowEquivalencia] = useState(null); //este abre un modal doble, se ve el detalle de ambas normativas
@@ -34,8 +35,8 @@ const Equivalencias = () => {
     useEffect(() =>{
 
         const fetchEquivalencias = async () => {
-            const equivalencias = await axios.get(`${url}/equivalencias?page=0&limit=10`, { withCredentials: true });
-
+            const equivalencias = await axios.get(`${url}/equivalencias?page=${page}&limit=${rowsPerPage}`, { withCredentials: true });
+            const cant = equivalencias.data.totalItems;
             
         const itemsEquivalencias = await Promise.all(
             equivalencias.data.items.map(async (eq) => {
@@ -44,16 +45,16 @@ const Equivalencias = () => {
                 return {
                     equivalenciaId: eq._id,
                     normativa1: n1,
-                    normativa2: n2,
+                    normativa2: n2, 
                 };
             })
         );
-        console.log(itemsEquivalencias);
-        setEquivalencias(itemsEquivalencias);                
+        setEquivalencias(itemsEquivalencias); 
+        setTotalItems(cant);               
         }
 
         fetchEquivalencias();
-    },[changes]);
+    },[changes, page, rowsPerPage]);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -121,7 +122,7 @@ const Equivalencias = () => {
               >
                     <Table>
                         {  
-                        equivalencias.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((eq)=> 
+                        equivalencias.map((eq)=> 
                         <TableRow hover title="Ver detalle de las normativas" onClick={()=>verEquivalencia(eq)}>
                                     <TableCell sx={{fontSize: '0.7em', margin: 0}}>{eq.normativa1.normativaOrigen}</TableCell>
                                     <TableCell sx={{fontSize: '0.7em', margin: 0}}>{eq.normativa1.pais}</TableCell>
@@ -147,7 +148,7 @@ const Equivalencias = () => {
                     <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={equivalencias.length}
+                    count={totalItems}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

@@ -182,7 +182,9 @@ function Layout({hasAlerts, setHasAlerts}) {
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <Stack direction="row" spacing={0} display={'flex'} width={'100%'}>
-              <img src="/images/logo.png" className="_b9923f60" alt="11.svg" width={"100px"}></img>
+              <Box onClick={() => { navigate('/');}} sx={{cursor: 'pointer'}}>
+               <img src="/images/logo.png" className="_b9923f60" alt="11.svg" width={"100px"}></img>
+              </Box>
 
               <Typography
                 variant="h6"

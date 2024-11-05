@@ -79,8 +79,8 @@ const DialogDetalles = ({ data, producto, openModal, handleCloseModal }) => {
     if (!data) return; // Ensure data is available before proceeding
 
     // Formulate the question for OpenAI
-    const pregunta = `[Normativa:${data.titulo} ,Descripcion:${data.descripcion} ,Pais emisor de normativa:${data.pais} ,Pais origen exportacion: Argentina, Producto:${producto}] Explica facil y detalladamente que sabes sobre la normativa/ley especifica, y a donde ir a realizar el tramite. La explicacion debe ser acorde al producto (cantidad max caracteres:500).Importante: no escribas en negrita y nunca digas que no puedes hacer algo. Actua como un buscador experto`;
-	//const pregunta = `.`;
+   // const pregunta = `[Normativa:${data.titulo} ,Descripcion:${data.descripcion} ,Pais emisor de normativa:${data.pais} ,Pais origen exportacion: Argentina, Producto:${producto}] Explica facil y detalladamente que sabes sobre la normativa/ley especifica, y a donde ir a realizar el tramite. La explicacion debe ser acorde al producto (cantidad max caracteres:500).Importante: no escribas en negrita y nunca digas que no puedes hacer algo. Actua como un buscador experto`;
+	const pregunta = `.`;
     try {
       setIsLoading(true); // Activate loading state before making the request
       const response = await openai.chat.completions.create({

@@ -35,6 +35,7 @@ const today = new Date();
 const PaginatedTable = () => {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [paisSeleccionado, setPaisSeleccionado] = useState('');
   const [paises, setPaises] = useState([]);
   const [page, setPage] = useState(0);
@@ -70,7 +71,13 @@ const PaginatedTable = () => {
 
     const response = await getPosiciones(value, page);
     if(response.posiciones){
-      setPosicionesArancelarias(p => (p.concat(response.posiciones.map(p => p.posicion))));
+      setPosicionesArancelarias(p => {
+        let posiciones = [];
+        if(page > 0)
+          posiciones = posiciones.concat(p);
+
+        return posiciones.concat(response.posiciones.map(p => p.posicion))
+      });
     }
     setLoadingAutocomplete(false);
   };
@@ -81,15 +88,37 @@ const PaginatedTable = () => {
     const response = await getProductos(value, page);
 
     if(response){
-      setPosicionesArancelarias(p => (p.concat(response)));
+      setPosicionesArancelarias(p => {
+        let productos = [];
+        if(page > 0)
+          productos = productos.concat(p);
+
+        return productos.concat(response);
+      });
     }
 
     setLoadingAutocomplete(false);
   }
 
   const handleSearchChange = (event) => {
-    const value = event.target.value;
-    setSearch(value);
+    setSearch(event.target.value);
+  };
+
+  useEffect(() => {
+    console.log('0');
+    const timer = setTimeout(() => {
+      console.log('timeout', search)
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  useEffect(() => {
+    const value = debouncedSearch;
+    
+    if(value === '')
+      return;
     setPosicionesArancelarias([]);
 
     if (value) {
@@ -101,7 +130,7 @@ const PaginatedTable = () => {
 
       setAutocompletePage(0);
     }
-  };
+  }, [debouncedSearch]);
 
   const handleScroll = (event) => {
     const bottom = event.target.scrollHeight === event.target.scrollTop + event.target.clientHeight;
@@ -110,8 +139,8 @@ const PaginatedTable = () => {
       setAutocompletePage(nextPage);
       switch(buscarPor){
         default:
-        case 'Producto': {fetchProductos(search, nextPage);break;}
-        case 'Codigo': {fetchPosiciones(search, nextPage);break;}
+        case 'Producto': {fetchProductos(debouncedSearch, nextPage);break;}
+        case 'Codigo': {fetchPosiciones(debouncedSearch, nextPage);break;}
       }
     }
   };
@@ -121,8 +150,8 @@ const PaginatedTable = () => {
 
     switch(buscarPor){
       default:
-      case 'Producto': {fetchProductos(search, 0);break;}
-      case 'Codigo': {fetchPosiciones(search, 0);break;}
+      case 'Producto': {fetchProductos(debouncedSearch, 0);break;}
+      case 'Codigo': {fetchPosiciones(debouncedSearch, 0);break;}
     }
 
     setAutocompletePage(0);
@@ -201,7 +230,9 @@ const PaginatedTable = () => {
       setBuscarPor(newValue);
       setAutocompletePage(0);
       setSearch('');
+      setDebouncedSearch('');
       setBusquedaSeleccionada('');
+      setBusquedaSeleccionadaCompleta('');
     }
   };
 
@@ -249,9 +280,14 @@ const PaginatedTable = () => {
               onChange={(_, value) => {
                 setSearch(value ? value : '');
                 setBusquedaSeleccionada(value ? (buscarPor == 'Producto'? value : value.split(' - ')[0]) : '');
-				setBusquedaSeleccionadaCompleta(value ? (buscarPor === 'Producto' ? value : value.split(' - ')[1]) : '');
+				        setBusquedaSeleccionadaCompleta(value ? (buscarPor === 'Producto' ? value : value.split(' - ')[1]) : '');
               }}
-              
+              onBlur={() => {
+                if(busquedaSeleccionada === ''){
+                  setSearch('');
+                  setDebouncedSearch('');
+                }
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}

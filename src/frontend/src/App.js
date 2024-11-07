@@ -103,16 +103,25 @@ function Layout({hasAlerts, setHasAlerts}) {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const auth = await isAuthenticated();
-      setAuthenticated(auth);
-      if(auth){
-        const nombre = await getUser();
-        const notificaciones = await tieneNuevasNotificaciones();
-        setHasAlerts(notificaciones);
-        setUsername(nombre.username);
-        setRoleAdmin(nombre.esAdmin);
-      } else {
+      try{
+        const auth = await isAuthenticated();
+        setAuthenticated(auth);
+        if(auth){
+          const nombre = await getUser();
+          const notificaciones = await tieneNuevasNotificaciones();
+          setHasAlerts(notificaciones);
+          setUsername(nombre.username);
+          setRoleAdmin(nombre.esAdmin);
+        } else {
+          setRoleAdmin(false);
+        }
+      }catch{
+        setAnchorElUser(null);
+        setAnchorElNav(null);
+        setHasAlerts(false);
+        logOut();
         setRoleAdmin(false);
+        setAuthenticated(false);
       }
     };
     checkAuth();

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Avatar, Badge } from '@mui/material';
 import { getUser } from 'services/authService';
+import { useChat } from 'components/chatbot/ChatContext';
 
 function stringToColor(string) {
     let hash = 0;
@@ -42,13 +43,7 @@ function stringToColor(string) {
   }
 
 export default function IconoUsuario() {
-    const [name,setName] = useState('');
+    const {user} = useChat();
 
-    useEffect(() =>{
-        getUser().then(user => {
-            setName(user.username);
-        });
-    }, []);
-
-    return (<Avatar {...stringAvatar(name)} />)
+    return (<Avatar {...stringAvatar(user)} />)
 }

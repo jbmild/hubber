@@ -116,7 +116,7 @@ function Home() {
                             <header className="_a1bbfd8f">
                                 <h1 className="_5b389614">Bienvenido a Hubber</h1>
                                 <p className="_8ee384e7">
-                                    Simplificando el camino hacia la exportación para productores argenntinos.
+                                    Simplificando el camino hacia la exportación para productores argentinos.
                                 </p>
                             </header>
                             <div className="_6c87fcd2">

@@ -176,13 +176,13 @@ function Layout({hasAlerts, setHasAlerts}) {
 
 
   const exportMenuItems = [
-    { label: 'Proceso de una exportación', path: '/exportar/proceso' },
+    { label: 'Primeros pasos para exportar', path: '/exportar/proceso' },
     { label: 'Regímenes vigentes', path: '/exportar/regimenes' },
     { label: 'Requisitos básicos y documentación obligatoria', path: '/exportar/requisitos' },
     { label: 'Incoterms', path: '/exportar/incoterms' },
     { label: 'Cobros y reintegros', path: '/exportar/cobros' },
     { label: 'Costos', path: '/exportar/costos' },
-    { label: 'Tu Producto', path: '/exportar/tu-producto' },
+    { label: 'Tu producto', path: '/exportar/tu-producto' },
   ];
 
   return (

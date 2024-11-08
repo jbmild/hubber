@@ -116,11 +116,11 @@ function Home() {
                             <header className="_a1bbfd8f">
                                 <h1 className="_5b389614">Bienvenido a Hubber</h1>
                                 <p className="_8ee384e7">
-                                    Revolucionando el comercio global para los productores con nuestra plataforma exportadora integral.
+                                    Simplificando el camino hacia la exportación para productores argenntinos.
                                 </p>
                             </header>
                             <div className="_6c87fcd2">
-                                <button id="btn_xqm3sgxmge" className="_8bff3155 btn" onClick={() => navigate('/login')}><span>Únete a nosotros hoy</span></button>
+                                <button id="btn_xqm3sgxmge" className="_8bff3155 btn" onClick={() => navigate('/login')}><span>Únase a nosotros hoy</span></button>
                                 <button id="btn_dgh9dpr5i1" className="_8bff3155 btn" onClick={scrollToFeatures}>
                                     <span>Vea cómo funciona</span>
                                 </button>
@@ -217,8 +217,8 @@ function Home() {
                         <div className="_e169a136">
                             <div className="_36ee58b3">
                                 <div className="_bbf320fc">
-                                    <span data-value="200000" className="countup">
-                                        +200.000
+                                    <span data-value="100" className="countup">
+                                        +100
                                     </span>
                                 </div>
                                 <span className="_85dc032f">Mercados potenciales</span>

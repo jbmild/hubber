@@ -528,27 +528,7 @@ function Layout({hasAlerts, setHasAlerts}) {
         <Grid item xs={12} md={3} style={{ textAlign: "right" }}>
           <span className="_c0e4633f">© 2024 Hubber</span>
         </Grid>
-        <Grid item xs={12} md={9} style={{ textAlign: "right" }}>
-          <ul className="_d1a0a8ea">
-            <li className="_0fc50e27">
-              <h4 className="_31f6b92b">Contacto</h4>
-              <ul className="_91687afc">
-                <li className="_e0485177"><a href="https://v2nfosz0pa4o0t8w.umso.co/" className="_c288f4a7">Twitter</a></li>
-                <li className="_e0485177"><a href="https://v2nfosz0pa4o0t8w.umso.co/" className="_c288f4a7">Instagram</a></li>
-                <li className="_e0485177"><a href="https://v2nfosz0pa4o0t8w.umso.co/" className="_c288f4a7">YouTube</a></li>
-                <li className="_e0485177"><a href="https://v2nfosz0pa4o0t8w.umso.co/" className="_c288f4a7">Mail</a></li>
-              </ul>
-            </li>
-            <li className="_0fc50e27">
-              <h4 className="_31f6b92b">Legal</h4>
-              <ul className="_91687afc">
-                <li className="_e0485177"><a href="https://v2nfosz0pa4o0t8w.umso.co/privacy-policy" className="_c288f4a7">Política de Privacidad</a></li>
-                <li className="_e0485177"><a href="https://v2nfosz0pa4o0t8w.umso.co/terms-of-use" className="_c288f4a7">Términos de Uso</a></li>
-                <li className="_e0485177"><a href="https://v2nfosz0pa4o0t8w.umso.co/cookie-policy" className="_c288f4a7">Política de Cookies</a></li>
-              </ul>
-            </li>
-          </ul>
-        </Grid>
+        
       </Grid>
     </div>
   </div>

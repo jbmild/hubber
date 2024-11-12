@@ -18,7 +18,7 @@ export default function ChatbotHeader() {
     return (
         <div className="react-chatbot-kit-chat-header">
             <div className="header-container">
-                <span>En que podemos ayudarle?</span>
+                <span>HubberBot</span>
                 <Tooltip title='Refrescar chat'>
                     <Button onClick={triggerReset}>
                         <RefreshIcon />

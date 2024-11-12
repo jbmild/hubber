@@ -192,7 +192,14 @@ function Layout({hasAlerts, setHasAlerts}) {
           <Toolbar disableGutters>
             <Stack direction="row" spacing={0} display={'flex'} width={'100%'}>
               <Box onClick={() => { navigate('/');}} sx={{cursor: 'pointer'}}>
-               <img src="/images/logo.png" className="_b9923f60" alt="11.svg" width={"100px"}></img>
+               <img src="/images/logo.png" className="_b9923f60" alt="11.svg" width={"100px"}   style={{
+      display: 'block',       // Esto asegura que no haya espacio extra alrededor
+      marginTop: 'auto',      // Ajusta el margen superior
+      marginBottom: 'auto',   // Ajusta el margen inferior
+      paddingTop: '8px',      // Ajusta según sea necesario para centrar
+      paddingBottom: '4px'    // Ajusta según sea necesario para centrar
+    }} 
+	></img>
               </Box>
 
               <Typography
